@@ -1,0 +1,58 @@
+<template>
+  <div class="flex w-screen h-screen flex-col items-center font-[mulish]">
+    <div class="w-full h-full">
+      <slot></slot>
+    </div>
+    <div
+      class="h-20 w-full flex justify-between items-center bg-[#555D50] px-8"
+    >
+      <NuxtLink to="/newOrder">
+        <button>
+          <svg
+            class="w-6 h-6 text-white fill-white"
+            viewBox="0 0 96 96"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#ffffff"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <g id="SVGRepo_iconCarrier">
+              <title />
+              <g>
+                <path
+                  d="M66,42H54V30a6,6,0,0,0-12,0V42H30a6,6,0,0,0,0,12H42V66a6,6,0,0,0,12,0V54H66a6,6,0,0,0,0-12Z"
+                />
+                <path
+                  d="M48,0A48,48,0,1,0,96,48,48.0512,48.0512,0,0,0,48,0Zm0,84A36,36,0,1,1,84,48,36.0393,36.0393,0,0,1,48,84Z"
+                />
+              </g>
+            </g>
+          </svg>
+        </button>
+      </NuxtLink>
+      <NuxtLink to="/home">
+        <button>
+          <svg
+            class="w-8 h-8 text-white fill-white"
+            viewBox="0 0 16 16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M8 0L0 6V8H1V15H4V10H7V15H15V8H16V6L14 4.5V1H11V2.25L8 0ZM9 10H12V13H9V10Z"
+            />
+          </svg>
+        </button>
+      </NuxtLink>
+      <!-- placeholder -->
+      <div class="w-6"></div>
+    </div>
+  </div>
+</template>
