@@ -51,6 +51,8 @@
             type="number"
             id="menge"
             class="border border-black w-20"
+            inputmode="numeric"
+            pattern="[0-9]*"
             v-model="quantity"
           />
         </div>
