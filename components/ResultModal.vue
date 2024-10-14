@@ -1,7 +1,6 @@
 <template>
   <div
-    class="fixed -top-4 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-    style="min-height: 100vh; height: 100dvh"
+    class="fixed -top-4 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-50 h-dvh w-dvw"
   >
     <!-- Modal Box -->
     <div
@@ -90,20 +89,74 @@ function getWhatsappFormatt() {
 }
 
 function handleCopyWhatsapp() {
-  navigator.clipboard.writeText(getWhatsappFormatt());
+  const text = getWhatsappFormatt();
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    // Moderne Clipboard API verwenden
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("Text erfolgreich kopiert!");
+      })
+      .catch((err) => {
+        console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+        fallbackCopyTextToClipboard(text);
+      });
+  } else {
+    // Fallback verwenden, wenn Clipboard API nicht unterstützt wird
+    fallbackCopyTextToClipboard(text);
+  }
 }
 
 function handleCopyKasys() {
-  navigator.clipboard.writeText(
-    props.insertedPositions
-      .map((position) => {
-        if (position.dynamic == true) {
-          return position.quantity + " " + position.name;
-        } else {
-          return position.name;
-        }
+  const text = props.insertedPositions
+    .map((position) => {
+      if (position.dynamic == true) {
+        return position.quantity + " " + position.name;
+      } else {
+        return position.name;
+      }
+    })
+    .join("; ");
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("Text erfolgreich kopiert!");
       })
-      .join("; ")
-  );
+      .catch((err) => {
+        console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+        fallbackCopyTextToClipboard(text);
+      });
+  } else {
+    fallbackCopyTextToClipboard(text);
+  }
+}
+
+// Fallback-Methode, um Text zu kopieren, falls Clipboard API nicht funktioniert
+function fallbackCopyTextToClipboard(text: string) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+
+  // Textarea unsichtbar machen
+  textArea.style.position = "fixed";
+  textArea.style.top = "-9999px";
+  document.body.appendChild(textArea);
+
+  // Markiere den Text und kopiere ihn
+  textArea.focus();
+  textArea.select();
+
+  try {
+    const successful = document.execCommand("copy");
+    const msg = successful ? "erfolgreich" : "fehlgeschlagen";
+    console.log("Fallback: Kopieren war " + msg);
+    alert("Text erfolgreich kopiert!");
+  } catch (err) {
+    console.error("Fallback: Fehler beim Kopieren", err);
+  }
+
+  document.body.removeChild(textArea);
 }
 </script>

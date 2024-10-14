@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="flex flex-col items-center font-[mulish]"
-    style="min-height: 100vh; height: 100dvh"
-  >
+  <div class="flex flex-col items-center font-[mulish] h-dvh w-dvw">
     <div class="w-full h-full overflow-auto">
       <slot></slot>
     </div>
@@ -80,3 +77,18 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+html,
+body,
+#__nuxt {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#__nuxt {
+  display: flex;
+  flex-direction: column;
+}
+</style>
