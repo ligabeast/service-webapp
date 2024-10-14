@@ -14,15 +14,11 @@ export default defineEventHandler(async (event) => {
 
   const authorizationHeader = getHeader(event, "authorization");
 
-  console.log("Authorization header:", authorizationHeader);
-
   if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
     return { statusCode: 401, message: "Unauthorized: Token not provided" };
   }
 
   const token = authorizationHeader.split(" ")[1];
-
-  console.log("Token:", token);
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
