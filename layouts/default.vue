@@ -1,5 +1,8 @@
 <template>
-  <div class="flex w-screen h-screen flex-col items-center font-[mulish]">
+  <div
+    class="flex flex-col items-center font-[mulish]"
+    style="min-height: 100vh; height: 100dvh"
+  >
     <div class="w-full h-full overflow-auto">
       <slot></slot>
     </div>

@@ -1,6 +1,7 @@
 <template>
   <div
-    class="w-screen h-screen fixed -top-4 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+    class="fixed -top-4 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+    style="min-height: 100vh; height: 100dvh"
   >
     <!-- Modal Box -->
     <div
