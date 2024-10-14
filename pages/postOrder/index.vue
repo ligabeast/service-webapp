@@ -87,6 +87,8 @@
         <input
           type="number"
           id="menge"
+          inputmode="numeric"
+          pattern="[0-9]*"
           v-if="material.dynamic"
           class="border border-black w-20 rounded-sm"
           v-model="material.quantity"
