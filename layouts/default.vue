@@ -1,13 +1,13 @@
 <template>
   <div class="flex w-screen h-screen flex-col items-center font-[mulish]">
-    <div class="w-full h-full">
+    <div class="w-full h-full overflow-auto">
       <slot></slot>
     </div>
     <div
       class="h-20 w-full flex justify-between items-center bg-[#555D50] px-8"
     >
       <NuxtLink to="/newOrder">
-        <button>
+        <button class="hover:scale-125 transition">
           <svg
             class="w-6 h-6 text-white fill-white"
             viewBox="0 0 96 96"
@@ -37,7 +37,7 @@
         </button>
       </NuxtLink>
       <NuxtLink to="/home">
-        <button>
+        <button class="hover:scale-125 transition">
           <svg
             class="w-8 h-8 text-white fill-white"
             viewBox="0 0 16 16"
@@ -52,7 +52,28 @@
         </button>
       </NuxtLink>
       <!-- placeholder -->
-      <div class="w-6"></div>
+      <div class="w-6">
+        <NuxtLink to="/ongoingOrders">
+          <button class="hover:scale-125 transition">
+            <svg
+              fill="#000000"
+              class="w-6 h-6 text-white fill-white"
+              version="1.1"
+              xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 24 24"
+              xml:space="preserve"
+            >
+              <g id="active">
+                <path
+                  d="M8.6,20.1l-7.8-8l1.4-1.4l6.4,6.5L21.8,3.9l1.4,1.4L8.6,20.1z"
+                />
+              </g>
+            </svg>
+          </button>
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>

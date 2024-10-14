@@ -10,14 +10,9 @@ export default defineNuxtConfig({
     },
   },
 
-  css: [
-    "~/assets/css/main.css",
-    "notivue/animations.css",
-    "notivue/notification.css",
-  ],
+  css: ["~/assets/css/main.css"],
 
   modules: [
-    "notivue/nuxt",
     [
       "@nuxtjs/google-fonts",
       {
@@ -27,15 +22,4 @@ export default defineNuxtConfig({
       },
     ],
   ],
-  notivue: {
-    position: "top-right",
-    limit: 4,
-    enqueue: true,
-    avoidDuplicates: true,
-    notifications: {
-      global: {
-        duration: 10000,
-      },
-    },
-  },
 });

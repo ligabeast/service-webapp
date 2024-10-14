@@ -1,16 +1,16 @@
 <template>
   <div class="flex w-full justify-center items-center space-x-5">
     <button
-      class="w-32 h-16 border border-blue-500 rounded-xl flex justify-center items-center"
+      class="w-32 h-16 border border-blue-500 rounded-xl flex justify-center items-center hover:bg-blue-600 hover:scale-105 transition"
       :style="style.Connect"
-      @click="selected = 'Connect'"
+      @click="selected = 'connect'"
     >
       Connect
     </button>
     <button
-      class="w-32 h-16 border border-blue-500 rounded-xl flex justify-center items-center"
+      class="w-32 h-16 border border-blue-500 rounded-xl flex justify-center items-center hover:bg-blue-600 hover:scale-105 transition"
       :style="style.GWV"
-      @click="selected = 'GWV'"
+      @click="selected = 'gwv'"
     >
       GWV
     </button>
@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-const selected = ref("Connect");
+const selected = ref("connect");
 const emit = defineEmits(["changed"]);
 
 watch(selected, (value) => {
@@ -28,12 +28,12 @@ watch(selected, (value) => {
 const style = computed(() => {
   return {
     Connect: {
-      backgroundColor: selected.value === "Connect" ? "#6699CC" : "white",
-      color: selected.value === "Connect" ? "white" : "#6699CC",
+      backgroundColor: selected.value === "connect" ? "#6699CC" : "white",
+      color: selected.value === "connect" ? "white" : "#6699CC",
     },
     GWV: {
-      backgroundColor: selected.value === "GWV" ? "#6699CC" : "white",
-      color: selected.value === "GWV" ? "white" : "#6699CC",
+      backgroundColor: selected.value === "gwv" ? "#6699CC" : "white",
+      color: selected.value === "gwv" ? "white" : "#6699CC",
     },
   };
 });

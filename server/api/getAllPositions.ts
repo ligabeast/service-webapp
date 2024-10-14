@@ -16,12 +16,12 @@ export default defineEventHandler(async (event) => {
     connection = await mysql.createConnection(dbConfig);
 
     const [rows] = await connection.execute(
-      "select id, name from sys.Materials;"
+      "select id, name, alias, dynamic, type from sys.Positions;"
     );
 
     return {
       status: "success",
-      message: "Materials retrieved successfully",
+      message: "Positions retrieved successfully",
       data: rows,
     };
   } catch (error: any) {

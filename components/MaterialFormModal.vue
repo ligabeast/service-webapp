@@ -7,7 +7,7 @@
       class="bg-white p-6 rounded-lg shadow-lg w-96 relative flex flex-col space-y-2"
     >
       <div class="flex flex-row items-center justify-between">
-        <p class="text-xl font-semibold">Material Hinzufügen</p>
+        <p class="text-xl font-semibold">Position Hinzufügen</p>
         <button class="text-2xl font-bold px-2" @click="handleClose">
           <svg
             class="w-8 h-8"
@@ -23,11 +23,11 @@
         </button>
       </div>
       <template v-if="props.materials.length === 0">
-        <p>Alle verfügbaren Materialien sind bereits hinzugefügt.</p>
+        <p>Alle verfügbaren Positionen sind bereits hinzugefügt.</p>
       </template>
       <template v-else>
         <div class="flex items-center">
-          <label for="material" class="w-1/4">Material </label>
+          <label for="material" class="w-1/4">Position </label>
           <select
             id="material"
             class="border border-black text-lg text-bold w-3/4 text-black"
@@ -38,11 +38,14 @@
               :key="material.id"
               :value="material"
             >
-              {{ material.name }}
+              {{ material.alias }}
             </option>
           </select>
         </div>
-        <div class="flex items-center">
+        <div
+          v-if="selectedMaterial && selectedMaterial.dynamic"
+          class="flex items-center"
+        >
           <label for="menge" class="w-1/4">Menge </label>
           <input
             type="number"
@@ -52,7 +55,7 @@
           />
         </div>
         <button
-          class="bg-green-500 rounded-md h-10 w-full text-white font-bold"
+          class="bg-green-500 rounded-md h-10 w-full text-white font-bold hover:bg-green-600 hover:scale-105 transition"
           @click="handleSubmit"
         >
           Bestätigen
@@ -64,14 +67,19 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  materials: { id: number; name: string }[];
+  materials: { id: number; name: string; alias: string }[];
 }>();
 const emit = defineEmits(["close", "add"]);
-const selectedMaterial = ref<{ id: number; name: string } | null>(null);
+const selectedMaterial = ref<{
+  id: number;
+  name: string;
+  dynamic: boolean;
+  alias: string;
+} | null>(null);
 const quantity = ref<number | null>(null);
 
 function handleSubmit() {
-  if (selectedMaterial.value && quantity.value) {
+  if (selectedMaterial.value) {
     emit("add", { ...selectedMaterial.value, quantity: quantity.value });
     selectedMaterial.value = null;
     quantity.value = null;
