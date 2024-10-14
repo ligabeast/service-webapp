@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
         password_hash: user.password_hash,
       }, // Payload
       JWT_SECRET, // Secret Key
-      { expiresIn: "1h" } // Token gültig für 1 Stunde
+      { expiresIn: "30d" } // Gültigkeit des Tokens 30 tage
     );
 
     return {
