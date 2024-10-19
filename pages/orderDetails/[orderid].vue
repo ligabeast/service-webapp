@@ -29,16 +29,19 @@
       ></div>
     </div>
     <div class="flex p-4 justify-between space-x-2">
-      <div class="w-1/2 font-medium">status</div>
+      <div class="w-1/2 font-medium">Status</div>
       <div class="w-[1px] border border-black"></div>
       <div
         v-if="order?.status"
         v-html="order?.status"
-        class="h-90 whitespace-pre-line w-1/2"
+        :class="{
+          'text-green-500': order?.status === 'completed',
+        }"
+        class="h-90 whitespace-pre-line w-1/2 font-semibold"
       ></div>
     </div>
     <div class="flex p-4 justify-between space-x-2">
-      <div class="w-1/2 font-medium">Auftraganfrang</div>
+      <div class="w-1/2 font-medium">Auftragsanfang</div>
       <div class="w-[1px] border border-black"></div>
       <div
         v-if="orderStarted"
@@ -56,7 +59,7 @@
       ></div>
     </div>
     <div class="flex p-4 justify-between space-x-2">
-      <div class="w-1/2 font-medium">Auftragsdauer</div>
+      <div class="w-1/2 font-medium">Dauer</div>
       <div class="w-[1px] border border-black"></div>
       <div
         class="h-90 whitespace-pre-line w-1/2"
@@ -69,8 +72,7 @@
       <div class="w-[1px] border border-black"></div>
       <div class="w-1/2">
         <div v-for="position in positions">
-          {{ position.quantity ?? "1" }} {{ position.quantity ? "" : "x" }}
-          {{ position.position_name }}
+          {{ position.quantity ?? "" }} {{ position.position_name }}
         </div>
       </div>
     </div>
@@ -100,13 +102,12 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import type { OrderResponse } from "~/types";
 
 // Get the orderid from the route parameters
 const route = useRoute();
 const orderid = route.params.orderid;
 
-const timeFormatter = new Intl.DateTimeFormat("de", {
+const timeFormatter = new Intl.DateTimeFormat("de-DE", {
   day: "2-digit",
   year: "numeric",
   month: "2-digit",
@@ -119,6 +120,7 @@ const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
     Authorization: `Bearer ${useCookie("jwt").value}`,
   },
 });
+
 const orderStarted = ref<any | null>(data.data[0].orderCreated);
 const order = ref<any | null>(data.data[0]);
 const positions = computed(() => order.value?.positions);
@@ -140,10 +142,10 @@ const formattedDuration = computed(() => {
   const minutes = totalMinutes % 60;
 
   // Format as hh:mm
-  return `${String(hours).padStart(2, "0")}h:${String(minutes).padStart(
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
     2,
     "0"
-  )}m`;
+  )}`;
 });
 
 const whatsappResult = computed(() => {

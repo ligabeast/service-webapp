@@ -40,7 +40,7 @@ const props = defineProps<{
   order: Order;
 }>();
 
-const timeFormatter = new Intl.DateTimeFormat("de", {
+const timeFormatter = new Intl.DateTimeFormat("de-DE", {
   day: "2-digit",
   year: "numeric",
   month: "2-digit",
