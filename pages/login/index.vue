@@ -53,7 +53,10 @@ const login = async () => {
       body: { username: username.value, password: password.value },
     });
     const token = data.data.token;
-    const jwtCookie = useCookie("jwt");
+    const jwtCookie = useCookie("jwt", {
+      // expires in 1 year
+      expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+    });
     jwtCookie.value = token;
 
     // Weiterleitung nach erfolgreichem Login

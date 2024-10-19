@@ -22,6 +22,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
           const decoded = jwtDecode(token);
           console.log("Token decoded:", decoded);
 
+          // TODO check if token is still valid
+
           // Benutzerdaten im Zustand speichern
           useState("user").value = decoded;
         } catch (error) {
