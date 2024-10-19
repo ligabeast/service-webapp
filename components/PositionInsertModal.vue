@@ -4,7 +4,7 @@
   >
     <!-- Modal Box -->
     <div
-      class="bg-white p-6 rounded-lg shadow-lg w-96 relative flex flex-col space-y-2"
+      class="bg-white p-6 rounded-lg shadow-lg w-96 relative flex flex-col space-y-5"
     >
       <div class="flex flex-row items-center justify-between">
         <p class="text-xl font-semibold">Position Hinzufügen</p>
@@ -57,7 +57,7 @@
           />
         </div>
         <button
-          class="bg-green-500 rounded-md h-10 w-full text-white font-bold hover:bg-green-600 hover:scale-105 transition"
+          class="bg-green-500 rounded-md h-10 w-full text-white font-bold hover:bg-green-600 hover:scale-105 transition mt-2"
           @click="handleSubmit"
         >
           Bestätigen

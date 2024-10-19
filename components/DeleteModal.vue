@@ -6,7 +6,7 @@
     <div
       class="bg-white p-6 rounded-lg shadow-lg w-96 relative flex flex-col space-y-2"
     >
-      <h1 class="text-xl font-semibold">
+      <h1 class="text-xl font-semibold mb-4">
         Sind Sie sicher, dass Sie diesen Auftrag löschen möchten?
       </h1>
 
@@ -19,7 +19,7 @@
         </button>
         <button
           @click="handleDelete"
-          class="bg-green-500 h-10 w-full rounded-md hover:bg-green-600 hover:scale-105 transition"
+          class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 hover:scale-105 transition"
         >
           Bestätigen
         </button>
