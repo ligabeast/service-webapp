@@ -43,8 +43,8 @@ export default defineEventHandler(async (event) => {
       JOIN 
           sys.Positions p ON p.id = pto.position_id
       WHERE 
-          o.id = 38 
-          AND o.user_id = 2
+          o.id = ?
+          AND o.user_id = ?
       GROUP BY 
           o.id;
       `,
