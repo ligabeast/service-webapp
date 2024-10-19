@@ -256,7 +256,8 @@ function getWhatsappFormatt() {
   return (
     order.value.adress +
     "\n" +
-    "Auftragsnummer: " +
+    "Auftragsnummer" +
+    "\n" +
     order.value.ordernumber +
     "\n" +
     "KLS-ID: " +

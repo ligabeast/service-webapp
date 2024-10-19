@@ -78,7 +78,8 @@ function getWhatsappFormatt() {
   return (
     props.adress +
     "\n" +
-    "Auftragsnummer: " +
+    "Auftragsnummer" +
+    "\n" +
     props.ordernumber +
     "\n" +
     "KLS-ID: " +
