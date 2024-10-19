@@ -42,7 +42,7 @@
       <div class="w-[1px] border border-black"></div>
       <div
         v-if="orderStarted"
-        v-html="timeFormatter.format(new Date(orderStarted.dateCreated))"
+        v-html="timeFormatter.format(new Date(orderStarted))"
         class="h-90 whitespace-pre-line w-1/2"
       ></div>
     </div>
@@ -63,6 +63,30 @@
         v-if="formattedDuration"
         v-html="formattedDuration"
       ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Positions</div>
+      <div class="w-[1px] border border-black"></div>
+      <div class="w-1/2">
+        <div v-for="position in positions">
+          {{ position.quantity ?? "1" }} {{ position.quantity ? "" : "x" }}
+          {{ position.position_name }}
+        </div>
+      </div>
+    </div>
+    <div class="w-full flex items-center justify-center space-x-3 px-4">
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+        @click="handleCopyWhatsapp"
+      >
+        Copy Whatsapp
+      </button>
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+        @click="handleCopyKasys"
+      >
+        Copy Kasys
+      </button>
     </div>
     <NuxtLink to="/home" class="flex w-full items-center justify-center">
       <button
@@ -95,19 +119,18 @@ const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
     Authorization: `Bearer ${useCookie("jwt").value}`,
   },
 });
-const orderStarted = ref<any | null>(
-  data.data.filter((e: any) => e.status == "started")[0]
-);
-const order = ref<any | null>(
-  data.data.filter((e: any) => e.status == "completed")[0]
-);
-console.log(order.value);
-console.log(orderStarted.value);
+const orderStarted = ref<any | null>(data.data[0].orderCreated);
+const order = ref<any | null>(data.data[0]);
+const positions = computed(() => order.value?.positions);
+
+console.log("Order catched: ", order.value);
+console.log("OrderStarted catched: ", orderStarted.value);
+console.log("Positions catched: ", order.value?.positions);
 
 const formattedDuration = computed(() => {
   if (!orderStarted.value || !order.value) return null;
 
-  const start = new Date(orderStarted.value.dateCreated).getTime();
+  const start = new Date(orderStarted.value).getTime();
   const end = new Date(order.value.dateCreated).getTime();
   const durationMs = end - start;
 
@@ -122,4 +145,124 @@ const formattedDuration = computed(() => {
     "0"
   )}m`;
 });
+
+const whatsappResult = computed(() => {
+  const result = [];
+  if (
+    order.value.positions.filter(
+      (position: any) =>
+        position.position_name === "Gf-TA Connect Only" ||
+        position.position_name === "Connect mit Herstellen Ne4"
+    ).length > 0
+  ) {
+    result.push("Erledigt und inventarisiert");
+  } else if (
+    order.value.positions.filter(
+      (position: any) =>
+        position.position_name === "nicht erledigt - Connect Auftrag"
+    ).length > 0
+  ) {
+    result.push("Connect Nicht Erledigt");
+  } else if (
+    order.value.positions.filter(
+      (position: any) => position.position_name === "GWV Basic"
+    ).length > 0
+  ) {
+    result.push("GWV Erledigt");
+  } else if (
+    order.value.positions.filter(
+      (position: any) =>
+        position.position_name === "nicht erledigt - GWV Auftrag"
+    ).length > 0
+  ) {
+    result.push("GWV Nicht Erledigt");
+  }
+  // join by next line
+  return result.join("\n");
+});
+
+function handleCopyWhatsapp() {
+  const text = getWhatsappFormatt();
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    // Moderne Clipboard API verwenden
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("Text erfolgreich kopiert!");
+      })
+      .catch((err) => {
+        console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+        fallbackCopyTextToClipboard(text);
+      });
+  } else {
+    // Fallback verwenden, wenn Clipboard API nicht unterstützt wird
+    fallbackCopyTextToClipboard(text);
+  }
+}
+
+function fallbackCopyTextToClipboard(text: string) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+
+  // Textarea unsichtbar machen
+  textArea.style.position = "fixed";
+  textArea.style.top = "-9999px";
+  document.body.appendChild(textArea);
+
+  // Markiere den Text und kopiere ihn
+  textArea.focus();
+  textArea.select();
+
+  try {
+    const successful = document.execCommand("copy");
+    const msg = successful ? "erfolgreich" : "fehlgeschlagen";
+    console.log("Fallback: Kopieren war " + msg);
+    alert("Text erfolgreich kopiert!");
+  } catch (err) {
+    console.error("Fallback: Fehler beim Kopieren", err);
+  }
+
+  document.body.removeChild(textArea);
+}
+
+function handleCopyKasys() {
+  const text = order.value.positions
+    .map((position: any) => {
+      if (position.quantity) {
+        return position.quantity + " " + position.position_name;
+      } else {
+        return position.position_name;
+      }
+    })
+    .join("; ");
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("Text erfolgreich kopiert!");
+      })
+      .catch((err) => {
+        console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+        fallbackCopyTextToClipboard(text);
+      });
+  } else {
+    fallbackCopyTextToClipboard(text);
+  }
+}
+
+function getWhatsappFormatt() {
+  return (
+    order.value.adress +
+    "\n" +
+    "Auftragsnummer: " +
+    order.value.ordernumber +
+    "\n" +
+    "KLS-ID: " +
+    order.value.kls_id +
+    "\n" +
+    whatsappResult.value
+  );
+}
 </script>

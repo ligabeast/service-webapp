@@ -20,7 +20,34 @@ export default defineEventHandler(async (event) => {
     connection = await mysql.createConnection(dbConfig);
 
     const [rows] = await connection.execute(
-      "SELECT * FROM sys.Orders WHERE ordernumber = (SELECT ordernumber FROM sys.Orders WHERE id = ? AND user_id = ?);",
+      `
+      SELECT 
+          o.*,
+          JSON_ARRAYAGG(
+              JSON_OBJECT(
+                  'position_id', pto.position_id, 
+                  'quantity', pto.quantity, 
+                  'position_name', p.name
+              )
+          ) AS positions,
+          (SELECT o2.dateCreated
+          FROM sys.Orders o2
+          WHERE o2.ordernumber = o.ordernumber
+          AND o2.status = 'started'
+          AND o2.id != o.id
+          LIMIT 1) AS orderCreated
+      FROM 
+          sys.Orders o
+      JOIN 
+          Position_To_Orders pto ON pto.order_id = o.id
+      JOIN 
+          sys.Positions p ON p.id = pto.position_id
+      WHERE 
+          o.id = 38 
+          AND o.user_id = 2
+      GROUP BY 
+          o.id;
+      `,
       [orderid, userId]
     );
 
