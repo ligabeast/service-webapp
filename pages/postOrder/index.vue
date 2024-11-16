@@ -44,6 +44,13 @@
       />
     </div>
     <OrderTypeSelector @changed="selectedOrderType = $event" />
+    <p class="font-semibold text-lg">Hochgeladene Bilder</p>
+    <input
+      type="file"
+      accept="image/png, image/jpeg, image/jpg"
+      multiple
+      @change="onFileChange"
+    />
     <p class="font-semibold text-lg">Eingetragene Positionen:</p>
     <template v-for="material in insertedPositions" :key="material.id">
       <div class="flex w-full space-x-2 items-center">
@@ -130,6 +137,8 @@ const showDeleteModal = ref(false);
 
 const route = useRoute();
 
+const files = ref<null | FileList>(null);
+
 const ordernumberRef = route.query.ordernumber as string | undefined;
 const kls_idRef = route.query.kls_id as string | undefined;
 const adressRef = route.query.adress as string | undefined;
@@ -172,6 +181,14 @@ if (!allPositions.value) {
   console.error(error.value);
 }
 
+const onFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+
+  if (target && target.files) {
+    files.value = target.files;
+  }
+};
+
 const possibleMaterials = ref<Material[]>(
   allPositions.value?.status === "success" && allPositions.value.data
     ? allPositions.value.data
@@ -211,6 +228,24 @@ function handleSave() {
     return;
   }
 
+  const formData = new FormData();
+  if (files.value && files.value.length > 0) {
+    for (let i = 0; i < files.value.length; i++) {
+      const file = files.value[i]; // Datei aus der Liste holen
+      console.log(`Hinzufügen von Datei: ${file.name}, Größe: ${file.size}`);
+      formData.append(`files[${i}]`, file); // Datei an FormData anhängen
+    }
+  } else {
+    console.error("Keine Dateien in files.value gefunden.");
+  }
+  console.log("Pictures:", files.value);
+
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value); // `value` zeigt die Datei oder den Wert an
+  }
+
+  // TODO komprimiere zu jpg
+
   $fetch("/api/orderComplete", {
     method: "POST",
     headers: {
@@ -224,6 +259,7 @@ function handleSave() {
         position_id: e.id,
         quantity: e.quantity,
       })),
+      pictures: formData,
     }),
   }).then((res) => {
     console.log(res);
