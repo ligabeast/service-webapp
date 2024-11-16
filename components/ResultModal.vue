@@ -93,14 +93,9 @@ function handleCopyWhatsapp() {
   const text = getWhatsappFormatt();
 
   // Moderne Clipboard API verwenden
-  navigator.clipboard
-    .writeText(text)
-    .then(() => {
-      alert("Text erfolgreich kopiert!");
-    })
-    .catch((err) => {
-      console.error("Fehler beim Kopieren in die Zwischenablage:", err);
-    });
+  navigator.clipboard.writeText(text).catch((err) => {
+    console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+  });
 }
 
 function handleCopyKasys() {
@@ -114,13 +109,8 @@ function handleCopyKasys() {
     })
     .join("; ");
 
-  navigator.clipboard
-    .writeText(text)
-    .then(() => {
-      alert("Text erfolgreich kopiert!");
-    })
-    .catch((err) => {
-      console.error("Fehler beim Kopieren in die Zwischenablage:", err);
-    });
+  navigator.clipboard.writeText(text).catch((err) => {
+    console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+  });
 }
 </script>
