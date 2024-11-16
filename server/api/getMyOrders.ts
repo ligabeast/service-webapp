@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     connection = await mysql.createConnection(dbConfig);
 
     const [rows] = await connection.execute(
-      "select id, adress, ordernumber, kls_id, user_id, status, dateCreated from sys.Orders where user_id = ? and hide = false order by dateCreated desc limit 10;",
+      "select id, adress, ordernumber, kls_id, user_id, status, dateCreated from sys.Orders where user_id = ? and hide = false order by dateCreated desc limit 200;",
       [userId]
     );
 
