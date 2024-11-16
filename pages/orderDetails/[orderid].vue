@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col space-y-2">
     <h1 class="font-semibold text-2xl p-4">Auftragsinformationen</h1>
+
+    <!-- Auftrag Details -->
     <div class="flex p-4 justify-between space-x-2">
       <div class="w-1/2 font-medium">Anschrift</div>
       <div class="w-[1px] border border-black"></div>
@@ -76,6 +78,21 @@
         </div>
       </div>
     </div>
+
+    <!-- Bilder ansehen -->
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Bilder</div>
+      <div class="w-[1px] border border-black"></div>
+      <a
+        v-if="pictures.length"
+        @click="openPictureModal"
+        class="w-1/2 cursor-pointer text-blue-600 font-semibold hover:text-blue-700 underline transition"
+        >{{ pictures.length }} Bilder hochgeladen</a
+      >
+      <span v-else class="w-1/2">Keine Bilder hochgeladen</span>
+    </div>
+
+    <!-- Buttons -->
     <div class="w-full flex items-center justify-center space-x-3 px-4">
       <button
         class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
@@ -97,13 +114,70 @@
         Zurück zum Hauptmenü
       </button>
     </NuxtLink>
+
+    <!-- Modal für Bilder -->
+    <div
+      v-if="showPictureModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg w-[90%] max-w-4xl p-4 space-y-4 relative">
+        <h2 class="text-xl font-bold">Bilder ansehen</h2>
+        <div class="flex items-center justify-between w-full">
+          <!-- Linker Button -->
+          <button
+            class="text-xl font-bold bg-gray-200 p-2 rounded-md flex-shrink-0"
+            @click="prevPicture"
+            :disabled="currentPictureIndex === 0"
+          >
+            &lt;
+          </button>
+
+          <!-- Bild -->
+          <div class="flex-grow flex items-center justify-center">
+            <img
+              :src="pictures[currentPictureIndex]?.path"
+              :alt="pictures[currentPictureIndex]?.original_name"
+              class="max-h-[60vh] max-w-full object-contain"
+            />
+          </div>
+
+          <!-- Rechter Button -->
+          <button
+            class="text-xl font-bold bg-gray-200 p-2 rounded-md flex-shrink-0"
+            @click="nextPicture"
+            :disabled="currentPictureIndex === pictures.length - 1"
+          >
+            &gt;
+          </button>
+        </div>
+        <div class="flex justify-center space-x-2">
+          <span
+            v-for="(picture, index) in pictures"
+            :key="picture.id"
+            :class="{
+              'bg-blue-500': currentPictureIndex === index,
+              'bg-gray-300': currentPictureIndex !== index,
+            }"
+            class="h-2 w-2 rounded-full cursor-pointer"
+            @click="setCurrentPicture(index)"
+          ></span>
+        </div>
+        <button
+          class="bg-red-500 text-white px-4 py-2 rounded-md w-full"
+          @click="closePictureModal"
+        >
+          Schließen
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
+import { ref, computed } from "vue";
 
-// Get the orderid from the route parameters
+// Route und Daten laden
 const route = useRoute();
 const orderid = route.params.orderid;
 
@@ -115,19 +189,46 @@ const timeFormatter = new Intl.DateTimeFormat("de-DE", {
   hour: "2-digit",
 });
 
+// Auftrag und Bilder abrufen
 const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
   headers: {
     Authorization: `Bearer ${useCookie("jwt").value}`,
   },
 });
 
-const orderStarted = ref<any | null>(data.data[0].orderCreated);
 const order = ref<any | null>(data.data[0]);
-const positions = computed(() => order.value?.positions);
+const pictures = ref<any[]>(data.data[0]?.pictures || []);
+const currentPictureIndex = ref(0);
+const showPictureModal = ref(false);
 
-console.log("Order catched: ", order.value);
-console.log("OrderStarted catched: ", orderStarted.value);
-console.log("Positions catched: ", order.value?.positions);
+// Bilder-Steuerung
+function openPictureModal() {
+  showPictureModal.value = true;
+}
+
+function closePictureModal() {
+  showPictureModal.value = false;
+}
+
+function nextPicture() {
+  if (currentPictureIndex.value < pictures.value.length - 1) {
+    currentPictureIndex.value++;
+  }
+}
+
+function prevPicture() {
+  if (currentPictureIndex.value > 0) {
+    currentPictureIndex.value--;
+  }
+}
+
+function setCurrentPicture(index: number) {
+  currentPictureIndex.value = index;
+}
+
+// Andere Logik (bereits vorhanden, z. B. für Positionen und Dauer)
+const positions = computed(() => order.value?.positions);
+const orderStarted = ref<any | null>(data.data[0]?.orderCreated);
 
 const formattedDuration = computed(() => {
   if (!orderStarted.value || !order.value) return null;
@@ -136,136 +237,29 @@ const formattedDuration = computed(() => {
   const end = new Date(order.value.dateCreated).getTime();
   const durationMs = end - start;
 
-  // Calculate hours and minutes
   const totalMinutes = Math.floor(durationMs / 1000 / 60);
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
-  // Format as hh:mm
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
     2,
     "0"
   )}`;
 });
 
-const whatsappResult = computed(() => {
-  const result = [];
-  if (
-    order.value.positions.filter(
-      (position: any) =>
-        position.position_name === "Gf-TA Connect Only" ||
-        position.position_name === "Connect mit Herstellen Ne4"
-    ).length > 0
-  ) {
-    result.push("Erledigt und inventarisiert");
-  } else if (
-    order.value.positions.filter(
-      (position: any) =>
-        position.position_name === "nicht erledigt - Connect Auftrag"
-    ).length > 0
-  ) {
-    result.push("Connect Nicht Erledigt");
-  } else if (
-    order.value.positions.filter(
-      (position: any) => position.position_name === "GWV Basic"
-    ).length > 0
-  ) {
-    result.push("GWV Erledigt");
-  } else if (
-    order.value.positions.filter(
-      (position: any) =>
-        position.position_name === "nicht erledigt - GWV Auftrag"
-    ).length > 0
-  ) {
-    result.push("GWV Nicht Erledigt");
-  }
-  // join by next line
-  return result.join("\n");
-});
-
 function handleCopyWhatsapp() {
-  const text = getWhatsappFormatt();
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    // Moderne Clipboard API verwenden
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("Text erfolgreich kopiert!");
-      })
-      .catch((err) => {
-        console.error("Fehler beim Kopieren in die Zwischenablage:", err);
-        fallbackCopyTextToClipboard(text);
-      });
-  } else {
-    // Fallback verwenden, wenn Clipboard API nicht unterstützt wird
-    fallbackCopyTextToClipboard(text);
-  }
-}
-
-function fallbackCopyTextToClipboard(text: string) {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-
-  // Textarea unsichtbar machen
-  textArea.style.position = "fixed";
-  textArea.style.top = "-9999px";
-  document.body.appendChild(textArea);
-
-  // Markiere den Text und kopiere ihn
-  textArea.focus();
-  textArea.select();
-
-  try {
-    const successful = document.execCommand("copy");
-    const msg = successful ? "erfolgreich" : "fehlgeschlagen";
-    console.log("Fallback: Kopieren war " + msg);
-    alert("Text erfolgreich kopiert!");
-  } catch (err) {
-    console.error("Fallback: Fehler beim Kopieren", err);
-  }
-
-  document.body.removeChild(textArea);
+  const text = `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}`;
+  navigator.clipboard.writeText(text).then(() => alert("Text kopiert!"));
 }
 
 function handleCopyKasys() {
   const text = order.value.positions
-    .map((position: any) => {
-      if (position.quantity) {
-        return position.quantity + " " + position.position_name;
-      } else {
-        return position.position_name;
-      }
-    })
+    .map((position: any) =>
+      position.quantity
+        ? `${position.quantity} ${position.position_name}`
+        : position.position_name
+    )
     .join("; ");
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("Text erfolgreich kopiert!");
-      })
-      .catch((err) => {
-        console.error("Fehler beim Kopieren in die Zwischenablage:", err);
-        fallbackCopyTextToClipboard(text);
-      });
-  } else {
-    fallbackCopyTextToClipboard(text);
-  }
-}
-
-function getWhatsappFormatt() {
-  return (
-    order.value.adress +
-    "\n" +
-    "Auftragsnummer" +
-    "\n" +
-    order.value.ordernumber +
-    "\n" +
-    "KLS-ID: " +
-    order.value.kls_id +
-    "\n" +
-    whatsappResult.value
-  );
+  navigator.clipboard.writeText(text).then(() => alert("Text kopiert!"));
 }
 </script>

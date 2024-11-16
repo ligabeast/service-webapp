@@ -11,7 +11,6 @@ const { data, error } = await useFetch("/api/db-check", {
     Authorization: `Bearer ${useCookie("jwt").value}`,
   },
 });
-console.log(data);
 
 const status = ref(data);
 </script>

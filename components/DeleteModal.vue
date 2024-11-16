@@ -43,7 +43,6 @@ function handleDelete() {
       Authorization: `Bearer ${useCookie("jwt").value}`,
     },
   }).then((res) => {
-    console.log(res);
     router.push({ name: "ongoingOrders" });
   });
 }

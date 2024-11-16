@@ -1,8 +1,6 @@
 import { defineEventHandler, readBody } from "h3";
 import mysql, { ResultSetHeader } from "mysql2/promise";
-import { promises as fs } from "fs";
-import path from "path";
-import { v4 as uuidv4 } from "uuid";
+import { Result } from "postcss";
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -12,9 +10,6 @@ const dbConfig = {
   port: parseInt(process.env.DB_PORT || "3306"),
 };
 
-// Set the directory to store uploaded images
-const uploadDir = path.resolve("uploads");
-
 export default defineEventHandler(async (event) => {
   let connection;
   const userId: any = event.context.userId;
@@ -22,12 +17,9 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    // Parse multipart form data
+    // Use readBody to handle POST requests where data is sent in the body
     const body = await readBody(event);
-
-    const { adress, ordernumber, kls_id, pictures } = body;
-
-    console.log("pictures", pictures);
+    const { adress, ordernumber, kls_id } = body;
 
     // Check if the order exists and is in 'started' status
     const [rows] = await connection.execute(
@@ -43,65 +35,14 @@ export default defineEventHandler(async (event) => {
     }
 
     // Insert Order
-    const [orderResult] = await connection.execute<ResultSetHeader>(
-      "INSERT INTO sys.Orders (adress, ordernumber, kls_id, user_id, status, dateCreated) VALUES (?, ?, ?, ?, ?, NOW());",
+    const [result] = await connection.execute<ResultSetHeader>(
+      "insert into sys.Orders (adress,ordernumber,kls_id,user_id,status,dateCreated) values (?,?,?,?,?,NOW());",
       [adress, ordernumber, kls_id, userId, "started"]
     );
-
-    const orderId = orderResult.insertId;
-
-    // Ensure the upload directory exists
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    // Process and save images
-    const pictureMetadata = [];
-
-    for (const picture of pictures) {
-      const { filename, filedata, mimetype } = picture;
-
-      // Validate file type (e.g., only allow JPEG/PNG)
-      if (!["image/jpeg", "image/png"].includes(mimetype)) {
-        return {
-          status: "error",
-          message: `Invalid file type for ${filename}`,
-        };
-      }
-
-      // Generate unique filename
-      const uniqueFilename = `${uuidv4()}_${filename}`;
-      const filePath = path.join(uploadDir, uniqueFilename);
-
-      // Save file locally
-      await fs.writeFile(filePath, filedata, "binary");
-
-      // Collect metadata for DB insertion
-      pictureMetadata.push({
-        orderId,
-        originalName: filename,
-        savedName: uniqueFilename,
-        mimeType: mimetype,
-        path: filePath,
-      });
-    }
-
-    // Insert picture metadata into the database
-    for (const metadata of pictureMetadata) {
-      await connection.execute(
-        "INSERT INTO sys.OrderPictures (order_id, original_name, saved_name, mime_type, path) VALUES (?, ?, ?, ?, ?);",
-        [
-          metadata.orderId,
-          metadata.originalName,
-          metadata.savedName,
-          metadata.mimeType,
-          metadata.path,
-        ]
-      );
-    }
-
     return {
       status: "success",
-      message: "Order and pictures saved successfully",
-      data: { orderId, pictureMetadata },
+      message: "Order completed successfully",
+      data: { orderid: result.insertId },
     };
   } catch (error: any) {
     return {

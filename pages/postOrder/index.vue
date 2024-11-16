@@ -229,42 +229,52 @@ function handleSave() {
   }
 
   const formData = new FormData();
+
+  // Dateien anhängen
   if (files.value && files.value.length > 0) {
     for (let i = 0; i < files.value.length; i++) {
-      const file = files.value[i]; // Datei aus der Liste holen
+      const file = files.value[i];
       console.log(`Hinzufügen von Datei: ${file.name}, Größe: ${file.size}`);
-      formData.append(`files[${i}]`, file); // Datei an FormData anhängen
+      formData.append("pictures", file); // Nutze "pictures" als Schlüssel
     }
   } else {
     console.error("Keine Dateien in files.value gefunden.");
   }
-  console.log("Pictures:", files.value);
 
+  // Weitere Felder anhängen
+  formData.append("ordernumber", ordernumber.value);
+  formData.append("orderid", orderid);
+  formData.append("orderType", selectedOrderType.value);
+  formData.append(
+    "positions",
+    JSON.stringify(
+      insertedPositions.value.map((e) => ({
+        position_id: e.id,
+        quantity: e.quantity,
+      }))
+    )
+  );
+
+  console.log("FormData-Inhalt:");
   for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value); // `value` zeigt die Datei oder den Wert an
+    console.log(`${key}:`, value);
   }
 
-  // TODO komprimiere zu jpg
-
+  // Anfrage senden
   $fetch("/api/orderComplete", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${useCookie("jwt").value}`,
+      // Kein "Content-Type", da $fetch dies bei FormData automatisch setzt
     },
-    body: JSON.stringify({
-      ordernumber: ordernumber.value,
-      orderid: orderid,
-      orderType: selectedOrderType.value,
-      positions: insertedPositions.value.map((e) => ({
-        position_id: e.id,
-        quantity: e.quantity,
-      })),
-      pictures: formData,
-    }),
-  }).then((res) => {
-    console.log(res);
-    showResultModal.value = true;
-  });
-  showResultModal.value = true;
+    body: formData, // FormData direkt senden
+  })
+    .then((res) => {
+      console.log("Antwort:", res);
+      showResultModal.value = true;
+    })
+    .catch((error) => {
+      console.error("Fehler beim Speichern:", error);
+    });
 }
 </script>

@@ -15,7 +15,6 @@ const { data, error } = await useFetch<OrderResponse>("/api/getMyOrders", {
     Authorization: `Bearer ${useCookie("jwt").value}`,
   },
 });
-console.log(data.value);
 
 const orders = ref(data.value?.data);
 </script>

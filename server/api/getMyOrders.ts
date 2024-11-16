@@ -13,8 +13,6 @@ export default defineEventHandler(async (event) => {
   let connection;
   const userId: any = event.context.userId;
 
-  console.log("userId", userId);
-
   try {
     connection = await mysql.createConnection(dbConfig);
 

@@ -31,17 +31,28 @@ export default defineEventHandler(async (event) => {
               )
           ) AS positions,
           (SELECT o2.dateCreated
-          FROM sys.Orders o2
-          WHERE o2.ordernumber = o.ordernumber
-          AND o2.status = 'started'
-          AND o2.id != o.id
-          LIMIT 1) AS orderCreated
+           FROM sys.Orders o2
+           WHERE o2.ordernumber = o.ordernumber
+           AND o2.status = 'started'
+           AND o2.id != o.id
+           LIMIT 1) AS orderCreated,
+          JSON_ARRAYAGG(
+              JSON_OBJECT(
+                  'id', op.id,
+                  'original_name', op.original_name,
+                  'saved_name', op.saved_name,
+                  'mime_type', op.mime_type,
+                  'path', CONCAT('/uploads/', op.path)
+              )
+          ) AS pictures
       FROM 
           sys.Orders o
-      JOIN 
+      LEFT JOIN 
           Position_To_Orders pto ON pto.order_id = o.id
-      JOIN 
+      LEFT JOIN 
           sys.Positions p ON p.id = pto.position_id
+      LEFT JOIN 
+          sys.OrderPictures op ON op.order_id = o.id
       WHERE 
           o.id = ?
           AND o.user_id = ?
