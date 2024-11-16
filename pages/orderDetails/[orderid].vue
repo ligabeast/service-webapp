@@ -84,7 +84,7 @@
       <div class="w-1/2 font-medium">Bilder</div>
       <div class="w-[1px] border border-black"></div>
       <a
-        v-if="pictures.length"
+        v-if="pictures.length && pictures.length > 0"
         @click="openPictureModal"
         class="w-1/2 cursor-pointer text-blue-600 font-semibold hover:text-blue-700 underline transition"
         >{{ pictures.length }} Bilder hochgeladen</a
