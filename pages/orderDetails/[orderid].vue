@@ -135,10 +135,12 @@
           <!-- Bild -->
           <div class="flex-grow flex items-center justify-center">
             <img
+              v-if="pictures[currentPictureIndex]?.path"
               :src="pictures[currentPictureIndex]?.path"
               :alt="pictures[currentPictureIndex]?.original_name"
               class="max-h-[60vh] max-w-full object-contain"
             />
+            <img v-else src="/no-image.png" alt="Kein Bild vorhanden" />
           </div>
 
           <!-- Rechter Button -->
