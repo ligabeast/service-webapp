@@ -108,7 +108,7 @@ export default defineEventHandler(async (event) => {
     }
 
     console.log("[DEBUG] Verarbeite Bilder...");
-    const baseDir = path.resolve(process.cwd(), "public/uploads"); // Nutze das aktuelle Arbeitsverzeichnis
+    const baseDir = "/root/service-webapp/public/uploads"; // Absoluter Pfad
     const uploadDir = path.join(baseDir, kls_id); // Zielverzeichnis basierend auf kls_id
     console.log("[DEBUG] Überprüfe Upload-Verzeichnis:", uploadDir);
 
