@@ -198,7 +198,7 @@ const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
 
 const order = ref<any | null>(data.data[0]);
 const pictures = ref<any[]>(data.data[0]?.pictures || []);
-console.log(pictures.value);
+console.log(JSON.stringify(pictures.value));
 const validPictures = computed(() =>
   pictures.value.filter(
     (picture: any) => picture && picture.id !== null && picture.path !== null
