@@ -140,7 +140,7 @@
               :alt="pictures[currentPictureIndex]?.original_name"
               class="max-h-[60vh] max-w-full object-contain"
             />
-            <img v-else src="/no-image.png" alt="Kein Bild vorhanden" />
+            <img v-else alt="Kein Bild vorhanden" />
           </div>
 
           <!-- Rechter Button -->
@@ -192,15 +192,15 @@ const timeFormatter = new Intl.DateTimeFormat("de-DE", {
 });
 
 // Auftrag und Bilder abrufen
-const data: any = await $fetch(/api/getOrder?orderid=${orderid}, {
+const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
   headers: {
-    Authorization: Bearer ${useCookie("jwt").value},
+    Authorization: `Bearer ${useCookie("jwt").value}`,
   },
 });
 
 const order = ref<any | null>(data.data[0]);
 const pictures = ref<any[]>(data.data[0]?.pictures || []);
-console.log(JSON.stringify(pictures.value));
+console.log(pictures.value);
 const validPictures = computed(() =>
   pictures.value.filter(
     (picture: any) => picture && picture.id !== null && picture.path !== null
@@ -249,10 +249,10 @@ const formattedDuration = computed(() => {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
-  return ${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
     2,
     "0"
-  )};
+  )}`;
 });
 
 function handleCopyWhatsapp() {
