@@ -84,10 +84,10 @@
       <div class="w-1/2 font-medium">Bilder</div>
       <div class="w-[1px] border border-black"></div>
       <a
-        v-if="pictures.length && pictures.length > 0"
+        v-if="validPictures.length && validPictures.length > 0"
         @click="openPictureModal"
         class="w-1/2 cursor-pointer text-blue-600 font-semibold hover:text-blue-700 underline transition"
-        >{{ pictures.length }} Bilder hochgeladen</a
+        >{{ validPictures.length }} Bilder hochgeladen</a
       >
       <span v-else class="w-1/2">Keine Bilder hochgeladen</span>
     </div>
@@ -198,6 +198,12 @@ const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
 
 const order = ref<any | null>(data.data[0]);
 const pictures = ref<any[]>(data.data[0]?.pictures || []);
+console.log(pictures.value);
+const validPictures = computed(() =>
+  pictures.value.filter(
+    (picture: any) => picture && picture.id !== null && picture.path !== null
+  )
+);
 const currentPictureIndex = ref(0);
 const showPictureModal = ref(false);
 
