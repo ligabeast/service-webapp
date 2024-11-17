@@ -81,7 +81,7 @@
               :alt="pictures[currentPictureIndex]?.original_name"
               class="max-h-[60vh] max-w-full object-contain"
             />
-            <img v-else src="/no-image.png" alt="Kein Bild vorhanden" />
+            <img v-else alt="Kein Bild vorhanden" />
           </div>
 
           <!-- Rechter Button -->
