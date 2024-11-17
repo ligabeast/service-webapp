@@ -35,6 +35,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+
+// Props
 const props = defineProps<{
   insertedPositions: any[];
   adress: string;
@@ -42,6 +45,7 @@ const props = defineProps<{
   kls_id: string;
 }>();
 
+// Computed für WhatsApp-Ergebnis
 const whatsappResult = computed(() => {
   const result = [];
   if (
@@ -70,10 +74,10 @@ const whatsappResult = computed(() => {
   ) {
     result.push("GWV Nicht Erledigt");
   }
-  // join by next line
   return result.join("\n");
 });
 
+// Generiere WhatsApp-Format
 function getWhatsappFormatt() {
   return (
     props.adress +
@@ -89,15 +93,13 @@ function getWhatsappFormatt() {
   );
 }
 
+// Kopieren für WhatsApp
 function handleCopyWhatsapp() {
   const text = getWhatsappFormatt();
-
-  // Moderne Clipboard API verwenden
-  navigator.clipboard.writeText(text).catch((err) => {
-    console.error("Fehler beim Kopieren in die Zwischenablage:", err);
-  });
+  copyToClipboard(text);
 }
 
+// Kopieren für Kasys
 function handleCopyKasys() {
   const text = props.insertedPositions
     .map((position) => {
@@ -108,9 +110,32 @@ function handleCopyKasys() {
       }
     })
     .join("; ");
+  copyToClipboard(text);
+}
 
-  navigator.clipboard.writeText(text).catch((err) => {
-    console.error("Fehler beim Kopieren in die Zwischenablage:", err);
-  });
+// Universelle Kopierfunktion
+function copyToClipboard(text: string) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    // Clipboard API
+    navigator.clipboard.writeText(text).catch((err) => {
+      console.error("Fehler beim Kopieren:", err);
+    });
+  } else {
+    // Fallback
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.top = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand("copy");
+    } catch (err) {
+      console.error("Fallback: Kopieren fehlgeschlagen", err);
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  }
 }
 </script>
