@@ -23,6 +23,12 @@ export default defineEventHandler(async (event) => {
       `
 SELECT 
     o.*,
+    (SELECT o2.dateCreated 
+    FROM sys.Orders o2
+           WHERE o2.ordernumber = o.ordernumber
+           AND o2.status = 'started'
+           AND o2.id != o.id
+           LIMIT 1) AS orderCreated,
     JSON_ARRAYAGG(
         JSON_OBJECT(
             'position_id', pto.position_id, 
