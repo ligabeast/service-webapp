@@ -42,77 +42,65 @@
         class="h-90 whitespace-pre-line w-1/2 font-semibold"
       ></div>
     </div>
-
-    <!-- Bilder ansehen -->
     <div class="flex p-4 justify-between space-x-2">
-      <div class="w-1/2 font-medium">Bilder</div>
+      <div class="w-1/2 font-medium">Auftragsanfang</div>
       <div class="w-[1px] border border-black"></div>
-      <a
-        v-if="validPictures.length && validPictures.length > 0"
-        @click="openPictureModal"
-        class="w-1/2 cursor-pointer text-blue-600 font-semibold hover:text-blue-700 underline transition"
-        >{{ validPictures.length }} Bilder hochgeladen</a
-      >
-      <span v-else class="w-1/2">Keine Bilder hochgeladen</span>
+      <div
+        v-if="orderStarted"
+        v-html="timeFormatter.format(new Date(orderStarted))"
+        class="h-90 whitespace-pre-line w-1/2"
+      ></div>
     </div>
-
-    <!-- Modal für Bilder -->
-    <div
-      v-if="showPictureModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white rounded-lg w-[90%] max-w-4xl p-4 space-y-4 relative">
-        <h2 class="text-xl font-bold">Bilder ansehen</h2>
-        <div class="flex items-center justify-between w-full">
-          <!-- Linker Button -->
-          <button
-            class="text-xl font-bold bg-gray-200 p-2 rounded-md flex-shrink-0"
-            @click="prevPicture"
-            :disabled="currentPictureIndex === 0"
-          >
-            &lt;
-          </button>
-
-          <!-- Bild -->
-          <div class="flex-grow flex items-center justify-center">
-            <img
-              v-if="pictures[currentPictureIndex]?.path"
-              :src="pictures[currentPictureIndex]?.path"
-              :alt="pictures[currentPictureIndex]?.original_name"
-              class="max-h-[60vh] max-w-full object-contain"
-            />
-            <img v-else alt="Kein Bild vorhanden" />
-          </div>
-
-          <!-- Rechter Button -->
-          <button
-            class="text-xl font-bold bg-gray-200 p-2 rounded-md flex-shrink-0"
-            @click="nextPicture"
-            :disabled="currentPictureIndex === pictures.length - 1"
-          >
-            &gt;
-          </button>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Auftragsabmeldung</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        v-if="order?.dateCreated"
+        v-html="timeFormatter.format(new Date(order?.dateCreated))"
+        class="h-90 whitespace-pre-line w-1/2"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Dauer</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2"
+        v-if="formattedDuration"
+        v-html="formattedDuration"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Positions</div>
+      <div class="w-[1px] border border-black"></div>
+      <div class="w-1/2">
+        <div v-for="position in positions">
+          {{ position.quantity ?? "" }} {{ position.position_name }}
         </div>
-        <div class="flex justify-center space-x-2">
-          <span
-            v-for="(picture, index) in pictures"
-            :key="picture.id"
-            :class="{
-              'bg-blue-500': currentPictureIndex === index,
-              'bg-gray-300': currentPictureIndex !== index,
-            }"
-            class="h-2 w-2 rounded-full cursor-pointer"
-            @click="setCurrentPicture(index)"
-          ></span>
-        </div>
-        <button
-          class="bg-red-500 text-white px-4 py-2 rounded-md w-full"
-          @click="closePictureModal"
-        >
-          Schließen
-        </button>
       </div>
     </div>
+
+    <!-- Buttons -->
+    <div class="w-full flex items-center justify-center space-x-3 px-4">
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+        @click="handleCopyWhatsapp"
+      >
+        Copy Whatsapp
+      </button>
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+        @click="handleCopyKasys"
+      >
+        Copy Kasys
+      </button>
+    </div>
+    <NuxtLink to="/home" class="flex w-full items-center justify-center">
+      <button
+        class="bg-blue-500 h-14 w-1/3 rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
+      >
+        Zurück zum Hauptmenü
+      </button>
+    </NuxtLink>
   </div>
 </template>
 
@@ -124,50 +112,41 @@ import { ref, computed } from "vue";
 const route = useRoute();
 const orderid = route.params.orderid;
 
-// Auftrag abrufen
+// Formatierer für Zeit
+const timeFormatter = new Intl.DateTimeFormat("de-DE", {
+  day: "2-digit",
+  year: "numeric",
+  month: "2-digit",
+  minute: "2-digit",
+  hour: "2-digit",
+});
+
+// Auftrag und Bilder abrufen
 const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
   headers: {
     Authorization: `Bearer ${useCookie("jwt").value}`,
   },
 });
-
 const order = ref<any | null>(data.data[0]);
-const pictures = ref<any[]>(data.data[0]?.pictures || []);
+const positions = computed(() => order.value?.positions);
+const orderStarted = ref<any | null>(data.data[0]?.orderCreated);
 
-// Computed Property für valide Bilder
-const validPictures = computed(() =>
-  pictures.value.filter(
-    (picture: any) => picture && picture.id !== null && picture.path !== null
-  )
-);
+const formattedDuration = computed(() => {
+  if (!orderStarted.value || !order.value) return null;
 
-const currentPictureIndex = ref(0);
-const showPictureModal = ref(false);
+  const start = new Date(orderStarted.value).getTime();
+  const end = new Date(order.value.dateCreated).getTime();
+  const durationMs = end - start;
 
-// Bilder-Steuerung
-function openPictureModal() {
-  showPictureModal.value = true;
-}
+  const totalMinutes = Math.floor(durationMs / 1000 / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
 
-function closePictureModal() {
-  showPictureModal.value = false;
-}
-
-function nextPicture() {
-  if (currentPictureIndex.value < pictures.value.length - 1) {
-    currentPictureIndex.value++;
-  }
-}
-
-function prevPicture() {
-  if (currentPictureIndex.value > 0) {
-    currentPictureIndex.value--;
-  }
-}
-
-function setCurrentPicture(index: number) {
-  currentPictureIndex.value = index;
-}
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    2,
+    "0"
+  )}`;
+});
 
 // Kopierlogik für WhatsApp
 function handleCopyWhatsapp() {
