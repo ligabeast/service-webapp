@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col space-y-2">
+  <div class="flex flex-col space-y-2 pb-4">
     <h1 class="font-semibold text-2xl p-4">Auftragsinformationen</h1>
 
     <!-- Auftrag Details -->
