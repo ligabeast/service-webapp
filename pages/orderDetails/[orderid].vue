@@ -137,10 +137,13 @@
             <img
               v-if="pictures[currentPictureIndex]?.path"
               :src="pictures[currentPictureIndex]?.path"
-              :alt="pictures[currentPictureIndex]?.original_name"
-              class="max-h-[60vh] max-w-full object-contain"
+              :alt="
+                pictures[currentPictureIndex]?.original_name ||
+                'Bildbeschreibung fehlt'
+              "
+              class="max-h-[60vh] max-w-full object-contain sm:max-h-[50vh] lg:max-h-[70vh]"
             />
-            <img v-else alt="Kein Bild vorhanden" />
+            <p v-else class="text-center text-gray-500">Kein Bild vorhanden</p>
           </div>
 
           <!-- Rechter Button -->
