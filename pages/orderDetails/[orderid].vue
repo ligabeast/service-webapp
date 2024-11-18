@@ -118,7 +118,7 @@
     <!-- Modal für Bilder -->
     <div
       v-if="showPictureModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 m-0"
     >
       <div class="bg-white rounded-lg w-[90%] max-w-4xl p-4 space-y-4 relative">
         <h2 class="text-xl font-bold">Bilder ansehen</h2>
@@ -190,6 +190,10 @@
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+}
+.fixed.inset-0 {
+  margin: 0;
+  padding: 0;
 }
 </style>
 
