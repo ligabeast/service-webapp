@@ -141,8 +141,9 @@
                 pictures[currentPictureIndex]?.original_name ||
                 'Bildbeschreibung fehlt'
               "
-              class="max-h-[60vh] max-w-full object-contain sm:max-h-[50vh] lg:max-h-[70vh]"
+              class="max-h-[60vh] max-w-full object-contain w-full h-auto"
             />
+
             <p v-else class="text-center text-gray-500">Kein Bild vorhanden</p>
           </div>
 
