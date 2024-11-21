@@ -28,14 +28,14 @@
         <input
           type="date"
           v-model="filters.startDate"
-          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1 bg-white"
+          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-white"
           placeholder="Startdatum"
         />
         <span class="text-gray-700"> bis zum </span>
         <input
           type="date"
           v-model="filters.endDate"
-          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1 bg-white"
+          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-white"
           placeholder="Enddatum"
         />
       </div>
@@ -73,6 +73,16 @@
     </div>
   </div>
 </template>
+
+<style>
+input[type="date"] {
+  appearance: none; /* Entfernt native Styles in mobilen Browsern */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 0.5rem; /* Stellt sicher, dass Padding nicht zu klein ist */
+  line-height: normal; /* Normalisiert die Höhe */
+}
+</style>
 
 <script lang="ts" setup>
 import { toRefs } from "vue";
