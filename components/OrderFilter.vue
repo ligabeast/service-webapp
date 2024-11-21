@@ -24,17 +24,18 @@
     <!-- Zeitraum -->
     <div>
       <label class="block text-sm font-medium text-gray-700">Zeitraum</label>
-      <div class="mt-1 grid grid-cols-2 gap-4">
+      <div class="flex space-x-2 items-center w-full">
         <input
           type="date"
           v-model="filters.startDate"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1"
+          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1 bg-white"
           placeholder="Startdatum"
         />
+        <span class="text-gray-700"> bis zum </span>
         <input
           type="date"
           v-model="filters.endDate"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1"
+          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1 bg-white"
           placeholder="Enddatum"
         />
       </div>
