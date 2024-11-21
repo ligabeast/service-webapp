@@ -261,7 +261,10 @@ function handleImageLoad() {
 }
 
 function handleImageError() {
-  console.error("Fehler beim Laden des Bildes:", pictures[currentPictureIndex]);
+  console.error("Fehler beim Laden des Bildes:");
+  console.error("pictures:", JSON.stringify(pictures.value));
+  console.error("currentPictureIndex:", currentPictureIndex.value);
+  console.error("currentPicture:", pictures.value[currentPictureIndex.value]);
 }
 
 function setCurrentPicture(index: number) {
