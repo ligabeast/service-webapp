@@ -260,11 +260,14 @@ function handleImageLoad() {
   console.log("Bild erfolgreich geladen:", pictures[currentPictureIndex]);
 }
 
-function handleImageError() {
+function handleImageError(event: Event) {
   console.error("Fehler beim Laden des Bildes:");
   console.error("pictures:", JSON.stringify(pictures.value));
   console.error("currentPictureIndex:", currentPictureIndex.value);
   console.error("currentPicture:", pictures.value[currentPictureIndex.value]);
+
+  const imgElement = event.target as HTMLImageElement;
+  console.error("Bild konnte nicht geladen werden:", imgElement.src);
 }
 
 function setCurrentPicture(index: number) {
