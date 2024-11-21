@@ -140,6 +140,12 @@ const nextPage = () => {
 };
 
 const fetchData = async () => {
+  // add 1 Tag to endDate to include the selected day
+  if (filters.value.endDate) {
+    const endDate = new Date(filters.value.endDate);
+    endDate.setDate(endDate.getDate() + 1);
+    filters.value.endDate = endDate.toISOString().split("T")[0];
+  }
   try {
     const data = await $fetch("/api/getMyOrders", {
       method: "GET", // GET-Methode für Query-Parameter

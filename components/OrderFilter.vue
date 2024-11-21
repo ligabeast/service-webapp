@@ -84,10 +84,6 @@ const emit = defineEmits(["applyFilters"]);
 const { filters } = toRefs(props);
 
 const applyFilters = () => {
-  // add 1 Tag to endDate to include the selected day
-  const endDate = new Date(filters.value.endDate);
-  endDate.setDate(endDate.getDate() + 1);
-  filters.value.endDate = endDate.toISOString().split("T")[0];
   emit("applyFilters", filters.value);
 };
 
