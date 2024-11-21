@@ -136,7 +136,7 @@
           <div class="flex-grow flex items-center justify-center">
             <img
               v-if="pictures[currentPictureIndex]?.path"
-              :src="pictures[currentPictureIndex]?.path"
+              :src="`${pictures[currentPictureIndex]?.path}?t=${Date.now()}`"
               :alt="
                 pictures[currentPictureIndex]?.original_name ||
                 'Bildbeschreibung fehlt'
