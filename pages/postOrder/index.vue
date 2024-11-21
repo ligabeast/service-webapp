@@ -226,7 +226,7 @@ function handleDeleteMaterial(material: Material) {
   });
 }
 
-function handleSave() {
+async function handleSave() {
   if (insertedPositions.value.length === 0) {
     console.log("Bitte fügen Sie Positionen hinzu");
     addNotification(
