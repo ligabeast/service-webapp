@@ -6,9 +6,9 @@
 
     <!-- Anzahl an Aufträgen pro Seite -->
     <div>
-      <label for="perPage" class="block text-sm font-medium text-gray-700"
-        >Aufträge pro Seite</label
-      >
+      <label for="perPage" class="block text-sm font-medium text-gray-700">
+        Aufträge pro Seite
+      </label>
       <select
         id="perPage"
         v-model="filters.perPage"
@@ -24,28 +24,52 @@
     <!-- Zeitraum -->
     <div>
       <label class="block text-sm font-medium text-gray-700">Zeitraum</label>
-      <div class="flex space-x-2 items-center w-full">
-        <input
-          type="date"
-          v-model="filters.startDate"
-          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-white"
-          placeholder="Startdatum"
-        />
-        <span class="text-gray-700"> bis zum </span>
-        <input
-          type="date"
-          v-model="filters.endDate"
-          class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-white"
-          placeholder="Enddatum"
-        />
+      <div>
+        <select
+          v-model="filters.timeRange"
+          @change="updateDateRange"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-1 bg-white"
+        >
+          <option value="last30">Letzte 30 Tage</option>
+          <option value="last90">Letzte 90 Tage</option>
+          <option value="custom">Benutzerdefiniert</option>
+        </select>
+        <div v-if="filters.timeRange === 'custom'" class="mt-2 flex space-x-2">
+          <input
+            type="date"
+            v-model="filters.startDate"
+            class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white"
+          />
+          <input
+            type="date"
+            v-model="filters.endDate"
+            class="block flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white"
+          />
+        </div>
       </div>
+    </div>
+
+    <!-- Auftragstyp -->
+    <div>
+      <label for="orderType" class="block text-sm font-medium text-gray-700">
+        Auftragstyp
+      </label>
+      <select
+        id="orderType"
+        v-model="filters.orderType"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white py-1"
+      >
+        <option value="all">Alle</option>
+        <option value="gwv">GWV</option>
+        <option value="connect">Connect</option>
+      </select>
     </div>
 
     <!-- Sortierung -->
     <div>
-      <label for="sort" class="block text-sm font-medium text-gray-700"
-        >Sortieren nach</label
-      >
+      <label for="sort" class="block text-sm font-medium text-gray-700">
+        Sortieren nach
+      </label>
       <select
         id="sort"
         v-model="filters.sort"
@@ -75,22 +99,59 @@
 </template>
 
 <script lang="ts" setup>
-import { toRefs } from "vue";
+import { toRefs, onMounted } from "vue";
 
-// Use `toRefs` to directly reference `props.filters`
-const props = defineProps<{ filters: any }>();
+// Props für die Filter-Initialisierung
+const props = defineProps<{
+  filters: {
+    perPage: number;
+    startDate: string | null;
+    endDate: string | null;
+    timeRange: string;
+    sort: string;
+    orderType: string;
+  };
+}>();
+
 const emit = defineEmits(["applyFilters"]);
 
 const { filters } = toRefs(props);
 
+// Funktionen
 const applyFilters = () => {
   emit("applyFilters", filters.value);
 };
 
 const resetFilters = () => {
   filters.value.perPage = 10;
+  filters.value.timeRange = "last30";
   filters.value.startDate = "";
   filters.value.endDate = "";
   filters.value.sort = "date-desc";
+  filters.value.orderType = "all";
+  updateDateRange();
 };
+
+const updateDateRange = () => {
+  const now = new Date();
+  if (filters.value.timeRange === "last30") {
+    filters.value.startDate = new Date(now.setDate(now.getDate() - 30))
+      .toISOString()
+      .split("T")[0];
+    filters.value.endDate = new Date().toISOString().split("T")[0];
+  } else if (filters.value.timeRange === "last90") {
+    filters.value.startDate = new Date(now.setDate(now.getDate() - 90))
+      .toISOString()
+      .split("T")[0];
+    filters.value.endDate = new Date().toISOString().split("T")[0];
+  } else if (filters.value.timeRange === "custom") {
+    filters.value.startDate = null;
+    filters.value.endDate = null;
+  }
+};
+
+// Set defaults on mount
+onMounted(() => {
+  resetFilters();
+});
 </script>

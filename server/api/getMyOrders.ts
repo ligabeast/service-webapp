@@ -20,9 +20,10 @@ export default defineEventHandler(async (event) => {
   const sort = query.sort || "date-desc";
   const startDate = query.startDate || "";
   const endDate = query.endDate || "";
+  const orderType = query.orderType || "all"; // Standardwert: "all"
 
   let sql = `
-    SELECT id, adress, ordernumber, kls_id, user_id, status, dateCreated
+    SELECT id, adress, ordernumber, kls_id, user_id, status, dateCreated, orderType
     FROM sys.Orders
     WHERE user_id = ? AND hide = false
   `;
@@ -38,6 +39,12 @@ export default defineEventHandler(async (event) => {
   if (endDate) {
     sql += " AND dateCreated <= ?";
     params.push(endDate);
+  }
+
+  // Auftragstyp-Filter
+  if (orderType !== "all") {
+    sql += " AND orderType = ?";
+    params.push(orderType);
   }
 
   // Sortierung
@@ -64,14 +71,14 @@ export default defineEventHandler(async (event) => {
       WHERE user_id = ? AND hide = false
       ${startDate ? "AND dateCreated >= ?" : ""}
       ${endDate ? "AND dateCreated <= ?" : ""}
+      ${orderType !== "all" ? "AND orderType = ?" : ""}
     `,
-      startDate && endDate
-        ? [userId, startDate, endDate]
-        : startDate
-        ? [userId, startDate]
-        : endDate
-        ? [userId, endDate]
-        : [userId]
+      [
+        userId,
+        ...(startDate ? [startDate] : []),
+        ...(endDate ? [endDate] : []),
+        ...(orderType !== "all" ? [orderType] : []),
+      ]
     );
 
     const totalCount = totalResult[0]?.total || 0;
