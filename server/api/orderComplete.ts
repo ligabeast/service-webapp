@@ -68,6 +68,14 @@ export default defineEventHandler(async (event) => {
       };
     }
 
+    if (rows.length > 1) {
+      console.error("[ERROR] Mehrere Bestellungen gefunden.");
+      return {
+        status: "error",
+        message: "Multiple orders found",
+      };
+    }
+
     console.log("[DEBUG] Verberge ursprüngliche Bestellung...");
     await connection.execute(
       "UPDATE sys.Orders SET hide = true WHERE id = ?;",
