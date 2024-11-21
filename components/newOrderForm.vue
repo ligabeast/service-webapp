@@ -32,6 +32,8 @@
 </template>
 
 <script setup lang="ts">
+import { addNotification } from "~/notification.ts";
+
 const adress = ref<string>("");
 const kls_id = ref<string>("");
 const ordernumber = ref<string>("");
@@ -41,7 +43,7 @@ function handleSave() {
     console.log("Bitte füllen Sie alle Felder aus");
     return;
   }
-  useFetch("/api/orderCreate", {
+  $fetch("/api/orderCreate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -54,8 +56,10 @@ function handleSave() {
     }),
   })
     .then((res) => {
-      if (res.data.value?.status === "success") {
+      addNotification(res.message, res.status, 5000);
+      if (res.status === "success") {
         console.log("Order created successfully");
+
         // Reset the form fields
         ordernumber.value = "";
         kls_id.value = "";

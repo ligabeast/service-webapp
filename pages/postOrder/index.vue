@@ -25,6 +25,7 @@
       v-model="adress"
       id="anschrift"
       class="border border-black rounded-sm h-20"
+      disabled
     ></textarea>
 
     <div class="flex space-x-3">
@@ -33,6 +34,7 @@
         v-model="ordernumber"
         type="text"
         class="w-full border border-black rounded-sm"
+        disabled
       />
     </div>
     <div class="flex space-x-3">
@@ -41,6 +43,7 @@
         type="text"
         v-model="kls_id"
         class="w-full border border-black rounded-sm"
+        disabled
       />
     </div>
     <OrderTypeSelector @changed="selectedOrderType = $event" />
@@ -130,6 +133,7 @@
 
 <script setup lang="ts">
 import type { MaterialResponse, Material } from "~/types";
+import { addNotification } from "~/notification.ts";
 
 const selectedOrderType = ref<string>("Connect");
 
@@ -270,6 +274,7 @@ function handleSave() {
     body: formData, // FormData direkt senden
   })
     .then((res) => {
+      addNotification(res.message, res.status, 5000);
       console.log("Antwort:", res);
       showResultModal.value = true;
     })

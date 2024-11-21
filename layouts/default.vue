@@ -2,6 +2,9 @@
   <div class="flex flex-col items-center font-[mulish] h-dvh w-dvw">
     <div class="w-full h-full overflow-y-auto overflow-x-hidden">
       <slot></slot>
+      <ClientOnly>
+        <NotificationContainer />
+      </ClientOnly>
     </div>
     <div
       class="h-20 w-full flex justify-between items-center bg-[#555D50] px-8"
