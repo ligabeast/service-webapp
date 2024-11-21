@@ -24,7 +24,7 @@
     <textarea
       v-model="adress"
       id="anschrift"
-      class="border border-black rounded-sm h-20"
+      class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
       disabled
     ></textarea>
 
@@ -117,13 +117,13 @@
       </button>
     </div>
     <button
-      class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-blue-600 hover:scale-105 transition"
+      class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-blue-600 hover:scale-105 transition min-h-10"
       @click="handleSave"
     >
       Speichern
     </button>
     <button
-      class="w-full h-12 bg-gray-400 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-gray-500 hover:scale-105 transition"
+      class="w-full h-12 bg-gray-400 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-gray-500 hover:scale-105 transition min-h-10"
       @click="showDeleteModal = true"
     >
       Löschen
