@@ -257,14 +257,11 @@ function prevPicture() {
 }
 
 function handleImageLoad() {
-  console.log("Bild erfolgreich geladen:", pictures[currentPictureIndex]?.path);
+  console.log("Bild erfolgreich geladen:", pictures[currentPictureIndex]);
 }
 
 function handleImageError() {
-  console.error(
-    "Fehler beim Laden des Bildes:",
-    pictures[currentPictureIndex]?.path
-  );
+  console.error("Fehler beim Laden des Bildes:", pictures[currentPictureIndex]);
 }
 
 function setCurrentPicture(index: number) {
