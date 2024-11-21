@@ -138,16 +138,6 @@ export default defineEventHandler(async (event) => {
           };
         }
 
-        // entferne Dateiendung
-        picture.originalFilename = picture.originalFilename.replace(
-          /\.[^/.]+$/,
-          ""
-        );
-
-        // füge Dateiendung hinzu
-        picture.originalFilename =
-          picture.originalFilename + "." + picture.mime_type.split("/")[1];
-
         // Generiere eindeutigen Dateinamen
         const uniqueFilename = `${uuidv4()}_${picture.originalFilename}`;
         const absoluteFilePath = path.join(uploadDir, uniqueFilename);
