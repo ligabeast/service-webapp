@@ -142,6 +142,8 @@
                 'Bildbeschreibung fehlt'
               "
               @click="openFullscreen(pictures[currentPictureIndex]?.path)"
+              @load="handleImageLoad"
+              @error="handleImageError"
               class="max-h-[60vh] max-w-full object-contain w-full h-auto"
             />
 
@@ -252,6 +254,19 @@ function prevPicture() {
   if (currentPictureIndex.value > 0) {
     currentPictureIndex.value--;
   }
+}
+
+function handleImageLoad() {
+  imageLoaded.value = true;
+  console.log("Bild erfolgreich geladen:", pictures[currentPictureIndex]?.path);
+}
+
+function handleImageError() {
+  imageError.value = true;
+  console.error(
+    "Fehler beim Laden des Bildes:",
+    pictures[currentPictureIndex]?.path
+  );
 }
 
 function setCurrentPicture(index: number) {
