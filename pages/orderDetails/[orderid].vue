@@ -228,6 +228,8 @@ const validPictures = computed(() =>
     (picture: any) => picture && picture.id !== null && picture.path !== null
   )
 );
+
+console.log(JSON.stringify(pictures.value));
 const currentPictureIndex = ref(0);
 const showPictureModal = ref(false);
 
