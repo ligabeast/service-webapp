@@ -282,7 +282,9 @@ async function handleSave() {
     .then((res) => {
       addNotification(res.message, res.status, 5000);
       console.log("Antwort:", res);
-      showResultModal.value = true;
+      if (res.status === "success") {
+        showResultModal.value = true;
+      }
     })
     .catch((error) => {
       console.error("Fehler beim Speichern:", error);
