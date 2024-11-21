@@ -257,12 +257,10 @@ function prevPicture() {
 }
 
 function handleImageLoad() {
-  imageLoaded.value = true;
   console.log("Bild erfolgreich geladen:", pictures[currentPictureIndex]?.path);
 }
 
 function handleImageError() {
-  imageError.value = true;
   console.error(
     "Fehler beim Laden des Bildes:",
     pictures[currentPictureIndex]?.path
