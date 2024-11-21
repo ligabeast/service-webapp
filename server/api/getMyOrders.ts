@@ -16,10 +16,7 @@ export default defineEventHandler(async (event) => {
   const query = await getQuery(event);
   const perPage = parseInt(query.perPage || "10", 10);
   const currentPage = parseInt(query.currentPage || "1", 10);
-  console.log("currentPage", currentPage);
-  console.log("perPage", perPage);
   const offset = (currentPage - 1) * perPage;
-  console.log("offset", offset);
   const sort = query.sort || "date-desc";
   const startDate = query.startDate || "";
   const endDate = query.endDate || "";
