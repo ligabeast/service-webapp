@@ -229,6 +229,11 @@ function handleDeleteMaterial(material: Material) {
 function handleSave() {
   if (insertedPositions.value.length === 0) {
     console.log("Bitte fügen Sie Positionen hinzu");
+    addNotification(
+      "Bitte fügen Sie mindestens eine Position hinzu",
+      "error",
+      5000
+    );
     return;
   }
 
