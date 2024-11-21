@@ -74,16 +74,6 @@
   </div>
 </template>
 
-<style>
-input[type="date"] {
-  appearance: none; /* Entfernt native Styles in mobilen Browsern */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding: 0.5rem; /* Stellt sicher, dass Padding nicht zu klein ist */
-  line-height: normal; /* Normalisiert die Höhe */
-}
-</style>
-
 <script lang="ts" setup>
 import { toRefs } from "vue";
 
