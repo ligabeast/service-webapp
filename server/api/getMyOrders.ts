@@ -56,9 +56,6 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    console.log("SQL Query:", sql);
-    console.log("Parameters:", params);
-
     // SQL-Abfrage für die paginierten Ergebnisse
     const [rows] = await connection.execute(sql, params);
 

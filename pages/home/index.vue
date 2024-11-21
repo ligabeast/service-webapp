@@ -55,7 +55,10 @@
     </template>
 
     <!-- Pagination -->
-    <div class="w-full flex items-center justify-center">
+    <div
+      class="w-full flex items-center justify-center"
+      v-if="orders && orders.length > 0"
+    >
       <div class="flex items-center space-x-2">
         <!-- Zurück-Button -->
         <button

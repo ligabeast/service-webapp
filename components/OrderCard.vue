@@ -15,7 +15,7 @@
     }"
   >
     <button
-      class="border border-black rounded-sm flex justify-between p-4 w-full space-x-3 hover:bg-gray-300 hover:scale-105 transition"
+      class="border border-black rounded-sm flex justify-between p-4 w-full h-28 space-x-3 hover:bg-gray-300 hover:scale-105 transition"
     >
       <div class="h-full w-full flex flex-col space-y-2 text-left">
         <div class="whitespace-pre-wrap" v-html="order.adress"></div>
