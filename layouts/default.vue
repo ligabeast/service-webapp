@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center font-[mulish] h-dvh w-dvw">
-    <div class="w-full h-full overflow-auto">
+    <div class="w-full h-full overflow-y-auto overflow-x-hidden">
       <slot></slot>
     </div>
     <div
