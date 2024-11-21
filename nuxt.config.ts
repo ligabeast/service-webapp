@@ -17,6 +17,7 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
 
   modules: [
+    "nuxt-highcharts",
     [
       "@nuxtjs/google-fonts",
       {

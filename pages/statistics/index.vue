@@ -5,7 +5,7 @@
 
       <!-- Trigger für den Filter (optional) -->
       <button
-        class="w-12 h-12 h rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition"
+        class="w-12 h-12 rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition"
         @click="showFilters = !showFilters"
       >
         <svg
@@ -54,15 +54,18 @@
       />
     </transition>
 
-    <!-- Platz für Statistiken -->
+    <!-- Platz für Highcharts -->
     <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
-      <p>Hier kommen die Statistiken...</p>
+      <highchart
+        :options="chartOptions"
+        :update="['options.title', 'options.series']"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, defineAsyncComponent } from "vue";
 
 // Daten und Logik
 const showFilters = ref(false);
@@ -80,6 +83,42 @@ const handleApplyFilters = (appliedFilters: typeof filters.value) => {
   filters.value = appliedFilters;
   console.log("Filter angewendet:", filters.value);
 };
+
+// HighchartsVue dynamisch laden (nur clientseitig)
+const HighchartsVue = defineAsyncComponent(() =>
+  import("highcharts-vue").then((module) => module.default)
+);
+
+// Beispiel-Daten für Highcharts
+const chartOptions = ref({
+  chart: {
+    type: "line", // Diagrammtyp: Säulendiagramm
+  },
+  credits: {
+    enabled: false,
+  },
+  title: {
+    text: "Auftragseingänge in den letzten 7 Tagen",
+  },
+  xAxis: {
+    categories: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"], // Beispiel-Kategorien
+    title: {
+      text: "Wochentage",
+    },
+  },
+  yAxis: {
+    min: 0,
+    title: {
+      text: "Anzahl der Aufträge",
+    },
+  },
+  series: [
+    {
+      name: "Aufträge",
+      data: [5, 7, 3, 8, 6, 10, 4], // Beispiel-Daten für die Woche
+    },
+  ],
+});
 </script>
 
 <style scoped>
