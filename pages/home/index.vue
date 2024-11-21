@@ -116,14 +116,12 @@ const filters = ref({
 });
 const currentPage = ref(1);
 
-loading.value = true;
 const { data, error } = await useFetch<OrderResponse>("/api/getMyOrders", {
   headers: {
     Authorization: `Bearer ${useCookie("jwt").value}`,
   },
   query: { ...filters.value, currentPage: currentPage.value },
 });
-loading.value = false;
 const orders = ref(data.value?.data);
 const totalPages = ref(data.value?.pagination?.totalPages);
 
@@ -143,7 +141,6 @@ const nextPage = () => {
 
 const fetchData = async () => {
   try {
-    loading.value = true;
     const data = await $fetch("/api/getMyOrders", {
       method: "GET", // GET-Methode für Query-Parameter
       headers: {
@@ -159,7 +156,6 @@ const fetchData = async () => {
     showFilter.value = false;
     orders.value = data?.data || [];
     totalPages.value = data?.pagination?.totalPages || 1;
-    loading.value = false;
     console.log("Aufträge geladen:", orders.value);
   } catch (error) {
     console.error("Fehler beim Laden der Aufträge:", error);
