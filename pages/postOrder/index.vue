@@ -244,7 +244,8 @@ function handleSave() {
     for (let i = 0; i < files.value.length; i++) {
       const file = files.value[i];
       console.log(`Hinzufügen von Datei: ${file.name}, Größe: ${file.size}`);
-      formData.append("pictures", file); // Nutze "pictures" als Schlüssel
+      const compressedFile = await compressImage(file, 0.7);
+      formData.append("pictures", compressedFile);
     }
   } else {
     console.error("Keine Dateien in files.value gefunden.");
@@ -286,5 +287,54 @@ function handleSave() {
     .catch((error) => {
       console.error("Fehler beim Speichern:", error);
     });
+}
+
+async function compressImage(file: File, quality: number = 0.8): Promise<File> {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith("image/")) {
+      return reject(new Error("Datei ist kein Bild"));
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+          return reject(new Error("Canvas konnte nicht erstellt werden."));
+        }
+
+        // Größe des Bildes setzen
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Bild in JPEG umwandeln und komprimieren
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            } else {
+              reject(new Error("Fehler bei der Bildkomprimierung."));
+            }
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = (err) => reject(err);
+      img.src = event.target?.result as string;
+    };
+
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
 }
 </script>
