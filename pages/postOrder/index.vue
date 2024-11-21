@@ -316,7 +316,17 @@ async function compressImage(file: File, quality: number = 0.8): Promise<File> {
         canvas.toBlob(
           (blob) => {
             if (blob) {
-              const compressedFile = new File([blob], file.name, {
+              // Ursprünglichen Namen ohne Endung extrahieren
+              const originalNameWithoutExtension = file.name
+                .split(".")
+                .slice(0, -1)
+                .join(".");
+
+              // Neuen Dateinamen mit .jpg-Endung erstellen
+              const newName = `${originalNameWithoutExtension}.jpg`;
+
+              // Komprimiertes File-Objekt erstellen
+              const compressedFile = new File([blob], newName, {
                 type: "image/jpeg",
                 lastModified: Date.now(),
               });
