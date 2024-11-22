@@ -1,6 +1,7 @@
 <template>
   <div
     class="rounded-md border border-gray-300 p-4 space-y-4 shadow-md bg-gray-200"
+    v-if="props.show"
   >
     <h2 class="text-lg font-semibold text-gray-700">Filter</h2>
 
@@ -66,7 +67,7 @@
     </div>
 
     <!-- Sortierung -->
-    <div>
+    <div v-if="props.pagination">
       <label for="sort" class="block text-sm font-medium text-gray-700">
         Sortieren nach
       </label>
@@ -103,13 +104,14 @@ import { toRefs, onMounted } from "vue";
 
 // Props für die Filter-Initialisierung
 const props = defineProps<{
+  show: boolean;
   pagination: boolean;
   filters: {
-    perPage: number;
+    perPage?: number;
     startDate: string | null;
     endDate: string | null;
     timeRange: string;
-    sort: string;
+    sort?: string;
     orderType: string;
   };
 }>();
@@ -120,6 +122,11 @@ const { filters } = toRefs(props);
 
 // Funktionen
 const applyFilters = () => {
+  // emit only the props that were given
+  if (!props.pagination) {
+    filters.value.perPage = undefined;
+    filters.value.sort = undefined;
+  }
   emit("applyFilters", filters.value);
 };
 

@@ -48,7 +48,7 @@
         <OrderFilter
           :pagination="true"
           :filters="filters"
-          v-if="showFilter"
+          :show="showFilter"
           @applyFilters="handleFiltersChanged"
         />
       </transition>

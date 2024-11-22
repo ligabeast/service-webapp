@@ -48,7 +48,7 @@
     <!-- Transition für das Reinsliden -->
     <transition name="top-to-bottom" mode="out-in">
       <OrderFilter
-        v-if="showFilters"
+        :show="showFilters"
         :pagination="false"
         :filters="filters"
         @applyFilters="handleApplyFilters"
@@ -75,22 +75,29 @@ const showFilters = ref(false);
 
 const filters = ref({
   timeRange: "last30",
-  startDate: null,
-  endDate: null,
-  status: null,
-  orderType: null,
-  hide: false,
+  // Today - 30 as start date e.g 2024-11-22
+  startDate: new Date(new Date().setDate(new Date().getDate() - 30))
+    .toISOString()
+    .split("T")[0],
+  // Today + 1 as end date
+  endDate: new Date(new Date().setDate(new Date().getDate() + 1))
+    .toISOString()
+    .split("T")[0],
+  orderType: "all",
 });
 
 const handleApplyFilters = (appliedFilters: typeof filters.value) => {
   filters.value = appliedFilters;
   console.log("Filter angewendet:", filters.value);
+  showFilters.value = false;
+  fetchData();
 };
 
 const chartOptions1 = ref(null);
 const ordersData = ref(null);
 
 const fetchData = async () => {
+  chartOptions1.value = null;
   $fetch("/api/getStatistics", {
     method: "GET",
     headers: {

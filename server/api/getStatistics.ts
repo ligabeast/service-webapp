@@ -16,21 +16,49 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    // SQL-Abfrage für Aufträge pro Tag
-    const sql1 = `
+    // Filter aus der Query lesen
+    const query = getQuery(event);
+    const timeRange = query.timeRange || "last30";
+    const startDate = query.startDate || null;
+    const endDate = query.endDate || null;
+    const orderType = query.orderType || null; // Auftragstyp (z. B. "gwv" oder "connect")
+
+    // Dynamische SQL-Abfrage mit Filtern
+    let sql = `
       SELECT DATE(dateCreated) AS orderDate, COUNT(*) AS orderCount
       FROM sys.Orders
-      WHERE hide = false and status = 'completed' and user_id = ?
+      WHERE user_id = ? AND status = "completed"
+    `;
+    const params: any[] = [userId];
+
+    // Auftragstyp-Filter hinzufügen
+    if (orderType && orderType !== "all") {
+      sql += " AND orderType = ?";
+      params.push(orderType);
+    }
+
+    // Zeitraum-Filter
+    if (startDate) {
+      sql += " AND DATE(dateCreated) >= ?";
+      params.push(startDate);
+    }
+    if (endDate) {
+      sql += " AND DATE(dateCreated) <= ?";
+      params.push(endDate);
+    }
+
+    // Gruppieren nach Datum und Sortieren
+    sql += `
       GROUP BY DATE(dateCreated)
       ORDER BY orderDate ASC;
     `;
 
-    const [rows1] = await connection.query(sql1, [userId]);
+    const [rows] = await connection.query(sql, params);
 
     return {
       status: "success",
       message: "Orders per day retrieved successfully",
-      data: rows1,
+      data: rows,
     };
   } catch (error: any) {
     console.error("Error fetching orders per day:", error);
