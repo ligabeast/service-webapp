@@ -46,6 +46,7 @@
       </div>
       <transition name="top-to-bottom" mode="out-in">
         <OrderFilter
+          :pagination="true"
           :filters="filters"
           v-if="showFilter"
           @applyFilters="handleFiltersChanged"

@@ -49,6 +49,7 @@
     <transition name="top-to-bottom" mode="out-in">
       <OrderFilter
         v-if="showFilters"
+        :pagination="false"
         :filters="filters"
         @applyFilters="handleApplyFilters"
       />
@@ -56,8 +57,10 @@
 
     <!-- Platz für Highcharts -->
     <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
+      <!-- Anzahl an Aufträgen pro Tag -->
       <highchart
-        :options="chartOptions"
+        v-if="chartOptions1 != null"
+        :options="chartOptions1"
         :update="['options.title', 'options.series']"
       />
     </div>
@@ -65,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineAsyncComponent } from "vue";
+import { addNotification } from "~/notification.ts";
 
 // Daten und Logik
 const showFilters = ref(false);
@@ -84,41 +87,68 @@ const handleApplyFilters = (appliedFilters: typeof filters.value) => {
   console.log("Filter angewendet:", filters.value);
 };
 
-// HighchartsVue dynamisch laden (nur clientseitig)
-const HighchartsVue = defineAsyncComponent(() =>
-  import("highcharts-vue").then((module) => module.default)
-);
+const chartOptions1 = ref(null);
+const ordersData = ref(null);
 
-// Beispiel-Daten für Highcharts
-const chartOptions = ref({
-  chart: {
-    type: "line", // Diagrammtyp: Säulendiagramm
-  },
-  credits: {
-    enabled: false,
-  },
-  title: {
-    text: "Auftragseingänge in den letzten 7 Tagen",
-  },
-  xAxis: {
-    categories: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"], // Beispiel-Kategorien
+const fetchData = async () => {
+  $fetch("/api/getStatistics", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${useCookie("jwt").value}`,
+    },
+    query: filters.value,
+  })
+    .then((data) => {
+      console.log("Statistiken geladen:", data);
+      ordersData.value = data.data;
+      initializeCharts();
+      addNotification("Statistiken erfolgreich geladen.", "success", 5000);
+    })
+    .catch((error) => {
+      console.error("Fehler beim Laden der Statistiken:", error);
+    });
+};
+
+const initializeCharts = () => {
+  if (!ordersData.value) {
+    addNotification("error", "Keine Daten für die Statistiken gefunden.", 5000);
+    return;
+  }
+  const categories = ordersData.value.map((order) =>
+    new Date(order.orderDate).toLocaleDateString("de-DE")
+  );
+  console.log("Kategorien:", categories);
+
+  const values = ordersData.value.map((order) => order.orderCount);
+  console.log("Werte:", values);
+
+  chartOptions1.value = {
+    chart: {
+      type: "line",
+    },
+    credits: {
+      enabled: false,
+    },
     title: {
-      text: "Wochentage",
+      text: "Anzahl an Aufträgen pro Tag",
     },
-  },
-  yAxis: {
-    min: 0,
-    title: {
-      text: "Anzahl der Aufträge",
+    xAxis: {
+      categories,
     },
-  },
-  series: [
-    {
-      name: "Aufträge",
-      data: [5, 7, 3, 8, 6, 10, 4], // Beispiel-Daten für die Woche
+    yAxis: {
+      title: {
+        text: "Anzahl an Aufträgen",
+      },
     },
-  ],
-});
+    series: [
+      {
+        name: "Aufträge",
+        data: values,
+      },
+    ],
+  };
+};
+fetchData();
 </script>
 
 <style scoped>

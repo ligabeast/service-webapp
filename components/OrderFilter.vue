@@ -5,7 +5,7 @@
     <h2 class="text-lg font-semibold text-gray-700">Filter</h2>
 
     <!-- Anzahl an Aufträgen pro Seite -->
-    <div>
+    <div v-if="props.pagination">
       <label for="perPage" class="block text-sm font-medium text-gray-700">
         Aufträge pro Seite
       </label>
@@ -103,6 +103,7 @@ import { toRefs, onMounted } from "vue";
 
 // Props für die Filter-Initialisierung
 const props = defineProps<{
+  pagination: boolean;
   filters: {
     perPage: number;
     startDate: string | null;
