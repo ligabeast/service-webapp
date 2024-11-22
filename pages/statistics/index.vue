@@ -55,12 +55,41 @@
       />
     </transition>
 
-    <!-- Platz für Highcharts -->
+    <!-- Anzahl an Aufträgen pro Tag -->
     <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
-      <!-- Anzahl an Aufträgen pro Tag -->
       <highchart
         v-if="chartOptions1 != null"
         :options="chartOptions1"
+        :update="['options.title', 'options.series']"
+      />
+    </div>
+
+    <!-- Auftragstyp-Verteilung -->
+    <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
+      <highchart
+        v-if="chartOptions2 != null"
+        :options="chartOptions2"
+        :update="['options.title', 'options.series']"
+      />
+    </div>
+
+    <!-- Positions-Verteilung -->
+    <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
+      <div class="flex justify-end mb-2">
+        <button
+          @click="toggleChart3View"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        >
+          {{
+            chart3View === "dynamic"
+              ? "Statische Positionen anzeigen"
+              : "Dynamische Positionen anzeigen"
+          }}
+        </button>
+      </div>
+      <highchart
+        v-if="chartOptions3 != null"
+        :options="chartOptions3"
         :update="['options.title', 'options.series']"
       />
     </div>
@@ -68,23 +97,28 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import { addNotification } from "~/notification.ts";
 
 // Daten und Logik
 const showFilters = ref(false);
+const chart3View = ref("dynamic"); // Standardansicht: Dynamische Positionen
 
 const filters = ref({
   timeRange: "last30",
-  // Today - 30 as start date e.g 2024-11-22
   startDate: new Date(new Date().setDate(new Date().getDate() - 30))
     .toISOString()
     .split("T")[0],
-  // Today + 1 as end date
   endDate: new Date(new Date().setDate(new Date().getDate() + 1))
     .toISOString()
     .split("T")[0],
   orderType: "all",
 });
+
+const chartOptions1 = ref(null);
+const chartOptions2 = ref(null);
+const chartOptions3 = ref(null); // Positionsverteilung
+const ordersData = ref(null);
 
 const handleApplyFilters = (appliedFilters: typeof filters.value) => {
   filters.value = appliedFilters;
@@ -93,11 +127,15 @@ const handleApplyFilters = (appliedFilters: typeof filters.value) => {
   fetchData();
 };
 
-const chartOptions1 = ref(null);
-const ordersData = ref(null);
+const toggleChart3View = () => {
+  chart3View.value = chart3View.value === "dynamic" ? "static" : "dynamic";
+  updateChart3();
+};
 
 const fetchData = async () => {
   chartOptions1.value = null;
+  chartOptions2.value = null;
+  chartOptions3.value = null;
   $fetch("/api/getStatistics", {
     method: "GET",
     headers: {
@@ -108,53 +146,126 @@ const fetchData = async () => {
     .then((data) => {
       console.log("Statistiken geladen:", data);
       ordersData.value = data.data;
-      initializeCharts();
+      updateCharts();
       addNotification("Statistiken erfolgreich geladen.", "success", 5000);
     })
     .catch((error) => {
       console.error("Fehler beim Laden der Statistiken:", error);
+      addNotification("Fehler beim Laden der Statistiken.", "error", 5000);
     });
 };
 
-const initializeCharts = () => {
+const updateCharts = () => {
   if (!ordersData.value) {
     addNotification("error", "Keine Daten für die Statistiken gefunden.", 5000);
     return;
   }
-  const categories = ordersData.value.map((order) =>
+  updateChart1();
+  updateChart2();
+  updateChart3();
+};
+
+const updateChart1 = () => {
+  if (!ordersData.value.chart1 || ordersData.value.chart1.length === 0) {
+    console.warn("Keine Daten für chart1 verfügbar");
+    chartOptions1.value = {
+      chart: { type: "line" },
+      title: { text: "Keine Daten für Aufträge pro Tag verfügbar" },
+      series: [],
+    };
+    return;
+  }
+
+  const categories = ordersData.value.chart1.map((order) =>
     new Date(order.orderDate).toLocaleDateString("de-DE")
   );
-  console.log("Kategorien:", categories);
-
-  const values = ordersData.value.map((order) => order.orderCount);
-  console.log("Werte:", values);
+  const values = ordersData.value.chart1.map((order) => order.orderCount);
 
   chartOptions1.value = {
-    chart: {
-      type: "line",
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text: "Anzahl an Aufträgen pro Tag",
-    },
-    xAxis: {
-      categories,
-    },
-    yAxis: {
-      title: {
-        text: "Anzahl an Aufträgen",
-      },
-    },
-    series: [
-      {
-        name: "Aufträge",
-        data: values,
-      },
-    ],
+    chart: { type: "line" },
+    credits: { enabled: false },
+    title: { text: "Anzahl an Aufträgen pro Tag" },
+    xAxis: { categories },
+    yAxis: { title: { text: "Anzahl an Aufträgen" } },
+    series: [{ name: "Aufträge", data: values }],
   };
 };
+
+const updateChart2 = () => {
+  if (!ordersData.value.chart2 || ordersData.value.chart2.length === 0) {
+    console.warn("Keine Daten für chart2 verfügbar");
+    chartOptions2.value = {
+      chart: { type: "pie" },
+      title: { text: "Keine Daten für Auftragstypen-Verteilung verfügbar" },
+      series: [],
+    };
+    return;
+  }
+
+  const pieData = ordersData.value.chart2.map((type) => ({
+    name: type.orderType,
+    y: type.count,
+  }));
+
+  chartOptions2.value = {
+    chart: { type: "pie" },
+    credits: { enabled: false },
+    title: { text: "Auftragstypen-Verteilung" },
+    tooltip: {
+      pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b> ({point.y})",
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: "pointer",
+        dataLabels: {
+          enabled: true,
+          format: "<b>{point.name}</b>: {point.percentage:.1f} %",
+        },
+      },
+    },
+    series: [{ name: "Auftragstypen", colorByPoint: true, data: pieData }],
+  };
+};
+
+const updateChart3 = () => {
+  const chart3Data =
+    chart3View.value === "dynamic"
+      ? ordersData.value.chart3.dynamic.map((pos) => ({
+          name: pos.positionName,
+          y: parseInt(pos.totalQuantity, 10),
+        }))
+      : ordersData.value.chart3.static.map((pos) => ({
+          name: pos.positionName,
+          y: parseInt(pos.count, 10),
+        }));
+
+  chartOptions3.value = {
+    chart: { type: "pie" },
+    credits: { enabled: false },
+    title: {
+      text:
+        chart3View.value === "dynamic"
+          ? "Dynamische Positionen-Verteilung"
+          : "Statische Positionen-Verteilung",
+    },
+    tooltip: {
+      pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b> ({point.y})",
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: "pointer",
+        dataLabels: {
+          enabled: true,
+          format: "<b>{point.name}</b>: {point.percentage:.1f} %",
+        },
+      },
+    },
+    series: [{ name: "Positionen", colorByPoint: true, data: chart3Data }],
+  };
+};
+
 fetchData();
 </script>
 
@@ -165,10 +276,10 @@ fetchData();
 }
 
 .top-to-bottom-enter-from {
-  transform: translateY(-100%); /* Start sliding from the top */
+  transform: translateY(-100%);
 }
 
 .top-to-bottom-leave-to {
-  transform: translateY(-100%); /* Slide out to the bottom */
+  transform: translateY(-100%);
 }
 </style>
