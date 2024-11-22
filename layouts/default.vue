@@ -8,6 +8,7 @@
     </div>
     <div
       class="h-20 w-full flex justify-between items-center bg-[#555D50] px-8"
+      v-if="showFooter"
     >
       <NuxtLink to="/newOrder">
         <button class="hover:scale-125 transition">
@@ -123,3 +124,42 @@ body,
   flex-direction: column;
 }
 </style>
+
+<script>
+import { ref, computed, onMounted, onUnmounted } from "vue";
+
+export default {
+  setup() {
+    const orientation = ref("portrait");
+
+    // Funktion zur Aktualisierung der Orientierung
+    const updateOrientation = () => {
+      if (window.matchMedia("(orientation: landscape)").matches) {
+        orientation.value = "landscape";
+      } else {
+        orientation.value = "portrait";
+      }
+    };
+
+    // Berechnung, ob der Footer angezeigt werden soll
+    const showFooter = computed(() => orientation.value === "portrait");
+
+    onMounted(() => {
+      // Initialer Check
+      updateOrientation();
+
+      // Eventlistener hinzufügen
+      window.addEventListener("resize", updateOrientation);
+    });
+
+    onUnmounted(() => {
+      // Eventlistener entfernen
+      window.removeEventListener("resize", updateOrientation);
+    });
+
+    return {
+      showFooter,
+    };
+  },
+};
+</script>
