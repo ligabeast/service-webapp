@@ -257,7 +257,7 @@ const updateChart3 = () => {
     },
     tooltip: {
       pointFormat:
-        "<b>{point.fullname}</b>: <b>{point.percentage:.1f}%</b> ({point.y})",
+        "<b>{point.fullName}</b>: <b>{point.percentage:.1f}%</b> ({point.y})",
     },
     plotOptions: {
       pie: {
