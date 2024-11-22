@@ -132,6 +132,10 @@ const toggleChart3View = () => {
   updateChart3();
 };
 
+const truncateName = (name: string, maxLength: number = 20): string => {
+  return name.length > maxLength ? name.slice(0, maxLength) + "..." : name;
+};
+
 const fetchData = async () => {
   chartOptions1.value = null;
   chartOptions2.value = null;
@@ -232,11 +236,11 @@ const updateChart3 = () => {
   const chart3Data =
     chart3View.value === "dynamic"
       ? ordersData.value.chart3.dynamic.map((pos) => ({
-          name: pos.positionName,
+          name: truncateName(pos.positionName),
           y: parseInt(pos.totalQuantity, 10),
         }))
       : ordersData.value.chart3.static.map((pos) => ({
-          name: pos.positionName,
+          name: truncateName(pos.positionName),
           y: parseInt(pos.count, 10),
         }));
 
