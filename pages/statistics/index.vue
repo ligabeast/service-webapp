@@ -237,10 +237,12 @@ const updateChart3 = () => {
     chart3View.value === "dynamic"
       ? ordersData.value.chart3.dynamic.map((pos) => ({
           name: truncateName(pos.positionName),
+          fullName: pos.positionName,
           y: parseInt(pos.totalQuantity, 10),
         }))
       : ordersData.value.chart3.static.map((pos) => ({
           name: truncateName(pos.positionName),
+          fullName: pos.positionName,
           y: parseInt(pos.count, 10),
         }));
 
@@ -255,7 +257,7 @@ const updateChart3 = () => {
     },
     tooltip: {
       pointFormat:
-        "<b>{point.name}</b>: <b>{point.percentage:.1f}%</b> ({point.y})",
+        "<b>{point.fullname}</b>: <b>{point.percentage:.1f}%</b> ({point.y})",
     },
     plotOptions: {
       pie: {
