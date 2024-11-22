@@ -223,6 +223,7 @@ const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
 });
 
 const order = ref<any | null>(data.data[0]);
+console.log(order.value);
 const pictures = ref<any[]>(data.data[0]?.pictures || []);
 console.log(pictures.value);
 const validPictures = computed(() =>
@@ -295,8 +296,41 @@ const formattedDuration = computed(() => {
   )}`;
 });
 
+const whatsappResult = computed(() => {
+  const result = [];
+  if (
+    order.value.positions.filter(
+      (position) =>
+        position.position_name === "Gf-TA Connect Only" ||
+        position.position_name === "Connect mit Herstellen Ne4"
+    ).length > 0
+  ) {
+    result.push("Erledigt und inventarisiert");
+  } else if (
+    order.value.positions.filter(
+      (position) =>
+        position.position_name === "nicht erledigt - Connect Auftrag"
+    ).length > 0
+  ) {
+    result.push("Connect Nicht Erledigt");
+  } else if (
+    order.value.positions.filter(
+      (position) => position.position_name === "GWV Basic"
+    ).length > 0
+  ) {
+    result.push("GWV Erledigt");
+  } else if (
+    order.value.positions.filter(
+      (position) => position.position_name === "nicht erledigt - GWV Auftrag"
+    ).length > 0
+  ) {
+    result.push("GWV Nicht Erledigt");
+  }
+  return result.join("\n");
+});
+
 function handleCopyWhatsapp() {
-  const text = `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}`;
+  const text = `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}\n${whatsappResult.value}`;
   copyToClipboard(text);
 }
 
