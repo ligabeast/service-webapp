@@ -132,7 +132,7 @@ const toggleChart3View = () => {
   updateChart3();
 };
 
-const truncateName = (name: string, maxLength: number = 20): string => {
+const truncateName = (name: string, maxLength: number = 12): string => {
   return name.length > maxLength ? name.slice(0, maxLength) + "..." : name;
 };
 
@@ -254,7 +254,8 @@ const updateChart3 = () => {
           : "Statische Positionen-Verteilung",
     },
     tooltip: {
-      pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b> ({point.y})",
+      pointFormat:
+        "<b>{point.name}</b>: <b>{point.percentage:.1f}%</b> ({point.y})",
     },
     plotOptions: {
       pie: {
