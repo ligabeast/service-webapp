@@ -145,10 +145,14 @@ const resetFilters = () => {
 const updateDateRange = () => {
   const now = new Date();
   if (filters.value.timeRange == "currentMonth") {
-    filters.value.startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+    filters.value.startDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), 1)
+    ) // Erster Tag des aktuellen Monats
       .toISOString()
       .split("T")[0];
-    filters.value.endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+    filters.value.endDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth() + 1, 0)
+    ) // Letzter Tag des aktuellen Monats
       .toISOString()
       .split("T")[0];
   } else if (filters.value.timeRange == "lastMonth") {
