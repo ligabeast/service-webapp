@@ -54,7 +54,7 @@
       </transition>
       <span v-if="orders && orders.length == 0"> Keine Aufträge verfügbar</span>
       <template v-else v-for="order in orders">
-        <OrderCard :order="order" />
+        <OrderCard :currentPage="currentPage" :order="order" />
       </template>
 
       <!-- Pagination -->
@@ -124,7 +124,9 @@ const filters = ref({
   sort: "date-desc",
 });
 
-const currentPage = ref(1);
+// get currentPage as queryparam
+const route = useRoute();
+const currentPage = ref(Number(route.query.currentPage) || 1);
 
 const { data, error } = await useFetch<OrderResponse>("/api/getMyOrders", {
   headers: {

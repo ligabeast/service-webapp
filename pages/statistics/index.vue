@@ -141,6 +141,8 @@ const truncateName = (name: string, maxLength: number = 12): string => {
   return name.length > maxLength ? name.slice(0, maxLength) + "..." : name;
 };
 
+let initial = ref(true);
+
 const fetchData = async () => {
   chartOptions1.value = null;
   chartOptions2.value = null;
@@ -156,7 +158,10 @@ const fetchData = async () => {
       console.log("Statistiken geladen:", data);
       ordersData.value = data.data;
       updateCharts();
-      addNotification("Statistiken erfolgreich geladen.", "success", 5000);
+      if (!initial.value) {
+        addNotification("Statistiken erfolgreich geladen.", "success", 5000);
+      }
+      initial.value = false;
     })
     .catch((error) => {
       console.error("Fehler beim Laden der Statistiken:", error);

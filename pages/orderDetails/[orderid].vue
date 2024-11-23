@@ -107,7 +107,10 @@
         Copy Kasys
       </button>
     </div>
-    <NuxtLink to="/home" class="flex w-full items-center justify-center">
+    <NuxtLink
+      :to="`/home?currentPage=${currentPage}`"
+      class="flex w-full items-center justify-center"
+    >
       <button
         class="bg-blue-500 h-14 w-1/3 rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
       >
@@ -206,6 +209,7 @@ import { ref, computed } from "vue";
 // Route und Daten laden
 const route = useRoute();
 const orderid = route.params.orderid;
+const currentPage = route.query.currentPage || 1;
 
 const timeFormatter = new Intl.DateTimeFormat("de-DE", {
   day: "2-digit",

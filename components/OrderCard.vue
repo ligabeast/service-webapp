@@ -2,7 +2,7 @@
   <NuxtLink
     :to="{
       path:
-        order.status === 'started' ? '/postOrder' : '/orderDetails/' + order.id,
+        order.status === 'started' ? '/postOrder' : `/orderDetails/${order.id}`,
       query:
         order.status === 'started'
           ? {
@@ -10,8 +10,11 @@
               kls_id: order.kls_id,
               adress: order.adress,
               orderid: order.id,
+              currentPage: props.currentPage, // Falls benötigt
             }
-          : {},
+          : {
+              currentPage: props.currentPage, // Falls nur `currentPage` benötigt wird
+            },
     }"
   >
     <button
@@ -38,6 +41,7 @@ import type { Order } from "~/types";
 
 const props = defineProps<{
   order: Order;
+  currentPage: number;
 }>();
 
 const timeFormatter = new Intl.DateTimeFormat("de-DE", {

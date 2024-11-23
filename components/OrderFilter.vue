@@ -31,6 +31,10 @@
           @change="updateDateRange"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-1 bg-white"
         >
+          <!-- Diese Woche -->
+          <option value="currentWeek">Diese Woche</option>
+          <!-- Letzte Woche -->
+          <option value="lastWeek">Letzte Woche</option>
           <!-- Diesen Monat + die letzten zwei Monate -->
           <option value="currentMonth">Diesen Monat</option>
           <option value="lastMonth">Letzter Monat</option>
@@ -141,33 +145,33 @@ const resetFilters = () => {
   filters.value.orderType = "all";
   updateDateRange();
 };
-
 const updateDateRange = () => {
   const now = new Date();
-  if (filters.value.timeRange == "currentMonth") {
+  const dayOfWeek = (now.getUTCDay() + 6) % 7; // Montag als 0, Sonntag als 6
+
+  if (filters.value.timeRange === "currentMonth") {
     filters.value.startDate = new Date(
       Date.UTC(now.getFullYear(), now.getMonth(), 1)
-    ) // Erster Tag des aktuellen Monats
+    )
       .toISOString()
       .split("T")[0];
     filters.value.endDate = new Date(
       Date.UTC(now.getFullYear(), now.getMonth() + 1, 0)
-    ) // Letzter Tag des aktuellen Monats
+    )
       .toISOString()
       .split("T")[0];
-  } else if (filters.value.timeRange == "lastMonth") {
+  } else if (filters.value.timeRange === "lastMonth") {
     filters.value.startDate = new Date(
       Date.UTC(now.getFullYear(), now.getMonth() - 1, 1)
     )
       .toISOString()
       .split("T")[0];
-
     filters.value.endDate = new Date(
       Date.UTC(now.getFullYear(), now.getMonth(), 0)
     )
       .toISOString()
       .split("T")[0];
-  } else if (filters.value.timeRange == "monthBeforeLast") {
+  } else if (filters.value.timeRange === "monthBeforeLast") {
     filters.value.startDate = new Date(
       Date.UTC(now.getFullYear(), now.getMonth() - 2, 1)
     )
@@ -178,6 +182,26 @@ const updateDateRange = () => {
     )
       .toISOString()
       .split("T")[0];
+  } else if (filters.value.timeRange === "currentWeek") {
+    const startOfWeek = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - dayOfWeek)
+    );
+    const endOfWeek = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - dayOfWeek + 7)
+    );
+    filters.value.startDate = startOfWeek.toISOString().split("T")[0];
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - dayOfWeek + 7);
+    filters.value.startDate = startOfWeek.toISOString().split("T")[0];
+    filters.value.endDate = endOfWeek.toISOString().split("T")[0];
+  } else if (filters.value.timeRange === "lastWeek") {
+    const startOfLastWeek = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - dayOfWeek - 7)
+    );
+    const endOfLastWeek = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - dayOfWeek)
+    ); // Exklusiv: Montag der aktuellen Woche
+    filters.value.startDate = startOfLastWeek.toISOString().split("T")[0];
+    filters.value.endDate = endOfLastWeek.toISOString().split("T")[0];
   } else if (filters.value.timeRange === "custom") {
     filters.value.startDate = null;
     filters.value.endDate = null;
