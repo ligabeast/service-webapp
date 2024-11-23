@@ -1,6 +1,7 @@
 <template>
   <div class="flex w-full h-full flex-col p-4 space-y-4">
     <h1 class="font-semibold text-2xl text-center">Auftrag abschließen</h1>
+    <Loader v-if="showLoading" />
     <PositionInsertModal
       v-show="showMaterialModal"
       @close="showMaterialModal = false"
@@ -119,6 +120,7 @@
     <button
       class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-blue-600 hover:scale-105 transition min-h-10"
       @click="handleSave"
+      :disabled="showLoading"
     >
       Speichern
     </button>
@@ -203,6 +205,7 @@ const possibleMaterials = ref<Material[]>(
 
 const showMaterialModal = ref(false);
 const showResultModal = ref(false);
+const showLoading = ref(false);
 
 function handlePushMaterial(material: Material) {
   insertedPositions.value.push(material);
@@ -271,6 +274,7 @@ async function handleSave() {
   }
 
   // Anfrage senden
+  showLoading.value = true;
   $fetch("/api/orderComplete", {
     method: "POST",
     headers: {
@@ -281,6 +285,7 @@ async function handleSave() {
   })
     .then((res) => {
       addNotification(res.message, res.status, 5000);
+      showLoading.value = false;
       console.log("Antwort:", res);
       if (res.status === "success") {
         showResultModal.value = true;
