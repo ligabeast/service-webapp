@@ -93,6 +93,8 @@
         :update="['options.title', 'options.series']"
       />
     </div>
+
+    <!-- Positionen über die Zeit (nicht erledigt zusammen gwv / connect/ erledigt) -->
   </div>
 </template>
 
@@ -103,13 +105,16 @@ import { addNotification } from "~/notification.ts";
 // Daten und Logik
 const showFilters = ref(false);
 const chart3View = ref("dynamic"); // Standardansicht: Dynamische Positionen
+const now = new Date();
 
 const filters = ref({
-  timeRange: "last30",
-  startDate: new Date(new Date().setDate(new Date().getDate() - 30))
+  timeRange: "currentMonth",
+  startDate: new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1)) // Erster Tag des Monats in UTC
     .toISOString()
     .split("T")[0],
-  endDate: new Date(new Date().setDate(new Date().getDate() + 1))
+  endDate: new Date(
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+  ) // Morgen in UTC
     .toISOString()
     .split("T")[0],
   orderType: "all",

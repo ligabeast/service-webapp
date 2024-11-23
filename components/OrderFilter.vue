@@ -31,8 +31,10 @@
           @change="updateDateRange"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-1 bg-white"
         >
-          <option value="last30">Letzte 30 Tage</option>
-          <option value="last90">Letzte 90 Tage</option>
+          <!-- Diesen Monat + die letzten zwei Monate -->
+          <option value="currentMonth">Diesen Monat</option>
+          <option value="lastMonth">Letzter Monat</option>
+          <option value="monthBeforeLast">Vorletzter Monat</option>
           <option value="custom">Benutzerdefiniert</option>
         </select>
         <div v-if="filters.timeRange === 'custom'" class="mt-2 flex space-x-2">
@@ -132,7 +134,7 @@ const applyFilters = () => {
 
 const resetFilters = () => {
   filters.value.perPage = 10;
-  filters.value.timeRange = "last30";
+  filters.value.timeRange = "currentMonth";
   filters.value.startDate = "";
   filters.value.endDate = "";
   filters.value.sort = "date-desc";
@@ -142,16 +144,36 @@ const resetFilters = () => {
 
 const updateDateRange = () => {
   const now = new Date();
-  if (filters.value.timeRange === "last30") {
-    filters.value.startDate = new Date(now.setDate(now.getDate() - 30))
+  if (filters.value.timeRange == "currentMonth") {
+    filters.value.startDate = new Date(now.getFullYear(), now.getMonth(), 1)
       .toISOString()
       .split("T")[0];
-    filters.value.endDate = new Date().toISOString().split("T")[0];
-  } else if (filters.value.timeRange === "last90") {
-    filters.value.startDate = new Date(now.setDate(now.getDate() - 90))
+    filters.value.endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
       .toISOString()
       .split("T")[0];
-    filters.value.endDate = new Date().toISOString().split("T")[0];
+  } else if (filters.value.timeRange == "lastMonth") {
+    filters.value.startDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth() - 1, 1)
+    )
+      .toISOString()
+      .split("T")[0];
+
+    filters.value.endDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), 0)
+    )
+      .toISOString()
+      .split("T")[0];
+  } else if (filters.value.timeRange == "monthBeforeLast") {
+    filters.value.startDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth() - 2, 1)
+    )
+      .toISOString()
+      .split("T")[0];
+    filters.value.endDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth() - 1, 0)
+    )
+      .toISOString()
+      .split("T")[0];
   } else if (filters.value.timeRange === "custom") {
     filters.value.startDate = null;
     filters.value.endDate = null;

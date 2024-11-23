@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
     // Filter aus der Query lesen
     const query = getQuery(event);
-    const timeRange = query.timeRange || "last30";
+    const timeRange = query.timeRange || "currentMonth";
     const startDate = query.startDate || null;
     const endDate = query.endDate || null;
     const orderType = query.orderType || null; // Auftragstyp (z. B. "gwv" oder "connect")

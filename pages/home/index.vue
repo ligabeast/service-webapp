@@ -109,12 +109,21 @@ import type { OrderResponse } from "~/types";
 
 const loading = ref(false);
 const showFilter = ref(false);
+const now = new Date();
+
 const filters = ref({
   perPage: 10,
-  startDate: "",
-  endDate: "",
+  startDate: new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1)) // Erster Tag des Monats in UTC
+    .toISOString()
+    .split("T")[0],
+  endDate: new Date(
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+  ) // Nächster Tag in UTC
+    .toISOString()
+    .split("T")[0],
   sort: "date-desc",
 });
+
 const currentPage = ref(1);
 
 const { data, error } = await useFetch<OrderResponse>("/api/getMyOrders", {
@@ -141,12 +150,6 @@ const nextPage = () => {
 };
 
 const fetchData = async () => {
-  // add 1 Tag to endDate to include the selected day
-  if (filters.value.endDate) {
-    const endDate = new Date(filters.value.endDate);
-    endDate.setDate(endDate.getDate() + 1);
-    filters.value.endDate = endDate.toISOString().split("T")[0];
-  }
   try {
     const data = await $fetch("/api/getMyOrders", {
       method: "GET", // GET-Methode für Query-Parameter
@@ -169,8 +172,9 @@ const fetchData = async () => {
   }
 };
 
-async function handleFiltersChanged(filters: any) {
+async function handleFiltersChanged(newFilters: any) {
   currentPage.value = 1;
+  filters.value = newFilters;
   fetchData();
 }
 </script>
