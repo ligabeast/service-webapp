@@ -2,7 +2,7 @@
   <div class="flex flex-col space-y-2 pb-4">
     <h1>KLS History for: {{ klsId }}</h1>
     <Loader v-if="loading" />
-    <div v-else-if="error">{{ error }}</div>
+    <div v-else-if="orders && orders.length > 0">Keine Aufträge gefunden</div>
     <div v-else>
       <div v-for="order in orders" :key="order.id" class="order">
         <h2>Auftragsnummer #{{ order.ordernumber }}</h2>

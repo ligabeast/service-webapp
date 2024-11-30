@@ -26,28 +26,31 @@ export default defineEventHandler(async (event) => {
 
     const [rows] = await connection.execute(
       `
-      SELECT 
-          o.*,
-          -- Bilder zu den Aufträgen abrufen
-          (
-            SELECT JSON_ARRAYAGG(
-              JSON_OBJECT(
-                'id', op.id,
-                'original_name', op.original_name,
-                'saved_name', op.saved_name,
-                'mime_type', op.mime_type,
-                'path', CONCAT('/uploads/', op.path),
-                'uploaded_at', op.uploaded_at
+        SELECT 
+            o.*,
+            -- Bilder zu den Aufträgen abrufen
+            (
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  'id', op.id,
+                  'original_name', op.original_name,
+                  'saved_name', op.saved_name,
+                  'mime_type', op.mime_type,
+                  'path', CONCAT('/uploads/', op.path),
+                  'uploaded_at', op.uploaded_at
+                )
               )
-            )
-            FROM OrderPictures op
-            WHERE op.order_id = o.id
-          ) AS pictures
-      FROM 
-          sys.Orders o
-      WHERE 
-          o.kls_id = ? and o.status = 'completed';
-      `,
+              FROM OrderPictures op
+              WHERE op.order_id = o.id
+            ) AS pictures
+        FROM 
+            sys.Orders o
+        WHERE 
+            o.kls_id = ? 
+            AND o.status = 'completed'
+        ORDER BY 
+            o.dateCreated DESC;
+        `,
       [klsId]
     );
 
