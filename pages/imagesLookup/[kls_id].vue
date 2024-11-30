@@ -6,8 +6,8 @@
     <div v-else>
       <div v-for="order in orders" :key="order.id" class="order">
         <h2>Auftragsnummer #{{ order.ordernumber }}</h2>
-        <p>Date Created: {{ formatDate(order.dateCreated) }}</p>
-        <div v-if="order.pictures && order.pictures.length > 0">
+        <p>Auftragsabmeldung: {{ formatDate(order.dateCreated) }}</p>
+        <template v-if="order.pictures && order.pictures.length > 0">
           <div
             v-for="picture in order.pictures"
             :key="picture.id"
@@ -20,7 +20,7 @@
             />
             <p>{{ picture.original_name }}</p>
           </div>
-        </div>
+        </template>
         <div v-else>No images available.</div>
       </div>
     </div>
