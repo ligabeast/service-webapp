@@ -45,11 +45,22 @@ export default defineEventHandler(async (event) => {
     console.log("[DEBUG] Felder:", fields);
     console.log("[DEBUG] Dateien:", files);
 
-    let { ordernumber, orderid, orderType, positions } = fields;
+    let {
+      ordernumber,
+      orderid,
+      orderType,
+      positions,
+      commentCopy,
+      commentInternal,
+    } = fields;
     ordernumber = Array.isArray(ordernumber) ? ordernumber[0] : ordernumber;
     orderid = Array.isArray(orderid) ? orderid[0] : orderid;
     orderType = Array.isArray(orderType) ? orderType[0] : orderType;
     positions = Array.isArray(positions) ? positions[0] : positions;
+    commentCopy = Array.isArray(commentCopy) ? commentCopy[0] : commentCopy;
+    commentInternal = Array.isArray(commentInternal)
+      ? commentInternal[0]
+      : commentInternal;
     const pictures = Array.isArray(files.pictures)
       ? files.pictures
       : [files.pictures];
@@ -98,9 +109,17 @@ export default defineEventHandler(async (event) => {
     console.log("[DEBUG] Erstelle neue Bestellung...");
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO sys.Orders 
-        (ordernumber, user_id, status, orderType, adress, kls_id, dateCreated) 
-       VALUES (?, ?, 'completed', ?, ?, ?, NOW());`,
-      [ordernumber, userId, orderType, adress, kls_id]
+        (ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal) 
+       VALUES (?, ?, 'completed', ?, ?, ?, NOW(), ?, ?);`,
+      [
+        ordernumber,
+        userId,
+        orderType,
+        adress,
+        kls_id,
+        commentCopy,
+        commentInternal,
+      ]
     );
 
     const newOrderId = result.insertId;

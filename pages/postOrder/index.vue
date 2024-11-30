@@ -16,6 +16,7 @@
     <ResultModal
       v-if="showResultModal"
       @close="showResultModal = false"
+      :commentCopy="commentCopy"
       :insertedPositions="insertedPositions"
       :adress="adress"
       :ordernumber="ordernumber"
@@ -117,6 +118,24 @@
         +
       </button>
     </div>
+    <div class="flex flex-col space-y-4">
+      <label class="text-lg font-semibold" for="kommentar"
+        >Interner Kommentar</label
+      >
+      <textarea
+        v-model="commentInternal"
+        class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
+      ></textarea>
+    </div>
+    <div class="flex flex-col space-y-4">
+      <label class="text-lg font-semibold" for="kommentar"
+        >Copy Kommentar</label
+      >
+      <textarea
+        v-model="commentCopy"
+        class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
+      ></textarea>
+    </div>
     <button
       class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-blue-600 hover:scale-105 transition min-h-10"
       @click="handleSave"
@@ -155,6 +174,9 @@ const insertedPositions = ref<Material[]>([]);
 const adress = ref<string>(adressRef ?? ""); // Fallback auf leeren String, falls adress undefined ist
 const kls_id = ref<string>(kls_idRef ?? "");
 const ordernumber = ref<string>(ordernumberRef ?? "");
+
+const commentCopy = ref<string>("");
+const commentInternal = ref<string>("");
 
 watch(selectedOrderType, (value) => {
   if (selectedOrderType.value === "gwv") {
@@ -258,6 +280,8 @@ async function handleSave() {
   formData.append("ordernumber", ordernumber.value);
   formData.append("orderid", orderid);
   formData.append("orderType", selectedOrderType.value);
+  formData.append("commentCopy", commentCopy.value);
+  formData.append("commentInternal", commentInternal.value);
   formData.append(
     "positions",
     JSON.stringify(

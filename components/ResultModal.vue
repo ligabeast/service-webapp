@@ -43,6 +43,7 @@ const props = defineProps<{
   adress: string;
   ordernumber: string;
   kls_id: string;
+  commentCopy: string;
 }>();
 
 // Computed für WhatsApp-Ergebnis
@@ -79,7 +80,7 @@ const whatsappResult = computed(() => {
 
 // Generiere WhatsApp-Format
 function getWhatsappFormatt() {
-  return (
+  let text =
     props.adress +
     "\n" +
     "Auftragsnummer" +
@@ -89,8 +90,13 @@ function getWhatsappFormatt() {
     "KLS-ID: " +
     props.kls_id +
     "\n" +
-    whatsappResult.value
-  );
+    whatsappResult.value;
+
+  if (props.commentCopy) {
+    text += "\n" + props.commentCopy;
+  }
+
+  return text;
 }
 
 // Kopieren für WhatsApp
@@ -101,7 +107,7 @@ function handleCopyWhatsapp() {
 
 // Kopieren für Kasys
 function handleCopyKasys() {
-  const text = props.insertedPositions
+  let text = props.insertedPositions
     .map((position) => {
       if (position.dynamic == true) {
         return position.quantity + " " + position.name;
@@ -110,6 +116,9 @@ function handleCopyKasys() {
       }
     })
     .join("; ");
+  if (props.commentCopy) {
+    text += "\n" + props.commentCopy;
+  }
   copyToClipboard(text);
 }
 

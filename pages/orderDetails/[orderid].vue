@@ -70,6 +70,15 @@
       ></div>
     </div>
     <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Kommentar</div>
+      <div class="w-[1px] border border-black"></div>
+      <span
+        v-if="order?.commentInternal"
+        v-html="order?.commentInternal"
+        class="h-90 whitespace-pre-line w-1/2"
+      ></span>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
       <div class="w-1/2 font-medium">Positions</div>
       <div class="w-[1px] border border-black"></div>
       <div class="w-1/2">
@@ -334,19 +343,25 @@ const whatsappResult = computed(() => {
 });
 
 function handleCopyWhatsapp() {
-  const text = `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}\n${whatsappResult.value}`;
+  let text = `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}\n${whatsappResult.value}`;
+  if (order.value.commentInternal) {
+    text += `\n${order.value.commentInternal}`;
+  }
   copyToClipboard(text);
 }
 
 // Kopierlogik für Kasys
 function handleCopyKasys() {
-  const text = order.value.positions
+  let text = order.value.positions
     .map((position: any) =>
       position.quantity
         ? `${position.quantity} ${position.position_name}`
         : position.position_name
     )
     .join("; ");
+  if (order.value.commentInternal) {
+    text += `\n${order.value.commentInternal}`;
+  }
   copyToClipboard(text);
 }
 
