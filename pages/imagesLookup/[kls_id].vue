@@ -149,8 +149,8 @@ onMounted(fetchKlsHistory);
 }
 
 .fullscreen-modal img {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   margin: 0; /* Entfernt Margin */
   padding: 0; /* Entfernt Padding */
