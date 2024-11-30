@@ -19,7 +19,6 @@
                 class="w-20 h-20 p-2 border border-black"
                 @click="openImageFullscreen(picture.path)"
               />
-              <p class="text-center mt-2">{{ picture.original_name }}</p>
             </div>
           </div>
         </template>
