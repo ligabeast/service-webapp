@@ -11,11 +11,11 @@
           <div
             v-for="picture in order.pictures"
             :key="picture.id"
-            class="image"
+            class="image flex"
           >
             <img
               :src="picture.path"
-              :alt="picture.original_name"
+              class="w-20 h-20 p-2 border border-black"
               @click="openImageFullscreen(picture.path)"
             />
             <p>{{ picture.original_name }}</p>
