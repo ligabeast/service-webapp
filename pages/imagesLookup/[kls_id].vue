@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col space-y-2 pb-4">
     <h1>KLS History for: {{ klsId }}</h1>
     <Loader v-if="loading" />
     <div v-else-if="error">{{ error }}</div>
@@ -11,7 +11,7 @@
           <div
             v-for="picture in order.pictures"
             :key="picture.id"
-            class="image flex"
+            class="image flex gap-2"
           >
             <img
               :src="picture.path"
@@ -99,7 +99,7 @@ onMounted(fetchKlsHistory);
   transition: transform 0.3s ease;
 }
 .image img:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .fullscreen-modal {
   position: fixed;
