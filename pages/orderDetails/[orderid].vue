@@ -18,9 +18,8 @@
       <NuxtLink
         class="h-90 whitespace-pre-line w-1/2 underline text-blue-600"
         :to="`/imagesLookup/${order?.kls_id}?currentPage=${currentPage}&orderid=${order?.id}`"
-      >
-        <a v-if="order?.kls_id" v-html="order?.kls_id"></a>
-      </NuxtLink>
+        v-html="order?.kls_id"
+      />
     </div>
     <div class="flex p-4 justify-between space-x-2">
       <div class="w-1/2 font-medium">Auftragsnummer</div>
