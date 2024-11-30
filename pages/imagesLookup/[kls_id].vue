@@ -8,17 +8,19 @@
         <h2>Auftragsnummer #{{ order.ordernumber }}</h2>
         <p>Auftragsabmeldung: {{ formatDate(order.dateCreated) }}</p>
         <template v-if="order.pictures && order.pictures.length > 0">
-          <div
-            v-for="picture in order.pictures"
-            :key="picture.id"
-            class="image flex gap-2"
-          >
-            <img
-              :src="picture.path"
-              class="w-20 h-20 p-2 border border-black"
-              @click="openImageFullscreen(picture.path)"
-            />
-            <p>{{ picture.original_name }}</p>
+          <div class="image-container flex flex-wrap gap-4">
+            <div
+              v-for="picture in order.pictures"
+              :key="picture.id"
+              class="image flex flex-col items-center"
+            >
+              <img
+                :src="picture.path"
+                class="w-20 h-20 p-2 border border-black"
+                @click="openImageFullscreen(picture.path)"
+              />
+              <p class="text-center mt-2">{{ picture.original_name }}</p>
+            </div>
           </div>
         </template>
         <div v-else>No images available.</div>
