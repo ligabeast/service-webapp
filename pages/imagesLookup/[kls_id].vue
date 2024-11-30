@@ -8,8 +8,8 @@
       <div v-for="order in orders" :key="order.id" class="order bg-gray-200">
         <h2>Auftragsnummer #{{ order.ordernumber }}</h2>
         <p>Auftragsabmeldung: {{ formatDate(order.dateCreated) }}</p>
-        <ul>
-          <li v-for="position in order.positions">
+        <ul style="list-style-type: disc; margin-left: 20px">
+          <li v-for="position in order.positions" :key="position.id">
             {{ position.quantity ?? "" }} {{ position.position_name }}
           </li>
         </ul>
