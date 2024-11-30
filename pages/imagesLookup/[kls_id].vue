@@ -1,12 +1,18 @@
 <template>
   <div class="flex flex-col space-y-2 pb-4">
-    <h1>KLS History for: {{ klsId }}</h1>
+    <h1 class="font-semibold text-2xl px-4">KLS History for: {{ klsId }}</h1>
+    <h2 class="px-4" v-if="adress">{{ adress }}</h2>
     <Loader v-if="loading" />
     <div v-else-if="orders && orders.length == 0">Keine Aufträge gefunden</div>
     <div v-else>
-      <div v-for="order in orders" :key="order.id" class="order">
+      <div v-for="order in orders" :key="order.id" class="order bg-gray-200">
         <h2>Auftragsnummer #{{ order.ordernumber }}</h2>
         <p>Auftragsabmeldung: {{ formatDate(order.dateCreated) }}</p>
+        <ul>
+          <li v-for="position in order.positions">
+            {{ position.quantity ?? "" }} {{ position.position_name }}
+          </li>
+        </ul>
         <template v-if="order.pictures && order.pictures.length > 0">
           <div class="image-container flex flex-wrap gap-4">
             <div
@@ -21,9 +27,26 @@
               />
             </div>
           </div>
+          <p>Kommentar: {{ order.commentInternal }}</p>
         </template>
         <div v-else>No images available.</div>
       </div>
+    </div>
+
+    <div class="flex items-center justify-center">
+      <NuxtLink
+        :to="
+          orderid
+            ? `/orderDetails/${orderid}?currentPage=${currentPage}`
+            : `/home?currentPage=${currentPage}`
+        "
+      >
+        <button
+          class="bg-blue-500 h-10 w-20 rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
+        >
+          Zurück
+        </button>
+      </NuxtLink>
     </div>
 
     <!-- Fullscreen Image Modal -->
@@ -42,6 +65,13 @@ import { addNotification } from "~/notification";
 
 const route = useRoute();
 const klsId = route.params.kls_id;
+const currentPage = route.query.currentPage || 1;
+const orderid = route.query.orderid || null;
+
+const adress = computed(() => {
+  if (!orders.value || orders.value.length == 0) return null;
+  return orders.value[0].adress;
+});
 
 const orders = ref([]);
 const loading = ref(true);

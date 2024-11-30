@@ -42,7 +42,19 @@ export default defineEventHandler(async (event) => {
               )
               FROM OrderPictures op
               WHERE op.order_id = o.id
-            ) AS pictures
+            ) AS pictures,
+            -- Aggregiere Positions separat
+              (SELECT JSON_ARRAYAGG(
+                          JSON_OBJECT(
+                              'position_id', pto.position_id, 
+                              'quantity', pto.quantity, 
+                              'position_name', p.name
+                          )
+                      )
+              FROM Position_To_Orders pto
+              LEFT JOIN sys.Positions p ON p.id = pto.position_id
+              WHERE pto.order_id = o.id
+              ) AS positions
         FROM 
             sys.Orders o
         WHERE 

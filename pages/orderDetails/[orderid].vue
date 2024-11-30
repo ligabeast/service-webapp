@@ -17,7 +17,7 @@
       <div class="w-[1px] border border-black"></div>
       <NuxtLink
         class="h-90 whitespace-pre-line w-1/2 underline text-blue-600"
-        :to="`/imagesLookup/${order?.kls_id}`"
+        :to="`/imagesLookup/${order?.kls_id}?currentPage=${currentPage}?orderid=${order?.id}`"
       >
         <a v-if="order?.kls_id" v-html="order?.kls_id"></a>
       </NuxtLink>
@@ -71,11 +71,20 @@
       ></div>
     </div>
     <div class="flex p-4 justify-between space-x-2">
-      <div class="w-1/2 font-medium">Kommentar</div>
+      <div class="w-1/2 font-medium">Kommentar Intern</div>
       <div class="w-[1px] border border-black"></div>
       <span
-        v-if="order?.commentInternal"
+        v-if="order?.dateCreated"
         v-html="order?.commentInternal"
+        class="h-90 whitespace-pre-line w-1/2"
+      ></span>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Kommentar Copy</div>
+      <div class="w-[1px] border border-black"></div>
+      <span
+        v-if="order?.dateCreated"
+        v-html="order?.commentCopy"
         class="h-90 whitespace-pre-line w-1/2"
       ></span>
     </div>
