@@ -144,8 +144,8 @@ onMounted(fetchKlsHistory);
   justify-content: center;
   z-index: 1000;
   cursor: pointer;
-  padding: 0; /* Entfernt jegliches Padding */
-  margin: 0;
+  padding: 0 !important; /* Entfernt jegliches Padding */
+  margin: 0 !important;
 }
 
 .fullscreen-modal img {
