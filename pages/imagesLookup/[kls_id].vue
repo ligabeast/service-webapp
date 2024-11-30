@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col space-y-2 pb-4">
+  <div class="flex flex-col space-y-2 pb-4 relative">
     <h1 class="font-semibold text-2xl px-4">KLS History for: {{ klsId }}</h1>
     <h2 class="px-4" v-if="adress">{{ adress }}</h2>
     <Loader v-if="loading" />
@@ -144,10 +144,16 @@ onMounted(fetchKlsHistory);
   justify-content: center;
   z-index: 1000;
   cursor: pointer;
+  padding: 0; /* Entfernt jegliches Padding */
 }
+
 .fullscreen-modal img {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
+  margin: 0; /* Entfernt Margin */
+  padding: 0; /* Entfernt Padding */
+  border: none; /* Entfernt unerwünschte Rahmen */
+  display: block; /* Stellt sicher, dass keine Inline-Spaces auftreten */
 }
 </style>
