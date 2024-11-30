@@ -15,11 +15,12 @@
     <div class="flex p-4 justify-between space-x-2">
       <div class="w-1/2 font-medium">KLS-ID</div>
       <div class="w-[1px] border border-black"></div>
-      <div
-        v-if="order?.kls_id"
-        v-html="order?.kls_id"
-        class="h-90 whitespace-pre-line w-1/2"
-      ></div>
+      <NuxtLink
+        class="h-90 whitespace-pre-line w-1/2 underline text-blue-600"
+        :to="`/imagesLookup/${order?.kls_id}`"
+      >
+        <a v-if="order?.kls_id" v-html="order?.kls_id"></a>
+      </NuxtLink>
     </div>
     <div class="flex p-4 justify-between space-x-2">
       <div class="w-1/2 font-medium">Auftragsnummer</div>
