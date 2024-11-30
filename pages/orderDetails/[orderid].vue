@@ -17,7 +17,7 @@
       <div class="w-[1px] border border-black"></div>
       <NuxtLink
         class="h-90 whitespace-pre-line w-1/2 underline text-blue-600"
-        :to="`/imagesLookup/${order?.kls_id}?currentPage=${currentPage}?orderid=${order?.id}`"
+        :to="`/imagesLookup/${order?.kls_id}?currentPage=${currentPage}&orderid=${order?.id}`"
       >
         <a v-if="order?.kls_id" v-html="order?.kls_id"></a>
       </NuxtLink>
