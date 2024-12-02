@@ -127,15 +127,7 @@
         class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
       ></textarea>
     </div>
-    <div class="flex flex-col space-y-4">
-      <label class="text-lg font-semibold" for="kommentar"
-        >Copy Kommentar</label
-      >
-      <textarea
-        v-model="commentCopy"
-        class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
-      ></textarea>
-    </div>
+    <CopyCommentArea v-model:commentCopy="commentCopy" />
     <button
       class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-blue-600 hover:scale-105 transition min-h-10"
       @click="handleSave"
@@ -177,6 +169,10 @@ const ordernumber = ref<string>(ordernumberRef ?? "");
 
 const commentCopy = ref<string>("");
 const commentInternal = ref<string>("");
+
+function handleCopyCommentChanged(comment: string) {
+  commentCopy.value = comment;
+}
 
 watch(selectedOrderType, (value) => {
   if (selectedOrderType.value === "gwv") {
