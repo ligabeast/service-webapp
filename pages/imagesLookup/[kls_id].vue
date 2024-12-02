@@ -27,7 +27,9 @@
               />
             </div>
           </div>
-          <p>Kommentar: {{ order.commentInternal }}</p>
+          <p v-if="order.commentInternal">
+            Kommentar: {{ order.commentInternal }}
+          </p>
         </template>
         <div v-else>No images available.</div>
       </div>
