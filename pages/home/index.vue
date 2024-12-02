@@ -113,15 +113,13 @@ const now = new Date();
 
 const filters = ref({
   perPage: 10,
-  startDate: new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1)) // Erster Tag des Monats in UTC
+  timeRange: "last30days",
+  // last 30 days, endDate inclusive
+  startDate: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0],
-  endDate: new Date(
-    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-  ) // Nächster Tag in UTC
-    .toISOString()
-    .split("T")[0],
-  sort: "date-desc",
+  endDate: now.toISOString().split("T")[0],
+  sort: "date-desc", // Sorting order
 });
 
 // get currentPage as queryparam

@@ -31,6 +31,8 @@
           @change="updateDateRange"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-1 bg-white"
         >
+          <!-- Letzten 30 Tage -->
+          <option value="last30days">Letzten 30 Tage</option>
           <!-- Diese Woche -->
           <option value="currentWeek">Diese Woche</option>
           <!-- Letzte Woche -->
@@ -138,7 +140,7 @@ const applyFilters = () => {
 
 const resetFilters = () => {
   filters.value.perPage = 10;
-  filters.value.timeRange = "currentMonth";
+  filters.value.timeRange = "last30days";
   filters.value.startDate = "";
   filters.value.endDate = "";
   filters.value.sort = "date-desc";
@@ -149,7 +151,18 @@ const updateDateRange = () => {
   const now = new Date();
   const dayOfWeek = (now.getUTCDay() + 6) % 7; // Montag als 0, Sonntag als 6
 
-  if (filters.value.timeRange === "currentMonth") {
+  if (filters.value.timeRange === "last30days") {
+    filters.value.startDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - 30)
+    )
+      .toISOString()
+      .split("T")[0];
+    filters.value.endDate = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+    )
+      .toISOString()
+      .split("T")[0];
+  } else if (filters.value.timeRange === "currentMonth") {
     filters.value.startDate = new Date(
       Date.UTC(now.getFullYear(), now.getMonth(), 1)
     )

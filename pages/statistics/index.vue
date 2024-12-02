@@ -108,15 +108,12 @@ const chart3View = ref("dynamic"); // Standardansicht: Dynamische Positionen
 const now = new Date();
 
 const filters = ref({
-  timeRange: "currentMonth",
-  startDate: new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1)) // Erster Tag des Monats in UTC
+  timeRange: "last30days",
+  // last 30 days, enddate +1 to include current day
+  startDate: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0],
-  endDate: new Date(
-    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-  ) // Morgen in UTC
-    .toISOString()
-    .split("T")[0],
+  endDate: now.toISOString().split("T")[0],
   orderType: "all",
 });
 
