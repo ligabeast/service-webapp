@@ -152,14 +152,10 @@ const updateDateRange = () => {
   const dayOfWeek = (now.getUTCDay() + 6) % 7; // Montag als 0, Sonntag als 6
 
   if (filters.value.timeRange === "last30days") {
-    filters.value.startDate = new Date(
-      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - 30)
-    )
+    filters.value.startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0];
-    filters.value.endDate = new Date(
-      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-    )
+    filters.value.endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0];
   } else if (filters.value.timeRange === "currentMonth") {
