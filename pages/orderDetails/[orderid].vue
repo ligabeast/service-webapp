@@ -368,8 +368,8 @@ function handleCopyKasys() {
         : position.position_name
     )
     .join("; ");
-  if (order.value.commentInternal) {
-    text += `\n${order.value.commentInternal}`;
+  if (order.value.commentCopy) {
+    text += `\n${order.value.commentCopy}`;
   }
   copyToClipboard(text);
 }
