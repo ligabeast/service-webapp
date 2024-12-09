@@ -7,6 +7,7 @@
     <div v-else>
       <div v-for="order in orders" :key="order.id" class="order bg-gray-200">
         <h2>Auftragsnummer #{{ order.ordernumber }}</h2>
+        <h2>Techniker: {{ order.username }}</h2>
         <p>Auftragsabmeldung: {{ formatDate(order.dateCreated) }}</p>
         <ul style="list-style-type: disc; margin-left: 20px">
           <li v-for="position in order.positions" :key="position.id">

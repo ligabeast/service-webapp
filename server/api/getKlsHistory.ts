@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
       `
         SELECT 
             o.*,
+            u.username,
             -- Bilder zu den Aufträgen abrufen
             (
               SELECT JSON_ARRAYAGG(
@@ -57,6 +58,7 @@ export default defineEventHandler(async (event) => {
               ) AS positions
         FROM 
             sys.Orders o
+        JOIN sys.Users u ON u.id = o.user_id
         WHERE 
             o.kls_id = ? 
             AND o.status = 'completed'
