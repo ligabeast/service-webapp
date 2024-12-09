@@ -143,55 +143,32 @@
     >
       <div class="bg-white rounded-lg w-[90%] max-w-4xl p-4 space-y-4 relative">
         <h2 class="text-xl font-bold">Bilder ansehen</h2>
-        <div class="flex items-center justify-between w-full space-x-2">
-          <!-- Linker Button -->
-          <button
-            class="text-xl font-bold bg-gray-200 p-2 rounded-md flex-shrink-0"
-            @click="prevPicture"
-            :disabled="currentPictureIndex === 0"
-          >
-            &lt;
-          </button>
-
-          <!-- Bild -->
-          <div class="flex-grow flex items-center justify-center">
-            <img
-              v-if="pictures[currentPictureIndex]?.path"
-              :src="`${pictures[currentPictureIndex]?.path}?t=${Date.now()}`"
-              :alt="
-                pictures[currentPictureIndex]?.original_name ||
-                'Bildbeschreibung fehlt'
-              "
-              @click="openFullscreen(pictures[currentPictureIndex]?.path)"
-              @load="handleImageLoad"
-              @error="handleImageError"
-              class="max-h-[60vh] max-w-full object-contain w-full h-auto"
-            />
-
-            <p v-else class="text-center text-gray-500">Kein Bild vorhanden</p>
-          </div>
-
-          <!-- Rechter Button -->
-          <button
-            class="text-xl font-bold bg-gray-200 p-2 rounded-md flex-shrink-0"
-            @click="nextPicture"
-            :disabled="currentPictureIndex === pictures.length - 1"
-          >
-            &gt;
-          </button>
-        </div>
-        <div class="flex justify-center space-x-2">
-          <span
-            v-for="(picture, index) in pictures"
-            :key="picture.id"
-            :class="{
-              'bg-blue-500': currentPictureIndex === index,
-              'bg-gray-300': currentPictureIndex !== index,
-            }"
-            class="h-2 w-2 rounded-full cursor-pointer"
-            @click="setCurrentPicture(index)"
-          ></span>
-        </div>
+        <!-- Swiper-Galerie -->
+        <swiper
+          :modules="[Navigation, Pagination]"
+          navigation
+          :pagination="{ clickable: true }"
+          loop
+          :initial-slide="currentPictureIndex"
+          class="swiper-container"
+        >
+          <swiper-slide v-for="(picture, index) in pictures" :key="picture.id">
+            <div class="flex items-center justify-center">
+              <img
+                v-if="picture?.path"
+                :src="`${picture?.path}?t=${Date.now()}`"
+                :alt="picture?.original_name || 'Bildbeschreibung fehlt'"
+                @click="openFullscreen(picture?.path)"
+                @load="handleImageLoad"
+                @error="handleImageError"
+                class="max-h-[60vh] max-w-full object-contain w-full h-auto"
+              />
+              <p v-else class="text-center text-gray-500">
+                Kein Bild vorhanden
+              </p>
+            </div>
+          </swiper-slide>
+        </swiper>
         <button
           class="bg-red-500 text-white px-4 py-2 rounded-md w-full"
           @click="closePictureModal"
@@ -200,6 +177,7 @@
         </button>
       </div>
     </div>
+
     <div ref="fullscreenContainer" class="hidden"></div>
   </div>
 </template>
