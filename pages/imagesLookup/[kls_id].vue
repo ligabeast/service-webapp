@@ -53,13 +53,7 @@
     </div>
 
     <!-- Fullscreen Image Modal -->
-    <div
-      v-if="fullscreenImage"
-      class="fullscreen-modal"
-      @click="closeFullscreen"
-    >
-      <img :src="fullscreenImage" alt="Fullscreen Image" />
-    </div>
+    <FullscreenGallery />
   </div>
 </template>
 
