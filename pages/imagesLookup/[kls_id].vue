@@ -24,7 +24,7 @@
               <img
                 :src="picture.path"
                 class="w-20 h-20 p-2 border border-black"
-                @click="openImageFullscreen(picture.path)"
+                @click="gallery.openGallery(order.pictures, index)"
               />
             </div>
           </div>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Fullscreen Image Modal -->
-    <FullscreenGallery />
+    <FullscreenGallery ref="gallery" />
   </div>
 </template>
 
@@ -70,6 +70,8 @@ onMounted(() => {
 
 const currentPage = route.query.currentPage || 1;
 const orderid = route.query.orderid || null;
+
+const gallery = ref(null);
 
 const adress = computed(() => {
   if (!orders.value || orders.value.length == 0) return null;
@@ -144,30 +146,5 @@ const closeFullscreen = () => {
 }
 .image img:hover {
   transform: scale(1.05);
-}
-.fullscreen-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  cursor: pointer;
-  padding: 0 !important; /* Entfernt jegliches Padding */
-  margin: 0 !important;
-}
-
-.fullscreen-modal img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  margin: 0; /* Entfernt Margin */
-  padding: 0; /* Entfernt Padding */
-  border: none; /* Entfernt unerwünschte Rahmen */
-  display: block; /* Stellt sicher, dass keine Inline-Spaces auftreten */
 }
 </style>

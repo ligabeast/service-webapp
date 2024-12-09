@@ -1,5 +1,6 @@
 <template>
   <div v-if="isFullscreen" class="fullscreen-gallery">
+    <!-- Swiper-Galerie -->
     <swiper
       :modules="[Navigation, Pagination]"
       navigation
@@ -13,6 +14,7 @@
       </swiper-slide>
     </swiper>
 
+    <!-- Schließen-Button -->
     <button @click="closeGallery" class="close-button">Schließen</button>
   </div>
 </template>
@@ -21,7 +23,6 @@
 import { ref } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination } from "swiper/modules";
-
 import "swiper/swiper-bundle.css";
 
 // Galerie-Status
@@ -41,7 +42,7 @@ const closeGallery = () => {
   isFullscreen.value = false;
 };
 
-// Expose Funktionen
+// Expose Funktionen für die Elternkomponente
 defineExpose({
   openGallery,
 });
