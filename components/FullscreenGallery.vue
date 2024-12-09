@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isFullscreen" class="fullscreen-gallery">
+  <div v-if="isFullscreen" class="fullscreen-gallery w-full h-full">
     <!-- Swiper-Galerie -->
     <swiper
       :modules="[Navigation, Pagination]"
