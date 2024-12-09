@@ -17,9 +17,6 @@
         <img :src="picture.path" alt="Bild" class="gallery-image" />
       </swiper-slide>
     </swiper>
-
-    <!-- Schließen-Button -->
-    <button @click="closeGallery" class="close-button">Schließen</button>
   </div>
 </template>
 
