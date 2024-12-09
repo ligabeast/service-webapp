@@ -87,6 +87,7 @@ defineExpose({
   max-height: 90%;
   object-fit: contain;
   margin: 0 auto;
+  pointer-events: none; /* Verhindert, dass das Bild Swipe-Events blockiert */
 }
 
 .swiper-pagination {
