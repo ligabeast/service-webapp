@@ -67,11 +67,11 @@ defineExpose({
 
 .swiper-container {
   width: 100%;
-  height: 100%;
+  height: auto; /* Flexible Höhe */
   display: flex;
-  flex-direction: column; /* Inhalte vertikal ausrichten */
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Pagination bleibt nahe am Bild */
+  justify-content: center;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -90,7 +90,26 @@ defineExpose({
 }
 
 .swiper-pagination {
+  width: auto; /* Automatische Breite */
+  height: auto; /* Automatische Höhe */
   margin-top: 10px; /* Abstand zwischen Bild und Pagination */
-  position: relative; /* Pagination bleibt innerhalb des Containers */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%; /* Runde Punkte */
+  opacity: 0.7;
+  margin: 0 5px;
+  transition: opacity 0.3s;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1;
+  background: blue;
 }
 </style>
