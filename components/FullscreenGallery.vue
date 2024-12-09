@@ -4,7 +4,7 @@
     <swiper
       :modules="[Navigation, Pagination]"
       navigation
-      pagination
+      pagination="{ clickable: true }"
       loop
       :initial-slide="initialSlide"
       class="swiper-container"
@@ -69,9 +69,9 @@ defineExpose({
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column; /* Ändert die Richtung, sodass Inhalte untereinander stehen */
+  flex-direction: column; /* Inhalte vertikal ausrichten */
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Pagination bleibt nahe am Bild */
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -80,12 +80,6 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1; /* Nutzt den verfügbaren Platz */
-}
-
-.swiper-pagination {
-  margin-top: 10px; /* Abstand zwischen Bild und Pagination */
-  position: relative; /* Pagination bleibt innerhalb des Containers */
 }
 
 .gallery-image {
@@ -93,5 +87,10 @@ defineExpose({
   max-height: 90%;
   object-fit: contain;
   margin: 0 auto;
+}
+
+.swiper-pagination {
+  margin-top: 10px; /* Abstand zwischen Bild und Pagination */
+  position: relative; /* Pagination bleibt innerhalb des Containers */
 }
 </style>
