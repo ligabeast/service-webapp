@@ -4,7 +4,7 @@
     <swiper
       :modules="[Navigation, Pagination]"
       navigation
-      pagination="{ clickable: true }"
+      :pagination="{ clickable: true }"
       loop
       :initial-slide="initialSlide"
       class="swiper-container"
