@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col space-y-2 pb-4 relative">
+  <div class="flex flex-col space-y-2 pb-4 relative h-full w-full">
     <h1 class="font-semibold text-2xl px-4">KLS History for: {{ klsId }}</h1>
     <h2 class="px-4" v-if="adress">{{ adress }}</h2>
     <Loader v-if="loading" />
@@ -68,6 +68,12 @@ import { addNotification } from "~/notification";
 
 const route = useRoute();
 const klsId = route.params.kls_id;
+
+onMounted(() => {
+  console.log("KLS ID:", klsId); // Überprüfen, ob der Wert geladen wird
+  fetchKlsHistory();
+});
+
 const currentPage = route.query.currentPage || 1;
 const orderid = route.query.orderid || null;
 
@@ -81,18 +87,30 @@ const loading = ref(true);
 const error = ref(null);
 const fullscreenImage = ref(null);
 
+definePageMeta({
+  ssr: false,
+});
+
 const fetchKlsHistory = async () => {
   try {
-    const { data } = await useFetch(`/api/getKlsHistory?kls_id=${klsId}`, {
-      headers: {
-        Authorization: `Bearer ${useCookie("jwt").value}`,
-      },
-    });
-    if (data.value.status === "success") {
-      orders.value = data.value.data;
-      addNotification("KLS History loaded successfully", "success", 5000);
+    loading.value = true;
+    const response = await $fetch(
+      `/api/getKlsHistory?kls_id=${route.params.kls_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${useCookie("jwt").value}`,
+        },
+      }
+    );
+
+    addNotification(response.message, response.status, 3000);
+    if (response.status === "success") {
+      orders.value = response.data;
+    } else {
+      throw new Error(response.message || "Fehler beim Laden der Daten");
     }
   } catch (err) {
+    console.error("Fetch Error:", err.message);
     error.value = err.message || "An unexpected error occurred";
   } finally {
     loading.value = false;
@@ -114,8 +132,6 @@ const openImageFullscreen = (imagePath) => {
 const closeFullscreen = () => {
   fullscreenImage.value = null;
 };
-
-onMounted(fetchKlsHistory);
 </script>
 
 <style scoped>

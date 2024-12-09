@@ -107,7 +107,7 @@ const addPredefinedComment = () => {
       },
       body: JSON.stringify({ comment: newComment }),
     }).then((res) => {
-      addNotification(res.message, res.status, 5000);
+      addNotification(res.message, res.status, 3000);
     });
   }
 };

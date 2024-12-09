@@ -158,19 +158,19 @@ const fetchData = async () => {
       ordersData.value = data.data;
       updateCharts();
       if (!initial.value) {
-        addNotification("Statistiken erfolgreich geladen.", "success", 5000);
+        addNotification("Statistiken erfolgreich geladen.", "success", 3000);
       }
       initial.value = false;
     })
     .catch((error) => {
       console.error("Fehler beim Laden der Statistiken:", error);
-      addNotification("Fehler beim Laden der Statistiken.", "error", 5000);
+      addNotification("Fehler beim Laden der Statistiken.", "error", 3000);
     });
 };
 
 const updateCharts = () => {
   if (!ordersData.value) {
-    addNotification("error", "Keine Daten für die Statistiken gefunden.", 5000);
+    addNotification("error", "Keine Daten für die Statistiken gefunden.", 3000);
     return;
   }
   updateChart1();

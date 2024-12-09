@@ -41,7 +41,7 @@ const ordernumber = ref<string>("");
 function handleSave() {
   if (adress.value === "" || kls_id.value === "" || ordernumber.value === "") {
     console.log("Bitte füllen Sie alle Felder aus");
-    addNotification("Bitte füllen Sie alle Felder aus", "error", 5000);
+    addNotification("Bitte füllen Sie alle Felder aus", "error", 3000);
     return;
   }
   $fetch("/api/orderCreate", {
@@ -57,7 +57,7 @@ function handleSave() {
     }),
   })
     .then((res) => {
-      addNotification(res.message, res.status, 5000);
+      addNotification(res.message, res.status, 3000);
       if (res.status === "success") {
         console.log("Order created successfully");
 

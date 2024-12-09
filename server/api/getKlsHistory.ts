@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       status: "success",
-      message: "Orders and images retrieved successfully",
+      message: "KLS History retrieved successfully",
       data: rows,
     };
   } catch (error: any) {

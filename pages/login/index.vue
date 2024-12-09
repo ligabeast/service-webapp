@@ -53,7 +53,7 @@ const login = async () => {
       method: "POST",
       body: { username: username.value, password: password.value },
     });
-    addNotification(data.message, data.status, 5000);
+    addNotification(data.message, data.status, 3000);
     if (data.status === "error") {
       return;
     }

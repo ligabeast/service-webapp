@@ -323,7 +323,7 @@ async function handleSave2() {
     body: formData, // FormData direkt senden
   })
     .then((res) => {
-      addNotification(res.message, res.status, 5000);
+      addNotification(res.message, res.status, 3000);
       showLoading.value = false;
       console.log("Antwort:", res);
       if (res.status === "success") {
