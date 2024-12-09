@@ -22,7 +22,7 @@
               class="image flex flex-col items-center"
             >
               <img
-                :src="picture.path"
+                :src="`${IMAGE_URLPREFIX}${picture?.path}`"
                 class="w-20 h-20 p-2 border border-black"
                 @click="gallery.openGallery(order.pictures, index)"
               />
@@ -82,6 +82,9 @@ const orders = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const fullscreenImage = ref(null);
+
+const config = useRuntimeConfig();
+const IMAGE_URLPREFIX = config.public.IMAGE_URLPREFIX || "localhost";
 
 definePageMeta({
   ssr: false,

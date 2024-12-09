@@ -156,11 +156,9 @@
             <div class="flex items-center justify-center">
               <img
                 v-if="picture?.path"
-                :src="`${picture?.path}?t=${Date.now()}`"
+                :src="`${IMAGE_URLPREFIX}${picture?.path}`"
+                @click="gallery.openGallery(pictures, index)"
                 :alt="picture?.original_name || 'Bildbeschreibung fehlt'"
-                @click="openFullscreen(picture?.path)"
-                @load="handleImageLoad"
-                @error="handleImageError"
                 class="max-h-[60vh] max-w-full object-contain w-full h-auto"
               />
               <p v-else class="text-center text-gray-500">
@@ -177,7 +175,7 @@
         </button>
       </div>
     </div>
-
+    <FullscreenGallery ref="gallery" />
     <div ref="fullscreenContainer" class="hidden"></div>
   </div>
 </template>
@@ -201,11 +199,19 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { ref, computed } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/swiper-bundle.css";
+
+const config = useRuntimeConfig();
+const IMAGE_URLPREFIX = config.public.IMAGE_URLPREFIX || "localhost";
 
 // Route und Daten laden
 const route = useRoute();
 const orderid = route.params.orderid;
 const currentPage = route.query.currentPage || 1;
+
+const gallery = ref(null);
 
 const timeFormatter = new Intl.DateTimeFormat("de-DE", {
   day: "2-digit",
@@ -378,41 +384,6 @@ function copyToClipboard(text: string) {
 }
 
 const fullscreenContainer = ref<HTMLElement | null>(null);
-
-function openFullscreen(imagePath: string) {
-  const container = fullscreenContainer.value || document.createElement("div");
-  container.innerHTML = `<img src="${imagePath}" alt="Bild im Vollbildmodus" class="max-w-full max-h-full object-contain"/>`;
-  container.style.display = "flex";
-  container.style.justifyContent = "center";
-  container.style.alignItems = "center";
-  container.style.backgroundColor = "black";
-  container.style.position = "fixed";
-  container.style.top = "0";
-  container.style.left = "0";
-  container.style.width = "100vw";
-  container.style.height = "100vh";
-  container.style.zIndex = "1000";
-
-  // Füge den Container zum DOM hinzu (falls nicht bereits vorhanden)
-  if (!fullscreenContainer.value) {
-    fullscreenContainer.value = container;
-    document.body.appendChild(container);
-  }
-
-  // Aktivieren des Fullscreen-Modus
-  if (container.requestFullscreen) {
-    container.requestFullscreen();
-  } else if ((container as any).webkitRequestFullscreen) {
-    // Safari
-    (container as any).webkitRequestFullscreen();
-  } else if ((container as any).msRequestFullscreen) {
-    // IE11
-    (container as any).msRequestFullscreen();
-  }
-
-  // Schließen des Fullscreen-Modus durch Klicken auf das Bild
-  container.addEventListener("click", closeFullscreen);
-}
 
 function closeFullscreen() {
   // Schließen des Vollbildmodus

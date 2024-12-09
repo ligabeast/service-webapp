@@ -6,6 +6,12 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
   },
 
+  runtimeConfig: {
+    public: {
+      IMAGE_URLPREFIX: process.env.IMAGE_URLPREFIX,
+    },
+  },
+
   postcss: {
     plugins: {
       tailwindcss: {},

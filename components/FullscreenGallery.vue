@@ -14,7 +14,11 @@
         v-for="(picture, index) in pictures"
         :key="index"
       >
-        <img :src="picture.path" alt="Bild" class="gallery-image" />
+        <img
+          :src="`${IMAGE_URLPREFIX}${picture?.path}`"
+          alt="Bild"
+          class="gallery-image"
+        />
       </swiper-slide>
     </swiper>
   </div>
@@ -30,6 +34,9 @@ import "swiper/swiper-bundle.css";
 const pictures = ref([]);
 const isFullscreen = ref(false);
 const initialSlide = ref(0);
+
+const config = useRuntimeConfig();
+const IMAGE_URLPREFIX = config.public.IMAGE_URLPREFIX || "localhost";
 
 // Galerie öffnen
 const openGallery = (selectedPictures, index = 0) => {
