@@ -55,7 +55,7 @@ defineExpose({
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh; /* Dynamische Höhe basierend auf dem Viewport */
+  height: 100%;
   background: rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
