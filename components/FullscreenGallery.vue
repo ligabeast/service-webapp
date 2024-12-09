@@ -69,6 +69,7 @@ defineExpose({
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column; /* Ändert die Richtung, sodass Inhalte untereinander stehen */
   align-items: center;
   justify-content: center;
   overflow: hidden;
@@ -79,6 +80,12 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-grow: 1; /* Nutzt den verfügbaren Platz */
+}
+
+.swiper-pagination {
+  margin-top: 10px; /* Abstand zwischen Bild und Pagination */
+  position: relative; /* Pagination bleibt innerhalb des Containers */
 }
 
 .gallery-image {
