@@ -3,26 +3,26 @@
     <!-- Swiper-Galerie -->
     <swiper
       :modules="[Navigation, Pagination]"
-      navigation
       pagination
       loop
       :initial-slide="initialSlide"
       class="swiper-container"
     >
-      <swiper-slide v-for="(picture, index) in pictures" :key="index">
+      <swiper-slide
+        v-for="(picture, index) in pictures"
+        :key="index"
+        @click="closeGallery"
+      >
         <img :src="picture.path" alt="Bild" class="gallery-image" />
       </swiper-slide>
     </swiper>
-
-    <!-- Schließen-Button -->
-    <button @click="closeGallery" class="close-button">Schließen</button>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation, Pagination } from "swiper/modules";
+import { Pagination } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 
 // Galerie-Status
@@ -66,16 +66,6 @@ defineExpose({
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
-}
-
-.close-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
   cursor: pointer;
 }
 </style>
