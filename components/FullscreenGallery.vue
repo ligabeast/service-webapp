@@ -55,14 +55,14 @@ defineExpose({
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100vh; /* Dynamische Höhe basierend auf dem Viewport */
   background: rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  margin: 0; /* Entfernt mögliche Standard-Margins */
-  padding: 0; /* Entfernt mögliche Standard-Paddings */
+  margin: 0;
+  padding: 0;
 }
 
 .swiper-container {
@@ -71,20 +71,20 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden; /* Verhindert Scrollbalken */
-  box-sizing: border-box; /* Sicherstellen, dass Padding korrekt berechnet wird */
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .swiper-slide {
   display: flex;
-  justify-content: center; /* Zentriert die Bilder horizontal */
-  align-items: center; /* Zentriert die Bilder vertikal */
+  justify-content: center;
+  align-items: center;
 }
 
 .gallery-image {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
-  margin: 0 auto; /* Stellt sicher, dass das Bild zentriert ist */
+  margin: 0 auto;
 }
 </style>

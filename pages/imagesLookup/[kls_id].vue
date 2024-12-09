@@ -17,7 +17,7 @@
         <template v-if="order.pictures && order.pictures.length > 0">
           <div class="image-container flex flex-wrap gap-4">
             <div
-              v-for="picture in order.pictures"
+              v-for="(picture, index) in order.pictures"
               :key="picture.id"
               class="image flex flex-col items-center"
             >
