@@ -41,6 +41,7 @@ const password = ref("");
 const loading = ref(false);
 const error = ref<string | null>(null);
 const router = useRouter();
+import { addNotification } from "~/notification";
 
 const login = async () => {
   loading.value = true;
@@ -52,6 +53,10 @@ const login = async () => {
       method: "POST",
       body: { username: username.value, password: password.value },
     });
+    addNotification(data.message, data.status, 5000);
+    if (data.status === "error") {
+      return;
+    }
     const token = data.data.token;
     const jwtCookie = useCookie("jwt", {
       // expires in 1 year

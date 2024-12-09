@@ -2,6 +2,11 @@
   <div class="flex w-full h-full flex-col p-4 space-y-4">
     <h1 class="font-semibold text-2xl text-center">Auftrag abschließen</h1>
     <Loader v-if="showLoading" />
+    <CabelModal
+      v-show="showCabelModal"
+      @abort="showCabelModal = false"
+      @submit="handleSave2"
+    />
     <PositionInsertModal
       v-show="showMaterialModal"
       @close="showMaterialModal = false"
@@ -224,6 +229,7 @@ const possibleMaterials = ref<Material[]>(
 const showMaterialModal = ref(false);
 const showResultModal = ref(false);
 const showLoading = ref(false);
+const showCabelModal = ref(false);
 
 function handlePushMaterial(material: Material) {
   insertedPositions.value.push(material);
@@ -258,6 +264,19 @@ async function handleSave() {
     return;
   }
 
+  // check ob Kabel eingetragen ist
+  const kabel = insertedPositions.value.find(
+    (e) => e.name === "Meter Gf-Kabel einziehen/einblasen u. verlegen"
+  );
+
+  if (!kabel) {
+    showCabelModal.value = true;
+    return;
+  }
+  handleSave2();
+}
+
+async function handleSave2() {
   const formData = new FormData();
 
   // Dateien anhängen
