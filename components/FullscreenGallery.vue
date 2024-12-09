@@ -61,22 +61,30 @@ defineExpose({
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  margin: 0; /* Entfernt mögliche Standard-Margins */
+  padding: 0; /* Entfernt mögliche Standard-Paddings */
+}
+
+.swiper-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Verhindert Scrollbalken */
+  box-sizing: border-box; /* Sicherstellen, dass Padding korrekt berechnet wird */
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center; /* Zentriert die Bilder horizontal */
+  align-items: center; /* Zentriert die Bilder vertikal */
 }
 
 .gallery-image {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
-}
-
-.close-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+  margin: 0 auto; /* Stellt sicher, dass das Bild zentriert ist */
 }
 </style>
