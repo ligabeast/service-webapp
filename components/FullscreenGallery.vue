@@ -87,7 +87,15 @@ defineExpose({
   max-height: 90%;
   object-fit: contain;
   margin: 0 auto;
-  pointer-events: none; /* Verhindert, dass das Bild Swipe-Events blockiert */
+}
+
+/* Querformat: Padding hinzufügen */
+@media (orientation: landscape) {
+  .gallery-image {
+    max-width: 80%; /* Reduziere die Breite für Padding */
+    max-height: 80%; /* Reduziere die Höhe für Padding */
+    padding: 10px; /* Padding hinzufügen */
+  }
 }
 
 .swiper-pagination {
