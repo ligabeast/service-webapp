@@ -61,7 +61,7 @@ defineExpose({
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  margin: 0;
+  margin: 0 !important;
   padding: 0;
 }
 
