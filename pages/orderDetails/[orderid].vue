@@ -35,9 +35,15 @@
       <div class="w-[1px] border border-black"></div>
       <div
         v-if="order?.status"
-        v-html="order?.status"
+        v-html="
+          order?.status === 'completed' && order.notCompletedReason
+            ? `nicht erledigt - ${order.notCompletedReason}`
+            : order?.status
+        "
         :class="{
           'text-green-500': order?.status === 'completed',
+          'text-red-500':
+            order?.status === 'completed' && order.notCompletedReason,
         }"
         class="h-90 whitespace-pre-line w-1/2 font-semibold"
       ></div>

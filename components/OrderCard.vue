@@ -25,10 +25,17 @@
         <span
           :class="{
             'text-yellow-500': order.status === 'started',
-            'text-green-500': order.status === 'completed',
+            'text-green-500':
+              order.status === 'completed' && !order.notCompletedReason,
+            'text-red-500':
+              order.status === 'completed' && order.notCompletedReason,
           }"
         >
-          {{ order.status }}
+          {{
+            order.status === "completed" && order.notCompletedReason
+              ? "nicht erledigt - " + order.notCompletedReason
+              : order.status
+          }}
         </span>
       </div>
       <span>{{ timeFormatter.format(new Date(order.dateCreated)) }}</span>
@@ -43,6 +50,8 @@ const props = defineProps<{
   order: Order;
   currentPage: number;
 }>();
+
+console.log("OrderCard", props.order);
 
 const timeFormatter = new Intl.DateTimeFormat("de-DE", {
   day: "2-digit",

@@ -29,4 +29,5 @@ export interface Order {
   user_id: number;
   status: string;
   dateCreated: string;
+  notCompletedReason: string;
 }

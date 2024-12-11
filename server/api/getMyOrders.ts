@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   const adress = query.adress || "";
 
   let sql = `
-    SELECT id, adress, ordernumber, kls_id, user_id, status, dateCreated, orderType
+    SELECT id, adress, ordernumber, kls_id, user_id, status, dateCreated, orderType, notCompletedReason
     FROM sys.Orders
     WHERE user_id = ? AND hide = false
   `;

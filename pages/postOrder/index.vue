@@ -123,6 +123,30 @@
         +
       </button>
     </div>
+    <!-- Checkbox for not completed Order -->
+    <div class="flex items-center space-x-2">
+      <input type="checkbox" id="notCompleted" v-model="notCompleted" />
+      <label for="notCompleted"
+        >Auftrag konnte nicht abgeschlossen werden</label
+      >
+    </div>
+
+    <!-- Select reason for not completed Order -->
+    <div class="flex flex-col space-y-4" v-if="notCompleted">
+      <label class="text-lg font-semibold" for="reason"
+        >Grund für nicht abgeschlossenen Auftrag</label
+      >
+      <select
+        v-model="notCompletedReason"
+        class="border border-black rounded-sm w-full h-8 px-2"
+      >
+        <option>Kunde nicht erreichbar</option>
+        <option>Material nicht verfügbar</option>
+        <option>Zugang nicht vorhanden</option>
+        <option>NE3 Fehler</option>
+      </select>
+    </div>
+
     <div class="flex flex-col space-y-4">
       <label class="text-lg font-semibold" for="kommentar"
         >Interner Kommentar</label
@@ -174,6 +198,9 @@ const ordernumber = ref<string>(ordernumberRef ?? "");
 
 const commentCopy = ref<string>("");
 const commentInternal = ref<string>("");
+
+const notCompleted = ref<boolean>(false);
+const notCompletedReason = ref<string>("");
 
 function handleCopyCommentChanged(comment: string) {
   commentCopy.value = comment;
@@ -254,6 +281,15 @@ function handleDeleteMaterial(material: Material) {
 }
 
 async function handleSave() {
+  if (notCompleted.value && !notCompletedReason.value) {
+    addNotification(
+      "Bitte geben Sie einen Grund für den nicht abgeschlossenen Auftrag an",
+      "error",
+      5000
+    );
+    return;
+  }
+
   if (insertedPositions.value.length === 0) {
     console.log("Bitte fügen Sie Positionen hinzu");
     addNotification(
@@ -292,6 +328,8 @@ async function handleSave2() {
   }
 
   // Weitere Felder anhängen
+  formData.append("notCompleted", notCompleted.value.toString());
+  formData.append("notCompletedReason", notCompletedReason.value);
   formData.append("ordernumber", ordernumber.value);
   formData.append("orderid", orderid);
   formData.append("orderType", selectedOrderType.value);

@@ -52,6 +52,8 @@ export default defineEventHandler(async (event) => {
       positions,
       commentCopy,
       commentInternal,
+      notCompleted,
+      notCompletedReason,
     } = fields;
     ordernumber = Array.isArray(ordernumber) ? ordernumber[0] : ordernumber;
     orderid = Array.isArray(orderid) ? orderid[0] : orderid;
@@ -64,6 +66,10 @@ export default defineEventHandler(async (event) => {
     const pictures = Array.isArray(files.pictures)
       ? files.pictures
       : [files.pictures];
+    notCompletedReason = Array.isArray(notCompletedReason)
+      ? notCompletedReason[0]
+      : notCompletedReason;
+    notCompleted = Array.isArray(notCompleted) ? notCompleted[0] : notCompleted;
 
     console.log("[DEBUG] Überprüfe Bestellung...");
     const [rows] = await connection.execute(
@@ -109,8 +115,8 @@ export default defineEventHandler(async (event) => {
     console.log("[DEBUG] Erstelle neue Bestellung...");
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO sys.Orders 
-        (ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal) 
-       VALUES (?, ?, 'completed', ?, ?, ?, NOW(), ?, ?);`,
+        (ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal, notCompletedReason) 
+       VALUES (?, ?, 'completed', ?, ?, ?, NOW(), ?, ?, ?);`,
       [
         ordernumber,
         userId,
@@ -119,6 +125,7 @@ export default defineEventHandler(async (event) => {
         kls_id,
         commentCopy,
         commentInternal,
+        notCompleted === "true" ? notCompletedReason : null,
       ]
     );
 
