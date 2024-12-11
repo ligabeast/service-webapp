@@ -89,6 +89,31 @@
       </select>
     </div>
 
+    <!-- Filter für Kls -->
+    <div v-if="props.extraFilters">
+      <label for="sort" class="block text-sm font-medium text-gray-700">
+        Filtern nach KLS-ID
+      </label>
+      <input
+        id="klsId"
+        v-model="filters.klsId"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white py-1 px-1"
+        placeholder="KLS-ID"
+      />
+    </div>
+
+    <!-- Filter für Adresse -->
+    <div v-if="props.extraFilters">
+      <label for="sort" class="block text-sm font-medium text-gray-700">
+        Filtern nach Adresse
+      </label>
+      <input
+        v-model="filters.adress"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white py-1 px-1"
+        placeholder="PLZ / Ort / ..."
+      />
+    </div>
+
     <!-- Buttons -->
     <div class="flex space-x-4">
       <button
@@ -114,6 +139,7 @@ import { toRefs, onMounted } from "vue";
 const props = defineProps<{
   show: boolean;
   pagination: boolean;
+  extraFilters: boolean;
   filters: {
     perPage?: number;
     startDate: string | null;
@@ -121,6 +147,8 @@ const props = defineProps<{
     timeRange: string;
     sort?: string;
     orderType: string;
+    adress?: string;
+    klsId?: string;
   };
 }>();
 
@@ -145,6 +173,8 @@ const resetFilters = () => {
   filters.value.endDate = "";
   filters.value.sort = "date-desc";
   filters.value.orderType = "all";
+  filters.value.klsId = "";
+  filters.value.adress = "";
   updateDateRange();
 };
 const updateDateRange = () => {

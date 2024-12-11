@@ -21,6 +21,8 @@ export default defineEventHandler(async (event) => {
   const startDate = query.startDate || "";
   const endDate = query.endDate || "";
   const orderType = query.orderType || "all"; // Standardwert: "all"
+  const klsId = query.klsId || "";
+  const adress = query.adress || "";
 
   let sql = `
     SELECT id, adress, ordernumber, kls_id, user_id, status, dateCreated, orderType
@@ -39,6 +41,16 @@ export default defineEventHandler(async (event) => {
   if (endDate) {
     sql += " AND dateCreated <= ?";
     params.push(endDate);
+  }
+
+  if (klsId) {
+    sql += " AND kls_id = ?";
+    params.push(klsId);
+  }
+
+  if (adress) {
+    sql += " AND adress LIKE ?";
+    params.push(`%${adress}%`);
   }
 
   // Auftragstyp-Filter
@@ -72,12 +84,16 @@ export default defineEventHandler(async (event) => {
       ${startDate ? "AND dateCreated >= ?" : ""}
       ${endDate ? "AND dateCreated <= ?" : ""}
       ${orderType !== "all" ? "AND orderType = ?" : ""}
+      ${klsId ? "AND kls_id = ?" : ""}
+      ${adress ? "AND adress LIKE ?" : ""}
     `,
       [
         userId,
         ...(startDate ? [startDate] : []),
         ...(endDate ? [endDate] : []),
         ...(orderType !== "all" ? [orderType] : []),
+        ...(klsId ? [klsId] : []),
+        ...(adress ? ["%" + adress + "%"] : []),
       ]
     );
 

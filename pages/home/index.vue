@@ -47,6 +47,7 @@
       <transition name="top-to-bottom" mode="out-in">
         <OrderFilter
           :pagination="true"
+          :extraFilters="true"
           :filters="filters"
           :show="showFilter"
           @applyFilters="handleFiltersChanged"
@@ -122,6 +123,8 @@ const filters = ref({
     .toISOString()
     .split("T")[0],
   sort: "date-desc", // Sorting order
+  adress: "",
+  klsId: "",
 });
 
 // get currentPage as queryparam
