@@ -23,6 +23,7 @@
       <div class="h-full w-full flex flex-col space-y-2 text-left">
         <div class="whitespace-pre-wrap" v-html="order.adress"></div>
         <span
+          class="overflow-hidden"
           :class="{
             'text-yellow-500': order.status === 'started',
             'text-green-500':
