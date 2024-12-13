@@ -144,6 +144,7 @@
         <option>Material nicht verfügbar</option>
         <option>Zugang nicht vorhanden</option>
         <option>NE3 Fehler</option>
+        <option>Vertragsfehler</option>
       </select>
     </div>
 
