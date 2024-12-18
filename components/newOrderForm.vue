@@ -1,4 +1,5 @@
 <template>
+<Loader v-show="loading" />
   <label for="anschrift">Anschrift</label>
   <textarea
     v-model="adress"
@@ -26,6 +27,7 @@
   <button
     class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md"
     @click="handleSave"
+	:disabled="loading"
   >
     Speichern
   </button>
@@ -37,8 +39,10 @@ import { addNotification } from "~/notification.ts";
 const adress = ref<string>("");
 const kls_id = ref<string>("");
 const ordernumber = ref<string>("");
+const loading = ref(false);
 
 function handleSave() {
+	loading.value = true;
   if (adress.value === "" || kls_id.value === "" || ordernumber.value === "") {
     console.log("Bitte füllen Sie alle Felder aus");
     addNotification("Bitte füllen Sie alle Felder aus", "error", 3000);
@@ -57,6 +61,7 @@ function handleSave() {
     }),
   })
     .then((res) => {
+	loading.value = false;
       addNotification(res.message, res.status, 3000);
       if (res.status === "success") {
         console.log("Order created successfully");
@@ -73,5 +78,6 @@ function handleSave() {
     .catch((error) => {
       console.log("Error occurred while creating order:", error);
     });
+	
 }
 </script>
