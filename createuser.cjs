@@ -1,4 +1,5 @@
 "use strict";
+
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
-    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -35,11 +37,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var promise_1 = require("mysql2/promise");
-var bcrypt_1 = require("bcrypt");
-var readline_1 = require("readline");
-// MySQL-Datenbankkonfiguration
+
+// Module importieren
+var mysql = require("mysql2/promise");
+var bcrypt = require("bcrypt");
+var readline = require("readline");
+
+require('dotenv').config();
+
 var dbConfig = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -47,62 +52,65 @@ var dbConfig = {
     database: process.env.DB_NAME,
     port: parseInt(process.env.DB_PORT || "3306"),
 };
+
 // Funktion zum Einlesen von Benutzereingaben über die Konsole
-var rl = readline_1.default.createInterface({
+var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
+
 // Funktion zum Einlesen einer Benutzereingabe
 var askQuestion = function (query) {
     return new Promise(function (resolve) { return rl.question(query, resolve); });
 };
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var connection, username, password, hashedPassword, rows, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 6, 7, 10]);
-                return [4 /*yield*/, askQuestion("Enter username: ")];
-            case 1:
-                username = _a.sent();
-                return [4 /*yield*/, askQuestion("Enter password: ")];
-            case 2:
-                password = _a.sent();
-                if (!username || !password) {
-                    console.log("Username and password are required.");
-                    return [2 /*return*/];
-                }
-                return [4 /*yield*/, bcrypt_1.default.hash(password, 10)];
-            case 3:
-                hashedPassword = _a.sent();
-                return [4 /*yield*/, promise_1.default.createConnection(dbConfig)];
-            case 4:
-                // Verbindung zur MySQL-Datenbank herstellen
-                connection = _a.sent();
-                return [4 /*yield*/, connection.execute("SELECT id FROM Users WHERE username = ?;", [username])];
-            case 5:
-                rows = (_a.sent())[0];
-                if (rows.length > 0) {
-                    console.log("User already exists.");
-                    return [2 /*return*/];
-                }
-                console.log("User created successfully!");
-                return [3 /*break*/, 10];
-            case 6:
-                error_1 = _a.sent();
-                console.error("Error:", error_1);
-                return [3 /*break*/, 10];
-            case 7:
-                if (!connection) return [3 /*break*/, 9];
-                return [4 /*yield*/, connection.end()];
-            case 8:
-                _a.sent();
-                _a.label = 9;
-            case 9:
-                // Readline-Interface schließen
-                rl.close();
-                return [7 /*endfinally*/];
-            case 10: return [2 /*return*/];
+
+"use strict";
+
+// Hauptprogramm
+(async function () {
+    let connection;
+    try {
+        // Benutzername und Passwort einlesen
+        const username = await askQuestion("Enter username: ");
+        const password = await askQuestion("Enter password: ");
+
+        // Eingaben validieren
+        if (!username || !password) {
+            console.log("Username and password are required.");
+            return;
         }
-    });
-}); })();
+
+        // Verbindung zur MySQL-Datenbank herstellen
+        connection = await mysql.createConnection(dbConfig);
+
+        // Überprüfen, ob der Benutzer bereits existiert
+        const [rows] = await connection.execute(
+            "SELECT id FROM Users WHERE username = ?;",
+            [username]
+        );
+
+        if (rows.length > 0) {
+            console.log(`User with username "${username}" already exists.`);
+        } else {
+            // Passwort hashen
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Benutzer in die Datenbank einfügen
+            await connection.execute(
+                "INSERT INTO Users (username,password_hash ) VALUES (?, ?);",
+                [username, hashedPassword]
+            );
+
+            console.log(`User "${username}" created successfully!`);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    } finally {
+        // Verbindung schließen
+        if (connection) {
+            await connection.end();
+        }
+        // Readline-Interface schließen
+        rl.close();
+    }
+})();

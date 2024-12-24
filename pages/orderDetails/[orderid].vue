@@ -343,8 +343,8 @@ const whatsappResult = computed(() => {
 
 function handleCopyWhatsapp() {
   let text = `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}\n${whatsappResult.value}`;
-  if (order.value.commentInternal) {
-    text += `\n${order.value.commentInternal}`;
+  if (order.value.commentCopy) {
+    text += `\n${order.value.commentCopy}`;
   }
   copyToClipboard(text);
 }
