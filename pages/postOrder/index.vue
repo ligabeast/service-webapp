@@ -37,21 +37,15 @@
 
     <div class="flex space-x-3">
       <label for="anschrift" class="w-1/2">Auftragsnummer</label>
-      <input
-        v-model="ordernumber"
-        type="text"
-        class="w-full border border-black rounded-sm"
-        disabled
-      />
+      <span class="text-gray-600 font-medium">{{ ordernumber }}</span>
     </div>
     <div class="flex space-x-3">
       <label for="anschrift" class="w-1/2">KLS-ID</label>
-      <input
-        type="text"
-        v-model="kls_id"
-        class="w-full border border-black rounded-sm"
-        disabled
-      />
+      <NuxtLink
+        class="underline text-blue-600"
+        :to="`/imagesLookup/${kls_id}`"
+        >{{ kls_id }}</NuxtLink
+      >
     </div>
     <OrderTypeSelector @changed="selectedOrderType = $event" />
     <p class="font-semibold text-lg">Hochgeladene Bilder</p>
