@@ -64,6 +64,15 @@
       />
     </div>
 
+    <!-- Wöchentliche Aufträge -->
+    <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
+      <highchart
+        v-if="chartOptions4 != null"
+        :options="chartOptions4"
+        :update="['options.title', 'options.series']"
+      />
+    </div>
+
     <!-- Auftragstyp-Verteilung -->
     <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
       <highchart
@@ -122,6 +131,7 @@ const filters = ref({
 const chartOptions1 = ref(null);
 const chartOptions2 = ref(null);
 const chartOptions3 = ref(null); // Positionsverteilung
+const chartOptions4 = ref(null); // Wöchentliche Aufträge
 const ordersData = ref(null);
 
 const handleApplyFilters = (appliedFilters: typeof filters.value) => {
@@ -146,6 +156,7 @@ const fetchData = async () => {
   chartOptions1.value = null;
   chartOptions2.value = null;
   chartOptions3.value = null;
+  chartOptions4.value = null;
   $fetch("/api/getStatistics", {
     method: "GET",
     headers: {
@@ -176,6 +187,7 @@ const updateCharts = () => {
   updateChart1();
   updateChart2();
   updateChart3();
+  updateChart4();
 };
 
 const updateChart1 = () => {
@@ -197,7 +209,7 @@ const updateChart1 = () => {
   chartOptions1.value = {
     chart: { type: "line" },
     credits: { enabled: false },
-    title: { text: "Anzahl an Aufträgen pro Tag" },
+    title: { text: "Erfolgreich abgeschlossene Aufträge" },
     xAxis: { categories },
     yAxis: { title: { text: "Anzahl an Aufträgen" } },
     series: [{ name: "Aufträge", data: values }],
@@ -279,6 +291,32 @@ const updateChart3 = () => {
       },
     },
     series: [{ name: "Positionen", colorByPoint: true, data: chart3Data }],
+  };
+};
+
+const updateChart4 = () => {
+  if (!ordersData.value.chart4 || ordersData.value.chart4.length === 0) {
+    console.warn("Keine Daten für chart4 verfügbar");
+    chartOptions4.value = {
+      chart: { type: "column" },
+      title: { text: "Keine Daten für wöchentliche Aufträge verfügbar" },
+      series: [],
+    };
+    return;
+  }
+
+  const categories = ordersData.value.chart4.map(
+    (week) => `KW ${week.weekNumber}`
+  );
+  const values = ordersData.value.chart4.map((week) => week.orderCount);
+
+  chartOptions4.value = {
+    chart: { type: "column" },
+    credits: { enabled: false },
+    title: { text: "Abgebrochene Aufträge" },
+    xAxis: { categories, title: { text: "Kalenderwochen" } },
+    yAxis: { title: { text: "Anzahl der Aufträge" } },
+    series: [{ name: "Aufträge", data: values }],
   };
 };
 

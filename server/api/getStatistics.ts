@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     let sql1 = `
       SELECT DATE(dateCreated) AS orderDate, COUNT(*) AS orderCount
       FROM sys.Orders
-      WHERE user_id = ? AND status = "completed"
+      WHERE user_id = ? AND status = "completed" AND notCompletedReason is null
     `;
     const params1: any[] = [userId];
 
@@ -130,6 +130,43 @@ export default defineEventHandler(async (event) => {
 
     const [staticPositions] = await connection.query(sql3Static, params3Static);
 
+    let sql4 = `
+      SELECT 
+    DATE_FORMAT(dateCreated, '%Y-%u') AS weekNumber, -- Gruppierung nach Jahr und Woche
+    COUNT(*) AS orderCount
+FROM 
+    sys.Orders
+WHERE 
+    user_id = ? 
+    AND status = "completed" 
+    AND notCompletedReason is not null
+      `;
+    const params4: any[] = [userId];
+
+    if (orderType && orderType !== "all") {
+      sql4 += " AND orderType = ?";
+      params4.push(orderType);
+    }
+
+    if (startDate) {
+      sql4 += " AND DATE(dateCreated) >= ?";
+      params4.push(startDate);
+    }
+    if (endDate) {
+      sql4 += " AND DATE(dateCreated) <= ?";
+      params4.push(endDate);
+    }
+
+    sql4 += `
+      GROUP BY 
+          DATE_FORMAT(dateCreated, '%Y-%u')
+      ORDER BY 
+          weekNumber ASC;
+    `;
+
+    console.log(sql4, params4);
+    const [rows4] = await connection.query(sql4, params4);
+
     return {
       status: "success",
       message: "Orders data retrieved successfully",
@@ -140,6 +177,7 @@ export default defineEventHandler(async (event) => {
           dynamic: dynamicPositions, // Dynamische Positionen
           static: staticPositions, // Nicht-dynamische Positionen
         },
+        chart4: rows4,
       },
     };
   } catch (error: any) {
