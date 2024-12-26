@@ -164,7 +164,6 @@ WHERE
           weekNumber ASC;
     `;
 
-    console.log(sql4, params4);
     const [rows4] = await connection.query(sql4, params4);
 
     return {

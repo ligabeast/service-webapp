@@ -299,7 +299,7 @@ const updateChart4 = () => {
     console.warn("Keine Daten für chart4 verfügbar");
     chartOptions4.value = {
       chart: { type: "column" },
-      title: { text: "Keine Daten für wöchentliche Aufträge verfügbar" },
+      title: { text: "Keine Daten für wöchentlich abgebrochene Aufträge" },
       series: [],
     };
     return;
