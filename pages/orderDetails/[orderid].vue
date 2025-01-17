@@ -310,6 +310,7 @@ const formattedDuration = computed(() => {
 
 const whatsappResult = computed(() => {
   const result = [];
+  console.log("order.value.positions", order.value.positions);
   if (
     order.value.positions.filter(
       (position) =>
