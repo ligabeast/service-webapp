@@ -129,7 +129,10 @@ async function populateFromClipboard() {
       }
     }
   } catch (error) {
-    console.error("Fehler beim Lesen der Zwischenablage:", error);
+    console.error(
+      "Fehler beim Lesen der Zwischenablage:",
+      JSON.stringify(error)
+    );
   }
 }
 </script>
