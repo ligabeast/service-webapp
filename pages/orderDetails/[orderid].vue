@@ -339,7 +339,7 @@ const whatsappResult = computed(() => {
     result.push("GWV Nicht Erledigt");
   } else if (
     order.value.positions.filter(
-      (position) => position.name === "Doppelauftrag erledigt"
+      (position) => position.position_name === "Doppelauftrag erledigt"
     ).length > 0
   ) {
     result.push("Doppelauftrag erledigt");
