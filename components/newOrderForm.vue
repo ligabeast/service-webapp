@@ -1,13 +1,13 @@
 <template>
   <Loader v-show="loading" />
-  <div class="flex justify-end">
+  <!-- <div class="flex justify-end">
     <button
       class="w-32 h-10 bg-[#8AA39B] text-xs text-white font-semibold rounded hover:bg-[#637E75] transition"
       @click="handleCopy"
     >
       Einfügen
     </button>
-  </div>
+  </div> -->
   <label for="anschrift">Anschrift</label>
   <textarea
     v-model="adress"
@@ -102,13 +102,12 @@ async function handleCopy() {
       );
     }
 
-    // Berechtigungen prüfen
     const permission = await navigator.permissions.query({
-      name: "clipboard-read" as PermissionName, // Typ sicherstellen
+      name: "clipboard-read" as PermissionName,
     });
-
+    console.log("Permission state:", permission.state);
     if (permission.state === "denied") {
-      throw new Error("Zugriff auf die Zwischenablage verweigert.");
+      throw new Error("Clipboard-Zugriff wurde verweigert.");
     }
 
     // Inhalt aus der Zwischenablage lesen
