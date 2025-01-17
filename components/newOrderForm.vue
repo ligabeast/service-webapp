@@ -92,47 +92,67 @@ function handleSave() {
       console.log("Error occurred while creating order:", error);
     });
 }
+
 async function handleCopy() {
   try {
+    // Prüfen, ob Clipboard-API verfügbar ist
+    if (!navigator.clipboard || !navigator.permissions) {
+      throw new Error(
+        "Clipboard-API wird in diesem Browser nicht unterstützt."
+      );
+    }
+
     // Berechtigungen prüfen
     const permission = await navigator.permissions.query({
-      name: "clipboard-read",
+      name: "clipboard-read" as PermissionName, // Typ sicherstellen
     });
 
     if (permission.state === "denied") {
-      return;
+      throw new Error("Zugriff auf die Zwischenablage verweigert.");
     }
 
+    // Inhalt aus der Zwischenablage lesen
     await populateFromClipboard();
   } catch (error) {
     console.error("Fehler beim Zugriff auf die Zwischenablage:", error);
+    addNotification(
+      "Fehler beim Zugriff auf die Zwischenablage",
+      "error",
+      3000
+    );
   }
 }
 
 async function populateFromClipboard() {
   try {
     const clipboardText = await navigator.clipboard.readText();
-    if (clipboardText) {
-      console.log("Clipboard-Inhalt:", clipboardText);
+    if (!clipboardText) {
+      throw new Error("Die Zwischenablage ist leer.");
+    }
 
-      // Validierungslogik für das Clipboard
-      if (/^\d{7,8}$/.test(clipboardText.trim())) {
-        kls_id.value = clipboardText.trim();
-      } else if (/^\d{12}$/.test(clipboardText.trim())) {
-        ordernumber.value = clipboardText.trim();
-      } else if (
-        /^[A-Za-zäöüß.\-\s]+ \d+[A-Za-z]?\s+\d{5}\s+[A-Za-zäöüß.\-\s]+$/.test(
-          clipboardText.trim()
-        )
-      ) {
-        adress.value = clipboardText.trim();
-      }
+    console.log("Clipboard-Inhalt:", clipboardText);
+
+    // Validierungslogik für das Clipboard
+    if (/^\d{7,8}$/.test(clipboardText.trim())) {
+      kls_id.value = clipboardText.trim();
+    } else if (/^\d{12}$/.test(clipboardText.trim())) {
+      ordernumber.value = clipboardText.trim();
+    } else if (
+      /^[A-Za-zäöüß.\-\s]+ \d+[A-Za-z]?\s+\d{5}\s+[A-Za-zäöüß.\-\s]+$/.test(
+        clipboardText.trim()
+      )
+    ) {
+      adress.value = clipboardText.trim();
+    } else {
+      addNotification(
+        "Clipboard-Inhalt konnte nicht zugeordnet werden.",
+        "warning",
+        3000
+      );
     }
   } catch (error) {
-    console.error(
-      "Fehler beim Lesen der Zwischenablage:",
-      JSON.stringify(error)
-    );
+    console.error("Fehler beim Lesen der Zwischenablage:", error);
+    addNotification("Fehler beim Lesen der Zwischenablage", "error", 3000);
   }
 }
 </script>
