@@ -1,5 +1,13 @@
 <template>
   <Loader v-show="loading" />
+  <div class="flex justify-end">
+    <button
+      class="w-32 h-10 bg-[#8AA39B] text-xs text-white font-semibold rounded hover:bg-[#637E75] transition"
+      @click="handleCopy"
+    >
+      Einfügen
+    </button>
+  </div>
   <label for="anschrift">Anschrift</label>
   <textarea
     v-model="adress"
@@ -84,14 +92,30 @@ function handleSave() {
       console.log("Error occurred while creating order:", error);
     });
 }
+async function handleCopy() {
+  try {
+    // Berechtigungen prüfen
+    const permission = await navigator.permissions.query({
+      name: "clipboard-read",
+    });
 
-// Automatische Zwischenablage-Funktionalität
+    if (permission.state === "denied") {
+      return;
+    }
+
+    await populateFromClipboard();
+  } catch (error) {
+    console.error("Fehler beim Zugriff auf die Zwischenablage:", error);
+  }
+}
+
 async function populateFromClipboard() {
   try {
     const clipboardText = await navigator.clipboard.readText();
-    console.log("Clipboard text:", clipboardText);
     if (clipboardText) {
-      // Validierung basierend auf Formaten
+      console.log("Clipboard-Inhalt:", clipboardText);
+
+      // Validierungslogik für das Clipboard
       if (/^\d{7,8}$/.test(clipboardText.trim())) {
         kls_id.value = clipboardText.trim();
       } else if (/^\d{12}$/.test(clipboardText.trim())) {
@@ -108,16 +132,4 @@ async function populateFromClipboard() {
     console.error("Fehler beim Lesen der Zwischenablage:", error);
   }
 }
-
-onMounted(() => {
-  populateFromClipboard();
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      console.log("Die Seite wurde betreten.");
-      setTimeout(() => {
-        populateFromClipboard();
-      }, 300);
-    }
-  });
-});
 </script>
