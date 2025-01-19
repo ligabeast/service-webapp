@@ -507,10 +507,11 @@ function handleCopyWhatsapp() {
   if (
     !(
       order.value.positions.filter(
-        (position) => position.name === "nicht erledigt - Connect Auftrag"
+        (position) =>
+          position.position_name === "nicht erledigt - Connect Auftrag"
       ).length > 0 ||
       order.value.positions.filter(
-        (position) => position.name === "nicht erledigt - GWV Auftrag"
+        (position) => position.position_name === "nicht erledigt - GWV Auftrag"
       ).length > 0
     )
   ) {

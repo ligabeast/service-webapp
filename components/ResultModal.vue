@@ -87,7 +87,7 @@ const whatsappResult = computed(() => {
     props.ne3error.ne3error == "Ja" &&
     props.ne3error.ne3errorRemoved === "Nein"
   ) {
-    result.push("aber mit Ne3-Fehler");
+    result.push("mit Ne3-Fehler");
   } else if (props.ne3error.ne3errorRemoved === "Ja") {
     result.push("mit Ne3-Fehler beseitigt");
   }
@@ -112,12 +112,14 @@ function getWhatsappFormatt() {
   // Wenn auftrag nicht abgeschlossen
   // Auftrag konnte nicht abgeschlossen werden
   if (
-    props.insertedPositions.filter(
-      (position) => position.name === "nicht erledigt - Connect Auftrag"
-    ).length > 0 ||
-    props.insertedPositions.filter(
-      (position) => position.name === "nicht erledigt - GWV Auftrag"
-    ).length > 0
+    !(
+      props.insertedPositions.filter(
+        (position) => position.name === "nicht erledigt - Connect Auftrag"
+      ).length > 0 ||
+      props.insertedPositions.filter(
+        (position) => position.name === "nicht erledigt - GWV Auftrag"
+      ).length > 0
+    )
   ) {
     if (props.notCompletedReason) {
       text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
