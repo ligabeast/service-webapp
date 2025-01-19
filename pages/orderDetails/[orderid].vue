@@ -367,6 +367,8 @@ const timeFormatter = new Intl.DateTimeFormat("de-DE", {
 const order = ref<any | null>(null);
 const pictures = ref<any[]>([]);
 const loading = ref(false);
+const positions = computed(() => order.value?.positions);
+const orderStarted = ref<any | null>(null);
 
 const validPictures = computed(() =>
   pictures.value.filter(
@@ -386,6 +388,7 @@ async function fetchOrder() {
   console.log(order.value);
   pictures.value = data.data[0]?.pictures ?? [];
   console.log(pictures.value);
+  orderStarted.value = data.data[0]?.orderCreated;
   loading.value = false;
 }
 
@@ -403,39 +406,7 @@ function closePictureModal() {
   showPictureModal.value = false;
 }
 
-function nextPicture() {
-  if (currentPictureIndex.value < pictures.value.length - 1) {
-    currentPictureIndex.value++;
-  }
-}
-
-function prevPicture() {
-  if (currentPictureIndex.value > 0) {
-    currentPictureIndex.value--;
-  }
-}
-
-function handleImageLoad() {
-  console.log("Bild erfolgreich geladen:", pictures[currentPictureIndex]);
-}
-
-function handleImageError(event: Event) {
-  console.error("Fehler beim Laden des Bildes:");
-  console.error("pictures:", JSON.stringify(pictures.value));
-  console.error("currentPictureIndex:", currentPictureIndex.value);
-  console.error("currentPicture:", pictures.value[currentPictureIndex.value]);
-
-  const imgElement = event.target as HTMLImageElement;
-  console.error("Bild konnte nicht geladen werden:", imgElement.src);
-}
-
-function setCurrentPicture(index: number) {
-  currentPictureIndex.value = index;
-}
-
 // Andere Logik (bereits vorhanden, z. B. für Positionen und Dauer)
-const positions = computed(() => order.value?.positions);
-const orderStarted = ref<any | null>(null);
 
 const formattedDuration = computed(() => {
   if (!orderStarted.value || !order.value) return null;
@@ -456,7 +427,6 @@ const formattedDuration = computed(() => {
 
 const whatsappResult = computed(() => {
   const result = [];
-  console.log("order.value.positions", order.value.positions);
   if (
     order.value.positions.filter(
       (position) =>
