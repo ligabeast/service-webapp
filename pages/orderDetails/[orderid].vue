@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col space-y-2 pb-4">
+  <div class="flex flex-col space-y-2 pb-4" v-if="!loading">
     <h1 class="font-semibold text-2xl p-4">Auftragsinformationen</h1>
 
     <!-- Auftrag Details -->
@@ -17,7 +17,7 @@
       <div class="w-[1px] border border-black"></div>
       <NuxtLink
         class="h-90 whitespace-pre-line w-1/2 underline text-blue-600"
-        :to="`/imagesLookup/${order?.kls_id}?currentPage=${currentPage}&orderid=${order?.id}`"
+        :to="`/imagesLookup/${order?.kls_id}?currentPage=${currentPage}&orderid=${order?.id}&adress=${order?.adress}`"
         >{{ order?.kls_id }}</NuxtLink
       >
     </div>
@@ -74,6 +74,28 @@
         v-if="formattedDuration"
         v-html="formattedDuration"
       ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Ne3 Fehler</div>
+      <div class="w-[1px] border border-black"></div>
+      <span
+        v-if="order.ne3error === 'Ja' && order.ne3errorRemoved === 'Ja'"
+        class="h-90 whitespace-pre-line w-1/2"
+      >
+        Ne3-Fehler vorhanden und beseitigt
+      </span>
+      <span
+        v-else-if="order.ne3error === 'Ja' && order.ne3errorRemoved === 'Nein'"
+        class="h-90 whitespace-pre-line w-1/2"
+      >
+        Ne3-Fehler vorhanden
+      </span>
+      <span
+        v-else-if="order.ne3error === 'Nein'"
+        class="h-90 whitespace-pre-line w-1/2"
+      >
+        Kein Ne3-Fehler vorhanden
+      </span>
     </div>
     <div class="flex p-4 justify-between space-x-2">
       <div class="w-1/2 font-medium">Kommentar Intern</div>
@@ -184,6 +206,121 @@
     <FullscreenGallery ref="gallery" />
     <div ref="fullscreenContainer" class="hidden"></div>
   </div>
+  <div class="flex flex-col space-y-2 pb-4" v-else>
+    <h1 class="font-semibold text-2xl p-4">Auftragsinformationen</h1>
+
+    <!-- Auftrag Details -->
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Anschrift</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">KLS-ID</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Auftragsnummer</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Status</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Auftragsanfang</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Auftragsabmeldung</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Dauer</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Ne3 Fehler</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Kommentar Intern</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Kommentar Copy</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Positions</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+
+    <!-- Bilder ansehen -->
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Bilder</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="w-full flex items-center justify-center space-x-3 px-4">
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+      >
+        Copy Whatsapp
+      </button>
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+      >
+        Copy Kasys
+      </button>
+    </div>
+    <NuxtLink
+      :to="`/home?currentPage=${currentPage}`"
+      class="flex w-full items-center justify-center"
+    >
+      <button
+        class="bg-blue-500 h-14 w-1/3 rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
+      >
+        Zurück zum Hauptmenü
+      </button>
+    </NuxtLink>
+  </div>
 </template>
 
 <style scoped>
@@ -227,24 +364,33 @@ const timeFormatter = new Intl.DateTimeFormat("de-DE", {
   hour: "2-digit",
 });
 
-// Auftrag und Bilder abrufen
-const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
-  headers: {
-    Authorization: `Bearer ${useCookie("jwt").value}`,
-  },
-});
+const order = ref<any | null>(null);
+const pictures = ref<any[]>([]);
+const loading = ref(false);
 
-const order = ref<any | null>(data.data[0]);
-console.log(order.value);
-const pictures = ref<any[]>(data.data[0]?.pictures || []);
-console.log(pictures.value);
 const validPictures = computed(() =>
   pictures.value.filter(
     (picture: any) => picture && picture.id !== null && picture.path !== null
   )
 );
 
-console.log(JSON.stringify(pictures.value));
+async function fetchOrder() {
+  loading.value = true;
+  // Auftrag und Bilder abrufen
+  const data: any = await $fetch(`/api/getOrder?orderid=${orderid}`, {
+    headers: {
+      Authorization: `Bearer ${useCookie("jwt").value}`,
+    },
+  });
+  order.value = data.data[0];
+  console.log(order.value);
+  pictures.value = data.data[0]?.pictures ?? [];
+  console.log(pictures.value);
+  loading.value = false;
+}
+
+fetchOrder();
+
 const currentPictureIndex = ref(0);
 const showPictureModal = ref(false);
 
@@ -289,7 +435,7 @@ function setCurrentPicture(index: number) {
 
 // Andere Logik (bereits vorhanden, z. B. für Positionen und Dauer)
 const positions = computed(() => order.value?.positions);
-const orderStarted = ref<any | null>(data.data[0]?.orderCreated);
+const orderStarted = ref<any | null>(null);
 
 const formattedDuration = computed(() => {
   if (!orderStarted.value || !order.value) return null;
@@ -345,14 +491,36 @@ const whatsappResult = computed(() => {
   ) {
     result.push("Doppelauftrag erledigt");
   }
+  if (order.value.ne3error == "Ja" && order.value.ne3errorRemoved === "Nein") {
+    result.push("aber mit Ne3-Fehler");
+  } else if (order.value.ne3errorRemoved === "Ja") {
+    result.push("mit Ne3-Fehler beseitigt");
+  }
   return result.join("\n");
 });
 
 function handleCopyWhatsapp() {
-  let text = `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}\n${whatsappResult.value}`;
-  if (order.value.commentCopy) {
-    text += `\n${order.value.commentCopy}`;
+  let text =
+    `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}\n${whatsappResult.value}` +
+    "\n";
+
+  if (order.value.notCompletedReason) {
+    text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
   }
+
+  // Grund:
+  if (order.value.notCompletedReason) {
+    if (order.value.notCompletedReason != "Sonstiges") {
+      text += "\n" + "Grund: " + order.value.notCompletedReason + "\n";
+    } else {
+      text += "\n" + "Grund: ";
+    }
+  }
+
+  if (order.value.commentCopy) {
+    text += order.value.commentCopy;
+  }
+
   copyToClipboard(text);
 }
 

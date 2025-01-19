@@ -1,13 +1,5 @@
 <template>
   <Loader v-show="loading" />
-  <!-- <div class="flex justify-end">
-    <button
-      class="w-32 h-10 bg-[#8AA39B] text-xs text-white font-semibold rounded hover:bg-[#637E75] transition"
-      @click="handleCopy"
-    >
-      Einfügen
-    </button>
-  </div> -->
   <label for="anschrift">Anschrift</label>
   <textarea
     v-model="adress"
@@ -60,6 +52,18 @@ function handleSave() {
     loading.value = false;
     return;
   }
+  if (!/^\d{7,8}$/.test(kls_id.value)) {
+    console.log("Ungültige KLS-ID");
+    addNotification("Ungültige KLS-ID", "error", 3000);
+    loading.value = false;
+    return;
+  } else if (!/^\d{12}$/.test(ordernumber.value)) {
+    console.log("Ungültige Auftragsnummer");
+    addNotification("Ungültige Auftragsnummer", "error", 3000);
+    loading.value = false;
+    return;
+  }
+
   $fetch("/api/orderCreate", {
     method: "POST",
     headers: {

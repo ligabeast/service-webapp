@@ -41,6 +41,8 @@
         :to="
           orderid
             ? `/orderDetails/${orderid}?currentPage=${currentPage}`
+            : ordernumber
+            ? `/postOrder?ordernumber=${ordernumber}&kls_id=${klsId}&adress=${adress}&orderid=${orderid}`
             : `/home?currentPage=${currentPage}`
         "
       >
@@ -62,6 +64,8 @@ import { addNotification } from "~/notification";
 
 const route = useRoute();
 const klsId = route.params.kls_id;
+const ordernumber = route.query.ordernumber;
+const adress = route.query.adress;
 
 onMounted(() => {
   console.log("KLS ID:", klsId); // Überprüfen, ob der Wert geladen wird
@@ -72,11 +76,6 @@ const currentPage = route.query.currentPage || 1;
 const orderid = route.query.orderid || null;
 
 const gallery = ref(null);
-
-const adress = computed(() => {
-  if (!orders.value || orders.value.length == 0) return null;
-  return orders.value[0].adress;
-});
 
 const orders = ref([]);
 const loading = ref(true);

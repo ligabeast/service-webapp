@@ -54,7 +54,9 @@ export default defineEventHandler(async (event) => {
       commentInternal,
       notCompleted,
       notCompletedReason,
+      ne3error,
     } = fields;
+
     ordernumber = Array.isArray(ordernumber) ? ordernumber[0] : ordernumber;
     orderid = Array.isArray(orderid) ? orderid[0] : orderid;
     orderType = Array.isArray(orderType) ? orderType[0] : orderType;
@@ -63,6 +65,8 @@ export default defineEventHandler(async (event) => {
     commentInternal = Array.isArray(commentInternal)
       ? commentInternal[0]
       : commentInternal;
+    ne3error = Array.isArray(ne3error) ? ne3error[0] : ne3error;
+    ne3error = JSON.parse(ne3error as string);
     const pictures = Array.isArray(files.pictures)
       ? files.pictures
       : [files.pictures];
@@ -71,6 +75,10 @@ export default defineEventHandler(async (event) => {
       : notCompletedReason;
     notCompleted = Array.isArray(notCompleted) ? notCompleted[0] : notCompleted;
 
+    if (orderType === "gwv") {
+      ne3error.ne3error = "Nein";
+      ne3error.ne3errorRemoved = "Nein";
+    }
     console.log("[DEBUG] Überprüfe Bestellung...");
     const [rows] = await connection.execute(
       "SELECT * FROM sys.Orders o WHERE o.ordernumber = ? AND o.status = 'started' AND o.user_id = ?;",
@@ -115,9 +123,11 @@ export default defineEventHandler(async (event) => {
     console.log("[DEBUG] Erstelle neue Bestellung...");
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO sys.Orders 
-        (ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal, notCompletedReason) 
-       VALUES (?, ?, 'completed', ?, ?, ?, NOW(), ?, ?, ?);`,
+        (ne3error, ne3errorRemoved,ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal, notCompletedReason) 
+       VALUES (?,?,?, ?, 'completed', ?, ?, ?, NOW(), ?, ?, ?);`,
       [
+        ne3error.ne3error,
+        ne3error.ne3errorRemoved,
         ordernumber,
         userId,
         orderType,

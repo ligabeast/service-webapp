@@ -44,6 +44,8 @@ const props = defineProps<{
   ordernumber: string;
   kls_id: string;
   commentCopy: string;
+  notCompletedReason: string;
+  ne3error: any;
 }>();
 
 // Computed für WhatsApp-Ergebnis
@@ -81,7 +83,15 @@ const whatsappResult = computed(() => {
   ) {
     result.push("Doppelauftrag erledigt");
   }
-  return result.join("\n");
+  if (
+    props.ne3error.ne3error == "Ja" &&
+    props.ne3error.ne3errorRemoved === "Nein"
+  ) {
+    result.push("aber mit Ne3-Fehler");
+  } else if (props.ne3error.ne3errorRemoved === "Ja") {
+    result.push("mit Ne3-Fehler beseitigt");
+  }
+  return result.join(" ");
 });
 
 // Generiere WhatsApp-Format
@@ -96,10 +106,26 @@ function getWhatsappFormatt() {
     "KLS-ID: " +
     props.kls_id +
     "\n" +
-    whatsappResult.value;
+    whatsappResult.value +
+    "\n";
+
+  // Wenn auftrag nicht abgeschlossen
+  // Auftrag konnte nicht abgeschlossen werden
+  if (props.notCompletedReason) {
+    text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
+  }
+
+  // Grund:
+  if (props.notCompletedReason) {
+    if (props.notCompletedReason != "Sonstiges") {
+      text += "\n" + "Grund: " + props.notCompletedReason + "\n";
+    } else {
+      text += "\n" + "Grund: ";
+    }
+  }
 
   if (props.commentCopy) {
-    text += "\n" + props.commentCopy;
+    text += props.commentCopy;
   }
 
   return text;

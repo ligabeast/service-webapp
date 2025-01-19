@@ -22,7 +22,7 @@
           </svg>
         </button>
       </div>
-      <template v-if="props.materials.length === 0">
+      <template v-if="transProps.length === 0">
         <p>Alle verfügbaren Positionen sind bereits hinzugefügt.</p>
       </template>
       <template v-else>
@@ -34,7 +34,7 @@
             v-model="selectedMaterial"
           >
             <option
-              v-for="material in props.materials"
+              v-for="material in transProps"
               :key="material.id"
               :value="material"
             >
@@ -71,6 +71,10 @@
 const props = defineProps<{
   materials: { id: number; name: string; alias: string }[];
 }>();
+
+const transProps = computed(() => {
+  return props.materials.filter((e) => e.hide != 1);
+});
 const emit = defineEmits(["close", "add"]);
 const selectedMaterial = ref<{
   id: number;

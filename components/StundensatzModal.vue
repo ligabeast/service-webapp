@@ -8,11 +8,11 @@
       class="bg-white p-6 rounded-lg shadow-lg w-96 relative flex flex-col space-y-4"
       @click.stop
     >
-      <h1 class="text-xl font-semibold mb-4">Kabel vergessen?</h1>
+      <h1 class="text-xl font-semibold mb-4">Stundensatz vergessen?</h1>
 
       <p>
-        Es sind keine Kabel eingetragen wurden. Sind Sie sicher, dass Sie
-        fortfahren möchten?
+        Es sind unzureichende Stundensätze eingetragen. Sind Sie sicher, dass
+        Sie fortfahren möchten?
       </p>
 
       <div class="flex space-x-3">

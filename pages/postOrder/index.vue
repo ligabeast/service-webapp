@@ -7,6 +7,31 @@
       @abort="showCabelModal = false"
       @submit="handleSave2"
     />
+    <DeckenModal
+      v-show="showDeckenModal"
+      @abort="
+        showDeckenModal = false;
+        showCabelModal = false;
+      "
+      @submit="handleSave3"
+    />
+    <StundensatzModal
+      v-show="showStundensatzModal"
+      @abort="
+        showStundensatzModal = false;
+        showDeckenModal = false;
+        showCabelModal = false;
+      "
+      @submit="handleSave4"
+    />
+    <DarkBg
+      v-show="showCabelModal || showDeckenModal || showStundensatzModal"
+      @abort="
+        showStundensatzModal = false;
+        showCabelModal = false;
+        showDeckenModal = false;
+      "
+    />
     <PositionInsertModal
       v-show="showMaterialModal"
       @close="showMaterialModal = false"
@@ -25,7 +50,12 @@
       :insertedPositions="insertedPositions"
       :adress="adress"
       :ordernumber="ordernumber"
+      :notCompletedReason="notCompletedReason"
       :kls_id="kls_id"
+      :ne3error="{
+        ne3error: ne3error,
+        ne3errorRemoved: ne3errorRemoved,
+      }"
     />
     <label for="anschrift">Anschrift</label>
     <textarea
@@ -43,7 +73,7 @@
       <label for="anschrift" class="w-1/2">KLS-ID</label>
       <NuxtLink
         class="underline text-blue-600"
-        :to="`/imagesLookup/${kls_id}`"
+        :to="`/imagesLookup/${kls_id}?ordernumber=${ordernumber}&adress=${adress}`"
         >{{ kls_id }}</NuxtLink
       >
     </div>
@@ -117,13 +147,6 @@
         +
       </button>
     </div>
-    <!-- Checkbox for not completed Order -->
-    <div class="flex items-center space-x-2">
-      <input type="checkbox" id="notCompleted" v-model="notCompleted" />
-      <label for="notCompleted"
-        >Auftrag konnte nicht abgeschlossen werden</label
-      >
-    </div>
 
     <!-- Select reason for not completed Order -->
     <div class="flex flex-col space-y-4" v-if="notCompleted">
@@ -132,15 +155,86 @@
       >
       <select
         v-model="notCompletedReason"
+        v-if="selectedOrderType == 'connect'"
         class="border border-black rounded-sm w-full h-8 px-2"
       >
-        <option>Kunde nicht erreichbar</option>
-        <option>Material nicht verfügbar</option>
+        <option>Kunde nicht vorort</option>
         <option>Zugang nicht vorhanden</option>
-        <option>NE3 Fehler</option>
         <option>Vertragsfehler</option>
         <option>Neuer Termin vereinbart</option>
+        <option>Leitungsweg nicht realisierbar</option>
+        <option>GWV nicht vorhanden</option>
+        <option>AP nicht ZTV-Konform gebaut</option>
+        <option>Sonstiges</option>
       </select>
+      <select
+        v-model="notCompletedReason"
+        v-if="selectedOrderType == 'gwv'"
+        class="border border-black rounded-sm w-full h-8 px-2"
+      >
+        <option>Kunde nicht vorort</option>
+        <option>Zugang nicht vorhanden</option>
+        <option>Vertragsfehler</option>
+        <option>Neuer Termin vereinbart</option>
+        <option>Leitungsweg nicht realisierbar</option>
+        <option>AP nicht vorhanden</option>
+        <option>AP nicht ZTV-Konform gebaut</option>
+        <option>Sonstiges</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col space-y-4" v-if="selectedOrderType == 'connect'">
+      <label class="text-lg font-semibold" for="reason"
+        >Ne3 Fehler vorhanden?</label
+      >
+      <div class="flex space-x-2 items-center">
+        <label for="n3no" class="select-none">Nein</label>
+        <input
+          name="ne3"
+          id="n3no"
+          type="radio"
+          value="Nein"
+          v-model="ne3error"
+        />
+      </div>
+      <div class="flex space-x-2 items-center">
+        <label for="n3yes" class="select-none">Ja</label>
+        <input
+          name="ne3"
+          id="n3yes"
+          type="radio"
+          value="Ja"
+          v-model="ne3error"
+        />
+      </div>
+    </div>
+    <div
+      class="flex flex-col space-y-4"
+      v-if="ne3error === 'Ja' && selectedOrderType === 'connect'"
+    >
+      <label class="text-lg font-semibold" for="reason"
+        >Ne3 Fehler beseitigt?</label
+      >
+      <div class="flex space-x-2 items-center">
+        <label for="ne3Removedno" class="select-none">Nein</label>
+        <input
+          name="ne3Removed"
+          id="ne3Removedno"
+          type="radio"
+          value="Nein"
+          v-model="ne3errorRemoved"
+        />
+      </div>
+      <div class="flex space-x-2 items-center">
+        <label for="n3Removedyes" class="select-none">Ja</label>
+        <input
+          name="ne3Removed"
+          id="n3Removedyes"
+          type="radio"
+          value="Ja"
+          v-model="ne3errorRemoved"
+        />
+      </div>
     </div>
 
     <div class="flex flex-col space-y-4">
@@ -173,7 +267,7 @@
 import type { MaterialResponse, Material } from "~/types";
 import { addNotification } from "~/notification.ts";
 
-const selectedOrderType = ref<string>("Connect");
+const selectedOrderType = ref<string>("connect");
 
 const showDeleteModal = ref(false);
 
@@ -197,10 +291,6 @@ const commentInternal = ref<string>("");
 
 const notCompleted = ref<boolean>(false);
 const notCompletedReason = ref<string>("");
-
-function handleCopyCommentChanged(comment: string) {
-  commentCopy.value = comment;
-}
 
 watch(selectedOrderType, (value) => {
   if (selectedOrderType.value === "gwv") {
@@ -253,6 +343,11 @@ const showMaterialModal = ref(false);
 const showResultModal = ref(false);
 const showLoading = ref(false);
 const showCabelModal = ref(false);
+const showDeckenModal = ref(false);
+const notCompletedFroze = ref(false);
+const showStundensatzModal = ref(false);
+const ne3error = ref<string>("Nein");
+const ne3errorRemoved = ref<string>("Nein");
 
 function handlePushMaterial(material: Material) {
   insertedPositions.value.push(material);
@@ -260,6 +355,16 @@ function handlePushMaterial(material: Material) {
   possibleMaterials.value = possibleMaterials.value.filter(
     (m) => m.id !== material.id
   );
+  if (
+    material.name === "nicht erledigt - Connect Auftrag" ||
+    material.name === "nicht erledigt - GWV Auftrag"
+  ) {
+    notCompleted.value = true;
+    notCompletedFroze.value = true;
+  } else {
+    notCompletedFroze.value = false;
+    notCompleted.value = false;
+  }
 }
 
 function handleDeleteMaterial(material: Material) {
@@ -274,12 +379,32 @@ function handleDeleteMaterial(material: Material) {
     quantity: material.quantity,
     type: material.type,
   });
+  if (
+    material.name === "nicht erledigt - Connect Auftrag" ||
+    material.name === "nicht erledigt - GWV Auftrag"
+  ) {
+    notCompletedFroze.value = false;
+    notCompleted.value = false;
+  }
 }
 
 async function handleSave() {
   if (notCompleted.value && !notCompletedReason.value) {
     addNotification(
       "Bitte geben Sie einen Grund für den nicht abgeschlossenen Auftrag an",
+      "error",
+      5000
+    );
+    return;
+  }
+
+  if (
+    notCompletedReason.value &&
+    notCompletedReason.value === "Sonstiges" &&
+    !commentCopy.value
+  ) {
+    addNotification(
+      "Bitte geben Sie einen Grund(Copy Kommentar) für den nicht abgeschlossenen Auftrag an",
       "error",
       5000
     );
@@ -308,7 +433,37 @@ async function handleSave() {
   handleSave2();
 }
 
-async function handleSave2() {
+function handleSave2() {
+  // check ob Durchbruch eingetragen ist
+  const durchbruch = insertedPositions.value.find(
+    (e) => e.name === "Stück Decken-/Wanddurchbruch herstellen <=40mm"
+  );
+
+  if (!durchbruch) {
+    showDeckenModal.value = true;
+    return;
+  }
+  handleSave3();
+}
+
+function handleSave3() {
+  // check ob Stundensatz eingetragen ist
+  const stundensatz = insertedPositions.value.find(
+    (e) => e.name === "x FTTH - Stundensatz FTTH je 15 Minuten"
+  );
+
+  if (
+    ne3error &&
+    ne3error.value === "Ja" &&
+    (!stundensatz || (stundensatz && stundensatz.quantity < 2))
+  ) {
+    showStundensatzModal.value = true;
+    return;
+  }
+  handleSave4();
+}
+
+async function handleSave4() {
   const formData = new FormData();
 
   // Dateien anhängen
@@ -329,6 +484,14 @@ async function handleSave2() {
   formData.append("ordernumber", ordernumber.value);
   formData.append("orderid", orderid);
   formData.append("orderType", selectedOrderType.value);
+  formData.append("commentCopy", commentCopy.value);
+  formData.append(
+    "ne3error",
+    JSON.stringify({
+      ne3error: ne3error.value,
+      ne3errorRemoved: ne3errorRemoved.value,
+    })
+  );
   formData.append("commentCopy", commentCopy.value);
   formData.append("commentInternal", commentInternal.value);
   formData.append(
