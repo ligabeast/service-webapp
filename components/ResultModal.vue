@@ -59,6 +59,14 @@ const whatsappResult = computed(() => {
     ).length > 0
   ) {
     result.push("Erledigt und inventarisiert");
+    if (
+      props.ne3error.ne3error == "Ja" &&
+      props.ne3error.ne3errorRemoved === "Nein"
+    ) {
+      result.push("mit Ne3-Fehler");
+    } else if (props.ne3error.ne3errorRemoved === "Ja") {
+      result.push("mit Ne3-Fehler beseitigt");
+    }
   } else if (
     props.insertedPositions.filter(
       (position) => position.name === "nicht erledigt - Connect Auftrag"
@@ -70,6 +78,14 @@ const whatsappResult = computed(() => {
       .length > 0
   ) {
     result.push("GWV Erledigt");
+    if (
+      props.ne3error.ne3error == "Ja" &&
+      props.ne3error.ne3errorRemoved === "Nein"
+    ) {
+      result.push("mit Ne3-Fehler");
+    } else if (props.ne3error.ne3errorRemoved === "Ja") {
+      result.push("mit Ne3-Fehler beseitigt");
+    }
   } else if (
     props.insertedPositions.filter(
       (position) => position.name === "nicht erledigt - GWV Auftrag"
@@ -82,15 +98,16 @@ const whatsappResult = computed(() => {
     ).length > 0
   ) {
     result.push("Doppelauftrag erledigt");
+    if (
+      props.ne3error.ne3error == "Ja" &&
+      props.ne3error.ne3errorRemoved === "Nein"
+    ) {
+      result.push("mit Ne3-Fehler");
+    } else if (props.ne3error.ne3errorRemoved === "Ja") {
+      result.push("mit Ne3-Fehler beseitigt");
+    }
   }
-  if (
-    props.ne3error.ne3error == "Ja" &&
-    props.ne3error.ne3errorRemoved === "Nein"
-  ) {
-    result.push("mit Ne3-Fehler");
-  } else if (props.ne3error.ne3errorRemoved === "Ja") {
-    result.push("mit Ne3-Fehler beseitigt");
-  }
+
   return result.join(" ");
 });
 
