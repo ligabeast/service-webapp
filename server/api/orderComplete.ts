@@ -101,6 +101,8 @@ export default defineEventHandler(async (event) => {
       };
     }
 
+    console.log("orderid", orderid);
+    console.log("orderid typ", typeof orderid);
     console.log("[DEBUG] Verberge ursprüngliche Bestellung...");
     await connection.execute(
       "UPDATE sys.Orders SET hide = true WHERE id = ?;",
