@@ -504,16 +504,25 @@ function handleCopyWhatsapp() {
     `${order.value.adress}\nAuftragsnummer\n${order.value.ordernumber}\nKLS-ID: ${order.value.kls_id}\n${whatsappResult.value}` +
     "\n";
 
-  if (order.value.notCompletedReason) {
-    text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
-  }
+  if (
+    order.value.positions.filter(
+      (position) => position.name === "nicht erledigt - Connect Auftrag"
+    ).length > 0 ||
+    order.value.positions.filter(
+      (position) => position.name === "nicht erledigt - GWV Auftrag"
+    ).length > 0
+  ) {
+    if (order.value.notCompletedReason) {
+      text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
+    }
 
-  // Grund:
-  if (order.value.notCompletedReason) {
-    if (order.value.notCompletedReason != "Sonstiges") {
-      text += "\n" + "Grund: " + order.value.notCompletedReason + "\n";
-    } else {
-      text += "\n" + "Grund: ";
+    // Grund:
+    if (order.value.notCompletedReason) {
+      if (order.value.notCompletedReason != "Sonstiges") {
+        text += "\n" + "Grund: " + order.value.notCompletedReason + "\n";
+      } else {
+        text += "\n" + "Grund: ";
+      }
     }
   }
 

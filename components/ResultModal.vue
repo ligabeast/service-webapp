@@ -111,16 +111,25 @@ function getWhatsappFormatt() {
 
   // Wenn auftrag nicht abgeschlossen
   // Auftrag konnte nicht abgeschlossen werden
-  if (props.notCompletedReason) {
-    text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
-  }
+  if (
+    props.insertedPositions.filter(
+      (position) => position.name === "nicht erledigt - Connect Auftrag"
+    ).length > 0 ||
+    props.insertedPositions.filter(
+      (position) => position.name === "nicht erledigt - GWV Auftrag"
+    ).length > 0
+  ) {
+    if (props.notCompletedReason) {
+      text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
+    }
 
-  // Grund:
-  if (props.notCompletedReason) {
-    if (props.notCompletedReason != "Sonstiges") {
-      text += "\n" + "Grund: " + props.notCompletedReason + "\n";
-    } else {
-      text += "\n" + "Grund: ";
+    // Grund:
+    if (props.notCompletedReason) {
+      if (props.notCompletedReason != "Sonstiges") {
+        text += "\n" + "Grund: " + props.notCompletedReason + "\n";
+      } else {
+        text += "\n" + "Grund: ";
+      }
     }
   }
 
