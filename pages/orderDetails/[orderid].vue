@@ -505,24 +505,27 @@ function handleCopyWhatsapp() {
     "\n";
 
   if (
-    order.value.positions.filter(
-      (position) => position.name === "nicht erledigt - Connect Auftrag"
-    ).length > 0 ||
-    order.value.positions.filter(
-      (position) => position.name === "nicht erledigt - GWV Auftrag"
-    ).length > 0
+    !(
+      order.value.positions.filter(
+        (position) => position.name === "nicht erledigt - Connect Auftrag"
+      ).length > 0 ||
+      order.value.positions.filter(
+        (position) => position.name === "nicht erledigt - GWV Auftrag"
+      ).length > 0
+    )
   ) {
     if (order.value.notCompletedReason) {
       text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
     }
 
     // Grund:
-    if (order.value.notCompletedReason) {
-      if (order.value.notCompletedReason != "Sonstiges") {
-        text += "\n" + "Grund: " + order.value.notCompletedReason + "\n";
-      } else {
-        text += "\n" + "Grund: ";
-      }
+  }
+
+  if (order.value.notCompletedReason) {
+    if (order.value.notCompletedReason != "Sonstiges") {
+      text += "\n" + "Grund: " + order.value.notCompletedReason + "\n";
+    } else {
+      text += "\n" + "Grund: ";
     }
   }
 
