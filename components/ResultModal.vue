@@ -124,14 +124,13 @@ function getWhatsappFormatt() {
     if (props.notCompletedReason) {
       text += "\n" + "Auftrag konnte nicht abgeschlossen werden";
     }
+  }
 
-    // Grund:
-    if (props.notCompletedReason) {
-      if (props.notCompletedReason != "Sonstiges") {
-        text += "\n" + "Grund: " + props.notCompletedReason + "\n";
-      } else {
-        text += "\n" + "Grund: ";
-      }
+  if (props.notCompletedReason) {
+    if (props.notCompletedReason != "Sonstiges") {
+      text += "\n" + "Grund: " + props.notCompletedReason + "\n";
+    } else {
+      text += "\n" + "Grund: ";
     }
   }
 
