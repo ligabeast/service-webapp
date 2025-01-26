@@ -100,9 +100,6 @@ const data = await useFetch("/api/getAllMaterials", {
 });
 const allMaterials = ref(data.data.value.data ?? []);
 async function handleSave() {
-  console.log(selectedMaterial.value);
-  console.log(props.checklist);
-  console.log(selectedUser.value);
   // check if user has already this material
   if (
     props.checklist.some(

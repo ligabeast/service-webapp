@@ -63,7 +63,6 @@ const props = defineProps({
 watch(
   () => props.items, // Was überwacht werden soll
   (newItems, oldItems) => {
-    console.log("Items haben sich geändert:", { newItems, oldItems });
     selected.value = new Array(newItems.length).fill(false);
   }
 );
