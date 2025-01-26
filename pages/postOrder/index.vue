@@ -43,11 +43,51 @@
       :orderid="orderid"
       @close="showDeleteModal = false"
     />
-    <ResultModal
-      v-if="showResultModal"
-      @close="showResultModal = false"
+    <ResultModal1
+      v-if="showResultModal1"
+      @next="
+        showResultModal1 = false;
+        showResultModal2 = true;
+      "
       :commentCopy="commentCopy"
       :insertedPositions="insertedPositions"
+      :selectedOrderType="selectedOrderType"
+      :adress="adress"
+      :ordernumber="ordernumber"
+      :notCompletedReason="notCompletedReason"
+      :kls_id="kls_id"
+      :ne3error="{
+        ne3error: ne3error,
+        ne3errorRemoved: ne3errorRemoved,
+      }"
+    />
+    <ResultModal2
+      v-if="showResultModal2"
+      @next="
+        showResultModal2 = false;
+        showResultModal3 = true;
+      "
+      :commentCopy="commentCopy"
+      :insertedPositions="insertedPositions"
+      :selectedOrderType="selectedOrderType"
+      :adress="adress"
+      :ordernumber="ordernumber"
+      :notCompletedReason="notCompletedReason"
+      :kls_id="kls_id"
+      :ne3error="{
+        ne3error: ne3error,
+        ne3errorRemoved: ne3errorRemoved,
+      }"
+    />
+    <ResultModal3
+      v-if="showResultModal3"
+      @home="
+        router.push('/home');
+        showResultModal3 = false;
+      "
+      :commentCopy="commentCopy"
+      :insertedPositions="insertedPositions"
+      :selectedOrderType="selectedOrderType"
       :adress="adress"
       :ordernumber="ordernumber"
       :notCompletedReason="notCompletedReason"
@@ -273,6 +313,8 @@ const showDeleteModal = ref(false);
 
 const route = useRoute();
 
+const router = useRouter();
+
 const files = ref<null | FileList>(null);
 
 const ordernumberRef = route.query.ordernumber as string | undefined;
@@ -340,7 +382,9 @@ const possibleMaterials = ref<Material[]>(
 );
 
 const showMaterialModal = ref(false);
-const showResultModal = ref(false);
+const showResultModal1 = ref(false);
+const showResultModal2 = ref(false);
+const showResultModal3 = ref(false);
 const showLoading = ref(false);
 const showCabelModal = ref(false);
 const showDeckenModal = ref(false);
@@ -524,7 +568,7 @@ async function handleSave4() {
       showLoading.value = false;
       console.log("Antwort:", res);
       if (res.status === "success") {
-        showResultModal.value = true;
+        showResultModal1.value = true;
       }
     })
     .catch((error) => {

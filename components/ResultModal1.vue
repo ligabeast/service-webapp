@@ -6,30 +6,34 @@
     <div
       class="bg-white p-6 rounded-lg shadow-lg w-96 relative flex flex-col space-y-4"
     >
-      <h1 class="text-xl font-bold pb-5">
+      <h1 class="text-xl font-bold">
         Ihr Auftrag wurde erfolgreich abgemeldet.
       </h1>
-      <div class="flex space-x-5 justify-center items-center h-full w-full">
-        <button
-          class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
-          @click="handleCopyWhatsapp"
-        >
-          Copy Whatsapp
-        </button>
-        <button
-          class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
-          @click="handleCopyKasys"
-        >
-          Copy Kasys
-        </button>
-      </div>
-      <NuxtLink to="/home">
-        <button
-          class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
-        >
-          Zurück zum Hauptmenü
-        </button>
-      </NuxtLink>
+      <span
+        class="text-base text-center text-gray-700 font-semibold"
+        v-if="selectedOrderType === 'connect'"
+        >Bitte in Connect Gruppe einfügen.</span
+      >
+      <span
+        class="text-sm text-gray-700 font-semibold"
+        v-else-if="selectedOrderType === 'gwv'"
+      >
+        Bitte in GWV Gruppe einfügen mit
+        <span class="font-[800]">mindestens 5 Bildern</span>
+      </span>
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+        @click="handleCopyWhatsapp"
+      >
+        Copy Whatsapp
+      </button>
+
+      <button
+        class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 transition text-white"
+        @click="emit('next')"
+      >
+        Weiter
+      </button>
     </div>
   </div>
 </template>
@@ -37,11 +41,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+const emit = defineEmits(["next"]);
+
 // Props
 const props = defineProps<{
   insertedPositions: any[];
   adress: string;
   ordernumber: string;
+  selectedOrderType: string;
   kls_id: string;
   commentCopy: string;
   notCompletedReason: string;
@@ -161,23 +168,6 @@ function getWhatsappFormatt() {
 // Kopieren für WhatsApp
 function handleCopyWhatsapp() {
   const text = getWhatsappFormatt();
-  copyToClipboard(text);
-}
-
-// Kopieren für Kasys
-function handleCopyKasys() {
-  let text = props.insertedPositions
-    .map((position) => {
-      if (position.dynamic == true) {
-        return position.quantity + " " + position.name;
-      } else {
-        return position.name;
-      }
-    })
-    .join("; ");
-  if (props.commentCopy) {
-    text += "\n" + props.commentCopy;
-  }
   copyToClipboard(text);
 }
 

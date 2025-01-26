@@ -28,7 +28,7 @@ export default defineNuxtConfig({
       "@nuxtjs/google-fonts",
       {
         families: {
-          Mulish: [400, 500, 600, 700],
+          Mulish: [400, 500, 600, 700, 800],
         },
       },
     ],
