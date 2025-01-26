@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="overflow-y-auto">
     <NewChecklistModal
       :is-admin="isAdmin"
       :checklist="items"
@@ -12,18 +12,18 @@
       @close="showNewEntry2Modal = false"
       @fetch="fetchAllMaterials"
     />
-    <div class="flex w-full h-full flex-col p-4 space-y-4">
+    <div class="flex flex-col p-4 space-y-4 mb-10">
       <h1 class="font-semibold text-2xl">Benötigtes Material Checklist</h1>
       <MyTable :items="items" @updateSelection="handleSelection" />
       <div class="flex flex-col items-center justify-center space-y-3">
         <button
-          class="w-96 h-12 bg-green-500 flex justify-center items-center text-base font-bold text-white rounded-md hover:bg-green-600 hover:scale-105 transition"
+          class="w-60 h-12 bg-green-500 flex justify-center items-center text-base font-bold text-white rounded-md hover:bg-green-600 hover:scale-105 transition"
           @click="showNewEntryModal = true"
         >
           Neuer Eintrag
         </button>
         <button
-          class="w-96 h-12 flex justify-center items-center text-base font-bold text-white rounded-md transition"
+          class="w-60 h-12 flex justify-center items-center text-base font-bold text-white rounded-md transition"
           :class="{
             'bg-blue-500 hover:bg-blue-600 hover:scale-105 ':
               selectedIds.length > 0,
@@ -40,13 +40,13 @@
         <MyTable2 :items="allMaterials" @update-selection="handleSelection2" />
         <div class="flex flex-col items-center justify-center space-y-3">
           <button
-            class="w-96 h-12 bg-green-500 flex justify-center items-center text-base font-bold text-white rounded-md hover:bg-green-600 hover:scale-105 transition"
+            class="w-60 h-12 bg-green-500 flex justify-center items-center text-base font-bold text-white rounded-md hover:bg-green-600 hover:scale-105 transition"
             @click="showNewEntry2Modal = true"
           >
             Neuer Eintrag
           </button>
           <button
-            class="w-96 h-12 flex justify-center items-center text-base font-bold text-white rounded-md transition"
+            class="w-60 h-12 flex justify-center items-center text-base font-bold text-white rounded-md transition"
             :class="{
               'bg-blue-500 hover:bg-blue-600 hover:scale-105 ':
                 selectedIds2.length > 0,

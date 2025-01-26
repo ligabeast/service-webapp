@@ -1,13 +1,27 @@
 <template>
-  <div class="w-full border border-gray-300 rounded-lg overflow-hidden">
+  <div class="w-full border border-gray-300 rounded-lg">
     <!-- Table Header -->
-    <div class="bg-gray-100 text-gray-800 font-semibold flex">
+    <div
+      class="bg-gray-100 text-gray-800 font-semibold flex justify-center items-center w-full"
+    >
       <div class="w-8 px-4 py-2 flex items-center">
         <input type="checkbox" :checked="allSelected" @change="toggleAll" />
       </div>
-      <div class="flex-1 px-4 py-2">#</div>
-      <div class="flex-1 px-4 py-2">Material</div>
-      <div class="flex-1 px-4 py-2">Erzeugt am</div>
+      <div
+        class="flex justify-center items-center px-4 py-2 text-sm w-28 text-center"
+      >
+        #
+      </div>
+      <div
+        class="flex justify-center items-center px-4 py-2 text-sm w-28 text-center"
+      >
+        Material
+      </div>
+      <div
+        class="flex justify-center items-center px-4 py-2 text-sm w-32 text-center"
+      >
+        Erzeugt am
+      </div>
     </div>
 
     <!-- Table Rows -->
@@ -24,19 +38,21 @@
         />
       </div>
       <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
+        class="w-28 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
-        <span>{{ item.id }}</span>
+        <span class="text-gray-700 text-xs">{{ item.id }}</span>
       </div>
       <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
+        class="w-28 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
-        <span>{{ item.name }}</span>
+        <span class="text-gray-700 text-xs">{{ item.name }}</span>
       </div>
       <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
+        class="w-32 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
-        <span>{{ dateFormatter(item.createdAt) }}</span>
+        <span class="text-gray-700 text-xs text-center">{{
+          dateFormatter(item.createdAt)
+        }}</span>
       </div>
     </div>
     <div

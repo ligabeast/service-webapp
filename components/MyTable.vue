@@ -1,14 +1,32 @@
 <template>
-  <div class="w-full border border-gray-300 rounded-lg overflow-hidden">
+  <div class="w-full border border-gray-300 rounded-lg">
     <!-- Table Header -->
-    <div class="bg-gray-100 text-gray-800 font-semibold flex">
+    <div
+      class="bg-gray-100 text-gray-800 font-semibold flex justify-center items-center w-full"
+    >
       <div class="w-8 px-4 py-2 flex items-center">
         <input type="checkbox" :checked="allSelected" @change="toggleAll" />
       </div>
-      <div class="flex-1 px-4 py-2">Material</div>
-      <div class="flex-1 px-4 py-2">Zugewiesen von</div>
-      <div class="flex-1 px-4 py-2">Zugewiesen an</div>
-      <div class="flex-1 px-4 py-2">Erzeugt am</div>
+      <div
+        class="flex justify-center items-center px-4 py-2 text-xs w-20 text-center"
+      >
+        Material
+      </div>
+      <div
+        class="flex justify-center items-center px-4 py-2 text-xs w-20 text-center"
+      >
+        Zugewiesen von
+      </div>
+      <div
+        class="flex justify-center items-center px-4 py-2 text-xs w-20 text-center"
+      >
+        Zugewiesen an
+      </div>
+      <div
+        class="flex justify-center items-center px-4 py-2 text-xs w-24 text-center"
+      >
+        Erzeugt am
+      </div>
     </div>
 
     <!-- Table Rows -->
@@ -25,24 +43,26 @@
         />
       </div>
       <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
+        class="w-24 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
-        <span>{{ item.materialName }}</span>
+        <span class="text-xs text-gray-700">{{ item.materialName }}</span>
       </div>
       <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
+        class="w-20 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
-        <span>{{ item.assignedFrom }}</span>
+        <span class="text-xs text-gray-700">{{ item.assignedFrom }}</span>
       </div>
       <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
+        class="w-20 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
-        <span>{{ item.assignedToName }}</span>
+        <span class="text-xs text-gray-700">{{ item.assignedToName }}</span>
       </div>
       <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
+        class="w-24 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
-        <span>{{ dateFormatter(item.createdAt) }}</span>
+        <span class="text-xs text-gray-700 text-center w-full">{{
+          dateFormatter(item.createdAt)
+        }}</span>
       </div>
     </div>
     <div
