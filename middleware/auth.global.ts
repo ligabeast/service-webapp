@@ -9,33 +9,30 @@ export default defineNuxtRouteMiddleware((to, from) => {
       return;
     }
 
-    // Verzögere den Zugriff auf das Cookie nach der Hydration mit setTimeout
-    setTimeout(() => {
-      const token = useCookie("jwt").value;
+    const token = useCookie("jwt").value;
 
-      console.log("Token found:", token);
+    console.log("Token found:", token);
 
-      // Wenn ein Token vorhanden ist
-      if (token) {
-        try {
-          // Token dekodieren
-          const decoded = jwtDecode(token);
-          console.log("Token decoded:", decoded);
+    // Wenn ein Token vorhanden ist
+    if (token) {
+      try {
+        // Token dekodieren
+        const decoded = jwtDecode(token);
+        console.log("Token decoded:", decoded);
 
-          // TODO check if token is still valid
+        // TODO check if token is still valid
 
-          // Benutzerdaten im Zustand speichern
-          useState("user").value = decoded;
-        } catch (error) {
-          console.log("Invalid token, redirecting to home...");
-          // Asynchrone Weiterleitung zu Home
-          return navigateTo("/home");
-        }
-      } else {
-        console.log("No token found, redirecting to login...");
-        // Asynchrone Weiterleitung zu Login
-        return navigateTo("/login");
+        // Benutzerdaten im Zustand speichern
+        useState("user").value = decoded;
+      } catch (error) {
+        console.log("Invalid token, redirecting to home...");
+        // Asynchrone Weiterleitung zu Home
+        return navigateTo("/home");
       }
-    }, 0);
+    } else {
+      console.log("No token found, redirecting to login...");
+      // Asynchrone Weiterleitung zu Login
+      return navigateTo("/login");
+    }
   }
 });

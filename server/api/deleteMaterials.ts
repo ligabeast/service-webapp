@@ -12,47 +12,56 @@ const dbConfig = {
 
 export default defineEventHandler(async (event) => {
   let connection;
-  const user = event.context.user;
 
   try {
-    // Body der Anfrage auslesen
+    // Body der Anfrage lesen
     const body = await readBody(event);
 
-    if (!body.materialId) {
+    // Prüfen, ob IDs vorhanden sind
+    if (!body.ids || !Array.isArray(body.ids) || body.ids.length === 0) {
       return {
         status: "error",
-        message: "Material ID is required",
+        message: "No valid IDs provided",
       };
     }
 
-    const targetUser = body.userId ?? user.userId;
+    // Aktuellen Benutzer aus dem Kontext abrufen
+    const userId = event.context.userId;
 
-    // Verbindung zur Datenbank herstellen
+    if (!userId) {
+      return {
+        status: "error",
+        message: "User not authenticated",
+      };
+    }
+
+    if (!event.context.user.isAdmin) {
+      return {
+        status: "error",
+        message: "You are not authorized to delete this entry",
+      };
+    }
+
     connection = await mysql.createConnection(dbConfig);
 
-    // SQL-Abfrage zum Einfügen eines neuen Eintrags
-    const sql = `
-      INSERT INTO materialchecklist (materialid, assignedFrom, assignedTo, createdAt)
-      VALUES (?, ?, ?,?);
-    `;
-    const params = [
-      body.materialId, // Material-ID aus dem Body
-      user.username, // Optional: assignedFrom aus dem Body oder null
-      targetUser, // assignedTo aus dem Kontext
-      new Date(), // Erstellungsdatum (aktuelles Datum)
-    ];
+    const ids = body.ids;
 
-    const [result] = await connection.execute(sql, params);
+    const sql = `
+      DELETE FROM material
+      WHERE id IN (${ids.map(() => "?").join(",")})
+    `;
+
+    const [result] = await connection.execute(sql, [...ids]);
 
     return {
       status: "success",
-      message: "Material added to checklist successfully",
+      message: `${result.affectedRows} entries deleted`,
       data: result,
     };
   } catch (error: any) {
     return {
       status: "error",
-      message: "Failed to add material to checklist",
+      message: "Failed to delete entries",
       error: error.message,
     };
   } finally {

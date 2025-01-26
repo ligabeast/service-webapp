@@ -18,46 +18,57 @@ export default defineEventHandler(async (event) => {
     // Body der Anfrage auslesen
     const body = await readBody(event);
 
-    if (!body.materialId) {
+    if (!body.materialName) {
       return {
         status: "error",
-        message: "Material ID is required",
+        message: "Material NAME is required",
       };
     }
 
-    const targetUser = body.userId ?? user.userId;
+    if (!user.isAdmin) {
+      return {
+        status: "error",
+        message: "You are not authorized to add materials",
+      };
+    }
+
+    const sql1 = "select * from material where name = ?";
 
     // Verbindung zur Datenbank herstellen
     connection = await mysql.createConnection(dbConfig);
 
-    // SQL-Abfrage zum Einfügen eines neuen Eintrags
-    const sql = `
-      INSERT INTO materialchecklist (materialid, assignedFrom, assignedTo, createdAt)
-      VALUES (?, ?, ?,?);
-    `;
-    const params = [
-      body.materialId, // Material-ID aus dem Body
-      user.username, // Optional: assignedFrom aus dem Body oder null
-      targetUser, // assignedTo aus dem Kontext
-      new Date(), // Erstellungsdatum (aktuelles Datum)
-    ];
+    const [rows] = await connection.execute(sql1, [body.materialName]);
 
-    const [result] = await connection.execute(sql, params);
+    if (rows.length > 0) {
+      return {
+        status: "error",
+        message: "Materialname already exists",
+      };
+    }
+
+    // SQL-Abfrage zum Einfügen eines neuen Eintrags
+    const sql2 = `
+      INSERT INTO material (name)
+      VALUES (?);
+    `;
+    const params = [body.materialName];
+
+    const [result] = await connection.execute(sql2, params);
 
     return {
       status: "success",
-      message: "Material added to checklist successfully",
+      message: "Material added successfully",
       data: result,
     };
   } catch (error: any) {
     return {
       status: "error",
-      message: "Failed to add material to checklist",
+      message: "Failed to add material",
       error: error.message,
     };
   } finally {
     if (connection) {
-      await connection.end(); // Verbindung schließen
+      await connection.end();
     }
   }
 });

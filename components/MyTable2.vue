@@ -5,9 +5,8 @@
       <div class="w-8 px-4 py-2 flex items-center">
         <input type="checkbox" :checked="allSelected" @change="toggleAll" />
       </div>
+      <div class="flex-1 px-4 py-2">#</div>
       <div class="flex-1 px-4 py-2">Material</div>
-      <div class="flex-1 px-4 py-2">Zugewiesen von</div>
-      <div class="flex-1 px-4 py-2">Zugewiesen an</div>
       <div class="flex-1 px-4 py-2">Erzeugt am</div>
     </div>
 
@@ -27,17 +26,12 @@
       <div
         class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
       >
-        <span>{{ item.materialName }}</span>
+        <span>{{ item.id }}</span>
       </div>
       <div
         class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
       >
-        <span>{{ item.assignedFrom }}</span>
-      </div>
-      <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
-      >
-        <span>{{ item.assignedToName }}</span>
+        <span>{{ item.name }}</span>
       </div>
       <div
         class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
@@ -107,7 +101,7 @@ function updateSelection() {
 function emitSelectedIds() {
   const selectedIds = props.items
     .filter((_, index) => selected.value[index]) // Filter selected items
-    .map((item) => item.checklistId); // Map to their IDs
+    .map((item) => item.id); // Map to their IDs
   emit("updateSelection", selectedIds); // Emit selected IDs
 }
 </script>

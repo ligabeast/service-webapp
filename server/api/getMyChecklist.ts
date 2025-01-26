@@ -18,22 +18,40 @@ export default defineEventHandler(async (event) => {
     connection = await mysql.createConnection(dbConfig);
 
     // SQL-Abfrage, um die Checkliste des Benutzers zu holen
-    const sql = `
-      SELECT mc.id AS checklistId, mc.assignedFrom, mc.createdAt, m.name AS materialName
+    const sql1 = `
+      SELECT mc.id AS checklistId, mc.assignedFrom, mc.createdAt, m.name AS materialName, mc.materialid, mc.assignedTo, u.username AS assignedToName
       FROM materialchecklist mc
       JOIN material m ON mc.materialid = m.id
+      JOIN Users u ON mc.assignedTo = u.id
       WHERE mc.assignedTo = ?
       ORDER BY mc.createdAt DESC;
     `;
+
+    const sql2 = `
+    SELECT mc.id AS checklistId, mc.assignedFrom, mc.createdAt, m.name AS materialName, mc.materialid, mc.assignedTo, u.username AS assignedToName
+    FROM materialchecklist mc
+    JOIN material m ON mc.materialid = m.id
+    JOIN Users u ON mc.assignedTo = u.id
+    ORDER BY mc.createdAt DESC;
+  `;
+
     const params = [event.context.user.userId];
 
-    const [rows] = await connection.execute(sql, params);
-
-    return {
-      status: "success",
-      message: "Checklist retrieved successfully",
-      data: rows,
-    };
+    if (event.context.user.isAdmin) {
+      const [rows] = await connection.execute(sql2);
+      return {
+        status: "success",
+        message: "Checklist retrieved successfully",
+        data: rows,
+      };
+    } else {
+      const [rows] = await connection.execute(sql1, params);
+      return {
+        status: "success",
+        message: "Checklist retrieved successfully",
+        data: rows,
+      };
+    }
   } catch (error: any) {
     return {
       status: "error",

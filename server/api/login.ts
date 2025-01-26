@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
     // Benutzer in der Datenbank suchen
     const findUserSql =
-      "SELECT id, username, password_hash FROM Users WHERE username = ?;";
+      "SELECT id, username, password_hash, is_admin FROM Users WHERE username = ?;";
     const [rows]: any[] = await connection.execute(findUserSql, [username]);
 
     if (rows.length === 0) {
@@ -58,6 +58,7 @@ export default defineEventHandler(async (event) => {
         userId: user.id,
         username: user.username,
         password_hash: user.password_hash,
+        isAdmin: user.is_admin === 1,
       }, // Payload
       JWT_SECRET, // Secret Key
       { expiresIn: "180 days" } // Gültigkeit des Tokens 30 tage

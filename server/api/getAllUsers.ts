@@ -1,7 +1,6 @@
 import { defineEventHandler } from "h3";
 import mysql from "mysql2/promise";
 
-// Datenbankkonfiguration
 const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -16,26 +15,31 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    const sql = `
-      SELECT m.id, m.name, m.createdAt
-      FROM material m
-    `;
-    const [rows] = await connection.execute(sql);
+    if (!event.context.user.isAdmin) {
+      return {
+        status: "error",
+        message: "You are not authorized to view this page",
+      };
+    }
+
+    const [rows] = await connection.execute(
+      "select id,username from sys.Users;"
+    );
 
     return {
       status: "success",
-      message: "Filtered materials retrieved successfully",
+      message: "Users retrieved successfully",
       data: rows,
     };
   } catch (error: any) {
     return {
       status: "error",
-      message: "Failed to retrieve materials",
+      message: "Failed to connect to the database",
       error: error.message,
     };
   } finally {
     if (connection) {
-      await connection.end(); // Verbindung schließen
+      await connection.end();
     }
   }
 });

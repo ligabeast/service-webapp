@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed -top-0 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-50 h-dvh w-dvw overflow-hidden"
+    class="fixed -top-0 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-40 h-dvh w-dvw overflow-hidden"
     @click="emit('close')"
   >
     <!-- Modal Box -->
@@ -9,7 +9,7 @@
       @click.stop
     >
       <div class="flex w-full justify-between">
-        <span class="text-xl font-semibold mb-4">Neues Material einfügen</span>
+        <span class="text-xl font-semibold mb-4">Neuen Eintrag hinzufügen</span>
 
         <div
           class="w-8 h-8 rounded-full hover:bg-gray-200 transition flex items-center justify-center hover:cursor-pointer"
@@ -36,16 +36,36 @@
         </div>
       </div>
       <span class="text-xs text-gray-700 font-semibold"
-        >Bitte geben Sie einen Materialnamen ein</span
+        >Wählen Sie das Material aus</span
       >
-      <input
-        type="text"
+      <select
         class="border border-gray-300 rounded-md p-2"
         v-model="selectedMaterial"
-        maxlength="35"
-      />
+        v-if="allMaterials.length > 0"
+      >
+        <option :value="material.id" v-for="material in allMaterials">
+          {{ material.name }}
+        </option>
+      </select>
 
-      <div class="flex space-x-3 !mt-6">
+      <span class="text-sm font-medium text-gray-600" v-else>
+        Kein Material vorhanden
+      </span>
+
+      <span v-if="isAdmin" class="text-xs text-gray-700 font-semibold"
+        >Wen möchten Sie das Zuweisen?</span
+      >
+      <select
+        class="border border-gray-300 rounded-md p-2"
+        v-model="selectedUser"
+        v-if="allUsers.length > 0 && isAdmin"
+      >
+        <option :value="user.id" v-for="user in allUsers">
+          {{ user.username }}
+        </option>
+      </select>
+
+      <div class="flex space-x-3 !mt-6" v-if="allMaterials.length > 0">
         <button
           @click="handleSave"
           class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
@@ -60,30 +80,75 @@
 <script setup lang="ts">
 import { addNotification } from "~/notification";
 
+const props = defineProps({
+  isAdmin: Boolean,
+  checklist: Array,
+});
+
+if (props.isAdmin) {
+  fetchAllUsers();
+}
+
 const emit = defineEmits(["close", "fetch"]);
 const selectedMaterial = ref<string | null>(null);
-
+const allUsers = ref([]);
+const selectedUser = ref<string | null>(useState("user").value.userId ?? null);
+const data = await useFetch("/api/getAllMaterials", {
+  headers: {
+    Authorization: `Bearer ${useCookie("jwt").value}`,
+  },
+});
+const allMaterials = ref(data.data.value.data ?? []);
 async function handleSave() {
-  if (!selectedMaterial.value) {
-    addNotification("Bitte geben Sie einen Materialnamen ein", "error", 3000);
+  console.log(selectedMaterial.value);
+  console.log(props.checklist);
+  console.log(selectedUser.value);
+  // check if user has already this material
+  if (
+    props.checklist.some(
+      (item) =>
+        item.materialid === selectedMaterial.value &&
+        item.assignedTo === selectedUser.value
+    )
+  ) {
+    addNotification(
+      "Dieses Material wurde bereits hinzugefügt für den Nutzer",
+      "error",
+      3000
+    );
     return;
   }
 
-  const result = await useFetch("/api/addMaterial", {
+  const result = await useFetch("/api/addMaterialToChecklist", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${useCookie("jwt").value}`,
     },
     body: JSON.stringify({
-      materialName: selectedMaterial.value,
+      materialId: selectedMaterial.value,
+      userId: selectedUser.value,
     }),
   });
   if (result.data.value.status === "success") {
     addNotification("Material hinzugefügt", "success", 3000);
     emit("fetch");
   } else {
-    addNotification(result.data.value?.message, "error", 3000);
+    addNotification("Fehler beim Hinzufügen des Materials", "error", 3000);
   }
   emit("close");
+}
+
+function fetchAllUsers() {
+  $fetch("/api/getAllUsers", {
+    headers: {
+      Authorization: `Bearer ${useCookie("jwt").value}`,
+    },
+  }).then((data) => {
+    console.log(data.data);
+    allUsers.value = data.data;
+    selectedUser.value = data.data.find(
+      (user) => user.id === useState("user").value.userId
+    ).id;
+  });
 }
 </script>
