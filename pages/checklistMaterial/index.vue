@@ -35,7 +35,7 @@
           Einträge löschen
         </button>
       </div>
-      <div class="flex flex-col space-y-4" v-if="isAdmin">
+      <div class="flex flex-col space-y-4 pt-12" v-if="isAdmin">
         <h1 class="font-semibold text-2xl">Material management</h1>
         <MyTable2 :items="allMaterials" @update-selection="handleSelection2" />
         <div class="flex flex-col items-center justify-center space-y-3">
