@@ -10,6 +10,7 @@
     >
       <div class="flex w-full justify-between">
         <span class="text-xl font-semibold mb-4">Neuen Eintrag hinzufügen</span>
+
         <div
           class="w-8 h-8 rounded-full hover:bg-gray-200 transition flex items-center justify-center hover:cursor-pointer"
         >
@@ -34,10 +35,26 @@
           </button>
         </div>
       </div>
+      <span class="text-xs text-gray-700 font-semibold"
+        >Wählen Sie das Material aus</span
+      >
+      <select
+        class="border border-gray-300 rounded-md p-2"
+        v-model="selectedMaterial"
+        v-if="allMaterials.length > 0"
+      >
+        <option :value="material.id" v-for="material in allMaterials">
+          {{ material.name }}
+        </option>
+      </select>
 
-      <div class="flex space-x-3">
+      <span class="text-sm font-medium text-gray-600" v-else>
+        Sie haben bereits alle Materiallien eingetragen
+      </span>
+
+      <div class="flex space-x-3 !mt-6" v-if="allMaterials.length > 0">
         <button
-          @click="handleDelete"
+          @click="handleSave"
           class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
         >
           Bestätigen
@@ -48,6 +65,32 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(["close"]);
-function handleDelete() {}
+import { addNotification } from "~/notification";
+
+const emit = defineEmits(["close", "fetch"]);
+const selectedMaterial = ref<string | null>(null);
+const data = await useFetch("/api/getAllMaterials", {
+  headers: {
+    Authorization: `Bearer ${useCookie("jwt").value}`,
+  },
+});
+const allMaterials = ref(data.data.value.data ?? []);
+async function handleSave() {
+  const result = await useFetch("/api/addMaterialToChecklist", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${useCookie("jwt").value}`,
+    },
+    body: JSON.stringify({
+      materialId: selectedMaterial.value,
+    }),
+  });
+  if (result.data.value.status === "success") {
+    addNotification("Material hinzugefügt", "success", 3000);
+    emit("fetch");
+  } else {
+    addNotification("Fehler beim Hinzufügen des Materials", "error", 3000);
+  }
+  emit("close");
+}
 </script>

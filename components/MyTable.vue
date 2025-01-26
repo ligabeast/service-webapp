@@ -6,9 +6,8 @@
         <input type="checkbox" :checked="allSelected" @change="toggleAll" />
       </div>
       <div class="flex-1 px-4 py-2">Material</div>
-      <div class="flex-1 px-4 py-2">Quantity</div>
-      <div class="flex-1 px-4 py-2">Assigned From</div>
-      <div class="flex-1 px-4 py-2">Created At</div>
+      <div class="flex-1 px-4 py-2">Zugewiesen von</div>
+      <div class="flex-1 px-4 py-2">Erzeugt am</div>
     </div>
 
     <!-- Table Rows -->
@@ -27,12 +26,7 @@
       <div
         class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
       >
-        <span>{{ item.material }}</span>
-      </div>
-      <div
-        class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
-      >
-        <span>{{ item.quantity }}</span>
+        <span>{{ item.materialName }}</span>
       </div>
       <div
         class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
@@ -42,16 +36,23 @@
       <div
         class="flex-1 px-4 py-2 border-t border-gray-200 h-full flex items-center"
       >
-        <span>{{ item.createdAt }}</span>
+        <span>{{ dateFormatter(item.createdAt) }}</span>
       </div>
+    </div>
+    <div
+      class="w-full flex items-center justify-center py-3"
+      v-if="props.items.length === 0"
+    >
+      <span class="text-bold text-gray-500 text-sm"
+        >Keine Daten eingetragen</span
+      >
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from "vue";
 
-// Props
 const props = defineProps({
   items: {
     type: Array,
@@ -59,7 +60,28 @@ const props = defineProps({
   },
 });
 
-// Emits
+watch(
+  () => props.items, // Was überwacht werden soll
+  (newItems, oldItems) => {
+    console.log("Items haben sich geändert:", { newItems, oldItems });
+    selected.value = new Array(newItems.length).fill(false);
+  }
+);
+
+const dateFormatter = (date: Date | string): string => {
+  const d = new Date(date);
+
+  // Formatierung der einzelnen Teile
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0"); // Monat ist 0-basiert
+  const year = d.getFullYear();
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+
+  // Zusammenfügen im gewünschten Format
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+};
+
 const emit = defineEmits(["updateSelection"]);
 
 const selected = ref(new Array(props.items.length).fill(false));
@@ -79,7 +101,7 @@ function updateSelection() {
 function emitSelectedIds() {
   const selectedIds = props.items
     .filter((_, index) => selected.value[index]) // Filter selected items
-    .map((item) => item.id); // Map to their IDs
+    .map((item) => item.checklistId); // Map to their IDs
   emit("updateSelection", selectedIds); // Emit selected IDs
 }
 </script>

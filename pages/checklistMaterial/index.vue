@@ -3,6 +3,7 @@
     <NewMaterialModal
       v-if="showNewEntryModal"
       @close="showNewEntryModal = false"
+      @fetch="fetchData"
     />
     <div class="flex w-full h-full flex-col p-4 space-y-4">
       <h1 class="font-semibold text-2xl">Benötigtes Material Checklist</h1>
@@ -22,6 +23,7 @@
             'bg-gray-400': selectedIds.length === 0,
           }"
           :disabled="selectedIds.length === 0"
+          @click="handleDelete"
         >
           Einträge löschen
         </button>
@@ -31,29 +33,52 @@
 </template>
 
 <script setup>
+import { addNotification } from "~/notification";
+
 const selectedIds = ref([]);
-const items = [
-  {
-    id: 1,
-    assigne: "Max Mustermann",
-    createdAt: "2024-10-23 13:30:45",
-    material: "Holz",
-    quantity: 5,
-    assignedFrom: "Herr Müller",
+
+const data = await useFetch("/api/getMyChecklist", {
+  headers: {
+    Authorization: `Bearer ${useCookie("jwt").value}`,
   },
-  {
-    id: 2,
-    assigne: "Max Mustermann2",
-    createdAt: "2024-10-23 13:30:45",
-    material: "Holz2",
-    quantity: 5,
-    assignedFrom: "Herr Müller",
-  },
-];
+});
+
+async function fetchData() {
+  const data = await useFetch("/api/getMyChecklist", {
+    headers: {
+      Authorization: `Bearer ${useCookie("jwt").value}`,
+    },
+  });
+  items.value = data.data.value.data;
+}
+
+console.log(data.data.value.data);
+const items = ref(data.data.value.data ?? []);
 
 const showNewEntryModal = ref(false);
 
 function handleSelection(selected) {
   selectedIds.value = selected;
+}
+
+async function handleDelete() {
+  console.log(selectedIds.value);
+  $fetch("/api/deleteChecklist", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${useCookie("jwt").value}`,
+    },
+    body: JSON.stringify({
+      ids: selectedIds.value,
+    }),
+  })
+    .then((res) => {
+      addNotification(res.message, res.status, 3000);
+      fetchData();
+    })
+    .catch((error) => {
+      console.log("Error occurred while creating order:", error);
+    });
 }
 </script>
