@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-full h-full flex-col p-4 space-y-4">
+  <div class="flex w-full h-full flex-col p-4">
     <h1 class="font-semibold text-2xl text-center">Auftrag abschließen</h1>
     <Loader v-if="showLoading" />
     <CabelModal
@@ -57,209 +57,214 @@
         ne3errorRemoved: ne3errorRemoved,
       }"
     />
-    <label for="anschrift">Anschrift</label>
-    <textarea
-      v-model="adress"
-      id="anschrift"
-      class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
-      disabled
-    ></textarea>
+    <div class="flex w-full h-full flex-col space-y-4">
+      <label for="anschrift">Anschrift</label>
+      <textarea
+        v-model="adress"
+        id="anschrift"
+        class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
+        disabled
+      ></textarea>
 
-    <div class="flex space-x-3">
-      <label for="anschrift" class="w-1/2">Auftragsnummer</label>
-      <span class="text-gray-600 font-medium">{{ ordernumber }}</span>
-    </div>
-    <div class="flex space-x-3">
-      <label for="anschrift" class="w-1/2">KLS-ID</label>
-      <NuxtLink
-        class="underline text-blue-600"
-        :to="`/imagesLookup/${kls_id}?ordernumber=${ordernumber}&adress=${adress}`"
-        >{{ kls_id }}</NuxtLink
-      >
-    </div>
-    <OrderTypeSelector @changed="selectedOrderType = $event" />
-    <p class="font-semibold text-lg">Hochgeladene Bilder</p>
-    <input
-      type="file"
-      accept="image/png, image/jpeg, image/jpg"
-      multiple
-      @change="onFileChange"
-    />
-    <p class="font-semibold text-lg">Eingetragene Positionen:</p>
-    <template v-for="material in insertedPositions" :key="material.id">
-      <div class="flex w-full space-x-2 items-center">
-        <button
-          class="w-8 h-8 hover:scale-105 transition"
-          @click="handleDeleteMaterial(material)"
+      <div class="flex space-x-3">
+        <label for="anschrift" class="w-1/2">Auftragsnummer</label>
+        <span class="text-gray-600 font-medium">{{ ordernumber }}</span>
+      </div>
+      <div class="flex space-x-3">
+        <label for="anschrift" class="w-1/2">KLS-ID</label>
+        <NuxtLink
+          class="underline text-blue-600"
+          :to="`/imagesLookup/${kls_id}?ordernumber=${ordernumber}&adress=${adress}`"
+          >{{ kls_id }}</NuxtLink
         >
-          <svg
-            class="w-6 h-6"
-            viewBox="0 -0.5 21 21"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
+      </div>
+      <OrderTypeSelector @changed="selectedOrderType = $event" />
+      <p class="font-semibold text-lg">Hochgeladene Bilder</p>
+      <input
+        type="file"
+        accept="image/png, image/jpeg, image/jpg"
+        multiple
+        @change="onFileChange"
+      />
+      <p class="font-semibold text-lg">Eingetragene Positionen:</p>
+      <template v-for="material in insertedPositions" :key="material.id">
+        <div class="flex w-full space-x-2 items-center">
+          <button
+            class="w-8 h-8 hover:scale-105 transition"
+            @click="handleDeleteMaterial(material)"
           >
-            <title>delete [#1487]</title>
-            <desc>Created with Sketch.</desc>
-            <defs></defs>
-            <g
-              id="Page-1"
-              stroke="none"
-              stroke-width="1"
-              fill="none"
-              fill-rule="evenodd"
+            <svg
+              class="w-6 h-6"
+              viewBox="0 -0.5 21 21"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
             >
+              <title>delete [#1487]</title>
+              <desc>Created with Sketch.</desc>
+              <defs></defs>
               <g
-                id="Dribbble-Light-Preview"
-                transform="translate(-179.000000, -360.000000)"
-                fill="#000000"
+                id="Page-1"
+                stroke="none"
+                stroke-width="1"
+                fill="none"
+                fill-rule="evenodd"
               >
-                <g id="icons" transform="translate(56.000000, 160.000000)">
-                  <path
-                    d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z"
-                    id="delete-[#1487]"
-                  ></path>
+                <g
+                  id="Dribbble-Light-Preview"
+                  transform="translate(-179.000000, -360.000000)"
+                  fill="#000000"
+                >
+                  <g id="icons" transform="translate(56.000000, 160.000000)">
+                    <path
+                      d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z"
+                      id="delete-[#1487]"
+                    ></path>
+                  </g>
                 </g>
               </g>
-            </g>
-          </svg>
+            </svg>
+          </button>
+          <label for="material" class="w-full">{{ material.alias }}</label>
+          <input
+            type="number"
+            id="menge"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            v-if="material.dynamic"
+            class="border border-black w-20 rounded-sm"
+            v-model="material.quantity"
+          />
+        </div>
+      </template>
+      <template v-if="insertedPositions.length === 0">
+        <p>Keine Positionen eingetragen</p>
+      </template>
+      <div class="w-full flex h-12 items-center justify-center">
+        <button
+          class="w-20 h-12 bg-green-500 flex justify-center items-center text-2xl font-bold text-white rounded-md hover:bg-green-600 hover:scale-105 transition"
+          @click="showMaterialModal = true"
+        >
+          +
         </button>
-        <label for="material" class="w-full">{{ material.alias }}</label>
-        <input
-          type="number"
-          id="menge"
-          inputmode="numeric"
-          pattern="[0-9]*"
-          v-if="material.dynamic"
-          class="border border-black w-20 rounded-sm"
-          v-model="material.quantity"
-        />
       </div>
-    </template>
-    <template v-if="insertedPositions.length === 0">
-      <p>Keine Positionen eingetragen</p>
-    </template>
-    <div class="w-full flex h-12 items-center justify-center">
-      <button
-        class="w-20 h-12 bg-green-500 flex justify-center items-center text-2xl font-bold text-white rounded-md hover:bg-green-600 hover:scale-105 transition"
-        @click="showMaterialModal = true"
+
+      <!-- Select reason for not completed Order -->
+      <div class="flex flex-col space-y-4" v-if="notCompleted">
+        <label class="text-lg font-semibold" for="reason"
+          >Grund für nicht abgeschlossenen Auftrag</label
+        >
+        <select
+          v-model="notCompletedReason"
+          v-if="selectedOrderType == 'connect'"
+          class="border border-black rounded-sm w-full h-8 px-2"
+        >
+          <option>Kunde nicht vorort</option>
+          <option>Zugang nicht vorhanden</option>
+          <option>Vertragsfehler</option>
+          <option>Neuer Termin vereinbart</option>
+          <option>Leitungsweg nicht realisierbar</option>
+          <option>GWV nicht vorhanden</option>
+          <option>AP nicht ZTV-Konform gebaut</option>
+          <option>Sonstiges</option>
+        </select>
+        <select
+          v-model="notCompletedReason"
+          v-if="selectedOrderType == 'gwv'"
+          class="border border-black rounded-sm w-full h-8 px-2"
+        >
+          <option>Kunde nicht vorort</option>
+          <option>Zugang nicht vorhanden</option>
+          <option>Vertragsfehler</option>
+          <option>Neuer Termin vereinbart</option>
+          <option>Leitungsweg nicht realisierbar</option>
+          <option>AP nicht vorhanden</option>
+          <option>AP nicht ZTV-Konform gebaut</option>
+          <option>Sonstiges</option>
+        </select>
+      </div>
+
+      <div
+        class="flex flex-col space-y-4"
+        v-if="selectedOrderType == 'connect'"
       >
-        +
+        <label class="text-lg font-semibold" for="reason"
+          >Ne3 Fehler vorhanden?</label
+        >
+        <div class="flex space-x-2 items-center">
+          <label for="n3no" class="select-none">Nein</label>
+          <input
+            name="ne3"
+            id="n3no"
+            type="radio"
+            value="Nein"
+            v-model="ne3error"
+          />
+        </div>
+        <div class="flex space-x-2 items-center">
+          <label for="n3yes" class="select-none">Ja</label>
+          <input
+            name="ne3"
+            id="n3yes"
+            type="radio"
+            value="Ja"
+            v-model="ne3error"
+          />
+        </div>
+      </div>
+      <div
+        class="flex flex-col space-y-4"
+        v-if="ne3error === 'Ja' && selectedOrderType === 'connect'"
+      >
+        <label class="text-lg font-semibold" for="reason"
+          >Ne3 Fehler beseitigt?</label
+        >
+        <div class="flex space-x-2 items-center">
+          <label for="ne3Removedno" class="select-none">Nein</label>
+          <input
+            name="ne3Removed"
+            id="ne3Removedno"
+            type="radio"
+            value="Nein"
+            v-model="ne3errorRemoved"
+          />
+        </div>
+        <div class="flex space-x-2 items-center">
+          <label for="n3Removedyes" class="select-none">Ja</label>
+          <input
+            name="ne3Removed"
+            id="n3Removedyes"
+            type="radio"
+            value="Ja"
+            v-model="ne3errorRemoved"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col space-y-4">
+        <label class="text-lg font-semibold" for="kommentar"
+          >Interner Kommentar</label
+        >
+        <textarea
+          v-model="commentInternal"
+          class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
+        ></textarea>
+      </div>
+      <CopyCommentArea v-model:commentCopy="commentCopy" />
+      <button
+        class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-blue-600 hover:scale-105 transition min-h-10"
+        @click="handleSave"
+        :disabled="showLoading"
+      >
+        Speichern
+      </button>
+      <button
+        class="w-full h-12 bg-gray-400 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-gray-500 hover:scale-105 transition min-h-10"
+        @click="showDeleteModal = true"
+      >
+        Löschen
       </button>
     </div>
-
-    <!-- Select reason for not completed Order -->
-    <div class="flex flex-col space-y-4" v-if="notCompleted">
-      <label class="text-lg font-semibold" for="reason"
-        >Grund für nicht abgeschlossenen Auftrag</label
-      >
-      <select
-        v-model="notCompletedReason"
-        v-if="selectedOrderType == 'connect'"
-        class="border border-black rounded-sm w-full h-8 px-2"
-      >
-        <option>Kunde nicht vorort</option>
-        <option>Zugang nicht vorhanden</option>
-        <option>Vertragsfehler</option>
-        <option>Neuer Termin vereinbart</option>
-        <option>Leitungsweg nicht realisierbar</option>
-        <option>GWV nicht vorhanden</option>
-        <option>AP nicht ZTV-Konform gebaut</option>
-        <option>Sonstiges</option>
-      </select>
-      <select
-        v-model="notCompletedReason"
-        v-if="selectedOrderType == 'gwv'"
-        class="border border-black rounded-sm w-full h-8 px-2"
-      >
-        <option>Kunde nicht vorort</option>
-        <option>Zugang nicht vorhanden</option>
-        <option>Vertragsfehler</option>
-        <option>Neuer Termin vereinbart</option>
-        <option>Leitungsweg nicht realisierbar</option>
-        <option>AP nicht vorhanden</option>
-        <option>AP nicht ZTV-Konform gebaut</option>
-        <option>Sonstiges</option>
-      </select>
-    </div>
-
-    <div class="flex flex-col space-y-4" v-if="selectedOrderType == 'connect'">
-      <label class="text-lg font-semibold" for="reason"
-        >Ne3 Fehler vorhanden?</label
-      >
-      <div class="flex space-x-2 items-center">
-        <label for="n3no" class="select-none">Nein</label>
-        <input
-          name="ne3"
-          id="n3no"
-          type="radio"
-          value="Nein"
-          v-model="ne3error"
-        />
-      </div>
-      <div class="flex space-x-2 items-center">
-        <label for="n3yes" class="select-none">Ja</label>
-        <input
-          name="ne3"
-          id="n3yes"
-          type="radio"
-          value="Ja"
-          v-model="ne3error"
-        />
-      </div>
-    </div>
-    <div
-      class="flex flex-col space-y-4"
-      v-if="ne3error === 'Ja' && selectedOrderType === 'connect'"
-    >
-      <label class="text-lg font-semibold" for="reason"
-        >Ne3 Fehler beseitigt?</label
-      >
-      <div class="flex space-x-2 items-center">
-        <label for="ne3Removedno" class="select-none">Nein</label>
-        <input
-          name="ne3Removed"
-          id="ne3Removedno"
-          type="radio"
-          value="Nein"
-          v-model="ne3errorRemoved"
-        />
-      </div>
-      <div class="flex space-x-2 items-center">
-        <label for="n3Removedyes" class="select-none">Ja</label>
-        <input
-          name="ne3Removed"
-          id="n3Removedyes"
-          type="radio"
-          value="Ja"
-          v-model="ne3errorRemoved"
-        />
-      </div>
-    </div>
-
-    <div class="flex flex-col space-y-4">
-      <label class="text-lg font-semibold" for="kommentar"
-        >Interner Kommentar</label
-      >
-      <textarea
-        v-model="commentInternal"
-        class="border border-black rounded-sm h-20 min-h-[5rem] w-full"
-      ></textarea>
-    </div>
-    <CopyCommentArea v-model:commentCopy="commentCopy" />
-    <button
-      class="w-full h-12 bg-blue-500 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-blue-600 hover:scale-105 transition min-h-10"
-      @click="handleSave"
-      :disabled="showLoading"
-    >
-      Speichern
-    </button>
-    <button
-      class="w-full h-12 bg-gray-400 flex justify-center items-center text-lg font-bold text-white rounded-md hover:bg-gray-500 hover:scale-105 transition min-h-10"
-      @click="showDeleteModal = true"
-    >
-      Löschen
-    </button>
   </div>
 </template>
 

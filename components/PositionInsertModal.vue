@@ -1,10 +1,12 @@
 <template>
   <div
-    class="fixed -top-4 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-50 h-dvh w-dvw"
+    class="fixed -top-0 -left-0 bg-black bg-opacity-50 flex justify-center items-center z-50 h-dvh w-dvw"
+    @click="emit('close')"
   >
     <!-- Modal Box -->
     <div
       class="bg-white p-6 rounded-lg shadow-lg w-96 relative flex flex-col space-y-5"
+      @click.stop
     >
       <div class="flex flex-row items-center justify-between">
         <p class="text-xl font-semibold">Position Hinzufügen</p>
