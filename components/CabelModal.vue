@@ -23,7 +23,7 @@
           Abbrechen
         </button>
         <button
-          class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 hover:scale-105 transition"
+          class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
           @click="emit('submit')"
         >
           Bestätigen

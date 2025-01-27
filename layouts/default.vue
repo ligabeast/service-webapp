@@ -141,6 +141,44 @@
           </button>
         </NuxtLink>
       </ClientOnly>
+      <NuxtLink to="/ongoingOrders">
+        <button class="hover:scale-125 transition">
+          <svg
+            fill="#000000"
+            class="w-6 h-6 text-white fill-white"
+            version="1.1"
+            xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 24 24"
+            xml:space="preserve"
+          >
+            <g id="active">
+              <path
+                d="M8.6,20.1l-7.8-8l1.4-1.4l6.4,6.5L21.8,3.9l1.4,1.4L8.6,20.1z"
+              />
+            </g>
+          </svg>
+        </button>
+      </NuxtLink>
+      <NuxtLink to="/checklistMaterial">
+        <button class="hover:scale-125 transition">
+          <svg
+            class="w-6 h-6 text-white fill-white"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 6.00067L21 6.00139M8 12.0007L21 12.0015M8 18.0007L21 18.0015M3.5 6H3.51M3.5 12H3.51M3.5 18H3.51M4 6C4 6.27614 3.77614 6.5 3.5 6.5C3.22386 6.5 3 6.27614 3 6C3 5.72386 3.22386 5.5 3.5 5.5C3.77614 5.5 4 5.72386 4 6ZM4 12C4 12.2761 3.77614 12.5 3.5 12.5C3.22386 12.5 3 12.2761 3 12C3 11.7239 3.22386 11.5 3.5 11.5C3.77614 11.5 4 11.7239 4 12ZM4 18C4 18.2761 3.77614 18.5 3.5 18.5C3.22386 18.5 3 18.2761 3 18C3 17.7239 3.22386 17.5 3.5 17.5C3.77614 17.5 4 17.7239 4 18Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </NuxtLink>
     </div>
   </div>
 </template>
