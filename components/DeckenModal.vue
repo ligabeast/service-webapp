@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed -top-4 -left-0 flex justify-center items-center z-30 h-dvh w-dvw"
+    class="fixed -top-0 -left-0 flex justify-center items-center z-30 h-dvh w-dvw"
     @click="emit('abort')"
   >
     <!-- Modal Box -->

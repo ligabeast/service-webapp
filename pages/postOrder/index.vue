@@ -24,6 +24,16 @@
       "
       @submit="handleSave4"
     />
+    <DoppelauftragModal
+      v-show="showDoppelauftragModal"
+      @close="
+        showDoppelauftragModal = false;
+        showStundensatzModal = false;
+        showDeckenModal = false;
+        showCabelModal = false;
+      "
+      @submit="handleSave5"
+    />
     <DarkBg
       v-show="showCabelModal || showDeckenModal || showStundensatzModal"
       @abort="
@@ -226,6 +236,74 @@
 
       <div
         class="flex flex-col space-y-4"
+        v-if="
+          selectedOrderType == 'connect' &&
+          insertedPositions.find((e) => e.name === 'Connect mit Herstellen Ne4')
+        "
+      >
+        <label class="text-lg font-semibold" for="reason"
+          >Wie viele Wohneinheiten(WE), hat das Objekt?</label
+        >
+        <div class="flex space-x-2 items-center">
+          <label for="we1" class="select-none">1</label>
+          <input
+            name="we"
+            id="we1"
+            type="radio"
+            value="1"
+            v-model="weInObject"
+          />
+        </div>
+        <div class="flex space-x-2 items-center">
+          <label for="we2-3" class="select-none">2-3</label>
+          <input
+            name="we"
+            id="we2-3"
+            type="radio"
+            value="2-3"
+            v-model="weInObject"
+          />
+        </div>
+        <div class="flex space-x-2 items-center">
+          <label for="we4+" class="select-none">4+</label>
+          <input
+            name="we"
+            id="we4+"
+            type="radio"
+            value="4+"
+            v-model="weInObject"
+          />
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col space-y-4"
+        v-if="
+          selectedOrderType == 'connect' &&
+          insertedPositions.find((e) => e.name === 'Connect mit Herstellen Ne4')
+        "
+      >
+        <label class="text-lg font-semibold" for="reason"
+          >Hast du nach AKP gebaut?</label
+        >
+        <div class="flex space-x-2 items-center">
+          <label for="akpyes" class="select-none">Ja</label>
+          <input name="akp" id="akpyes" type="radio" value="Ja" v-model="akp" />
+        </div>
+        <div class="flex space-x-2 items-center">
+          <label for="akpno" class="select-none">Nein</label>
+          <input
+            name="akp"
+            type="radio"
+            id="akpno"
+            value="Nein"
+            v-model="akp"
+          />
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col space-y-4"
         v-if="selectedOrderType == 'connect'"
       >
         <label class="text-lg font-semibold" for="reason"
@@ -338,6 +416,10 @@ const commentInternal = ref<string>("");
 
 const notCompleted = ref<boolean>(false);
 const notCompletedReason = ref<string>("");
+
+const weInObject = ref<string>("2-3");
+const akp = ref<string>("Ja");
+const showDoppelauftragModal = ref(false);
 
 watch(selectedOrderType, (value) => {
   if (selectedOrderType.value === "gwv") {
@@ -512,7 +594,15 @@ function handleSave3() {
   handleSave4();
 }
 
-async function handleSave4() {
+function handleSave4() {
+  if (selectedOrderType.value === "connect" && weInObject.value === "2-3") {
+    showDoppelauftragModal.value = true;
+    return;
+  }
+  handleSave5();
+}
+
+async function handleSave5() {
   const formData = new FormData();
 
   // Dateien anhängen
@@ -528,6 +618,8 @@ async function handleSave4() {
   }
 
   // Weitere Felder anhängen
+  formData.append("weInObject", weInObject.value);
+  formData.append("akp", akp.value);
   formData.append("notCompleted", notCompleted.value.toString());
   formData.append("notCompletedReason", notCompletedReason.value);
   formData.append("ordernumber", ordernumber.value);
@@ -574,6 +666,11 @@ async function handleSave4() {
       console.log("Antwort:", res);
       if (res.status === "success") {
         showResultModal1.value = true;
+        showCabelModal.value = false;
+        showDeckenModal.value = false;
+        showStundensatzModal.value = false;
+        showDoppelauftragModal.value = false;
+        commentCopy.value = res.data.commentCopy;
       }
     })
     .catch((error) => {

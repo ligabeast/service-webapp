@@ -55,6 +55,8 @@ export default defineEventHandler(async (event) => {
       notCompleted,
       notCompletedReason,
       ne3error,
+      akp,
+      weInObject,
     } = fields;
 
     ordernumber = Array.isArray(ordernumber) ? ordernumber[0] : ordernumber;
@@ -74,6 +76,8 @@ export default defineEventHandler(async (event) => {
       ? notCompletedReason[0]
       : notCompletedReason;
     notCompleted = Array.isArray(notCompleted) ? notCompleted[0] : notCompleted;
+    akp = Array.isArray(akp) ? akp[0] : akp;
+    weInObject = Array.isArray(weInObject) ? weInObject[0] : weInObject;
 
     if (orderType === "gwv") {
       ne3error.ne3error = "Nein";
@@ -122,11 +126,29 @@ export default defineEventHandler(async (event) => {
     const { adress, kls_id } = (rows2 as any[])[0];
     console.log("[DEBUG] Adresse und kls_id geladen:", adress, kls_id);
 
+    if (
+      JSON.parse(positions as string).find(
+        (p: any) => p.position_id == 19 || p.position_id === 20
+      )
+    ) {
+      if (weInObject === "1" || weInObject === "2-3") {
+        commentCopy +=
+          akp === "Ja"
+            ? " Leitungsweg unvollständig, fehlendes gebaut."
+            : " Alternativen Leitungsweg genutzt.";
+      } else if (weInObject === "4+") {
+        commentCopy +=
+          akp === "Ja"
+            ? " GWV unvollständig, fehlendes gebaut."
+            : " GWV Alternativen Leitungsweg genutzt.";
+      }
+    }
+
     console.log("[DEBUG] Erstelle neue Bestellung...");
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO sys.Orders 
-        (ne3error, ne3errorRemoved,ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal, notCompletedReason) 
-       VALUES (?,?,?, ?, 'completed', ?, ?, ?, NOW(), ?, ?, ?);`,
+        (ne3error, ne3errorRemoved,ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal, notCompletedReason, akp, we) 
+       VALUES (?,?,?, ?, 'completed', ?, ?, ?, NOW(), ?, ?, ?, ?, ?);`,
       [
         ne3error.ne3error,
         ne3error.ne3errorRemoved,
@@ -138,6 +160,8 @@ export default defineEventHandler(async (event) => {
         commentCopy,
         commentInternal,
         notCompleted === "true" ? notCompletedReason : null,
+        akp === "Ja" ? "Nach akp gebaut" : "Alternativ gebaut",
+        weInObject,
       ]
     );
 
@@ -221,7 +245,7 @@ export default defineEventHandler(async (event) => {
     return {
       status: "success",
       message: "Order completed and pictures uploaded successfully",
-      data: { orderid: newOrderId, pictureMetadata },
+      data: { orderid: newOrderId, pictureMetadata, commentCopy },
     };
   } catch (error: any) {
     console.error("[ERROR] Fehler:", error.message);
