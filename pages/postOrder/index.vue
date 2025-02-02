@@ -595,7 +595,11 @@ function handleSave3() {
 }
 
 function handleSave4() {
-  if (selectedOrderType.value === "connect" && weInObject.value === "2-3") {
+  if (
+    selectedOrderType.value === "connect" &&
+    weInObject.value === "2-3" &&
+    insertedPositions.value.find((e) => e.id == 19 || e.id == 20)
+  ) {
     showDoppelauftragModal.value = true;
     return;
   }

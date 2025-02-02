@@ -21,13 +21,13 @@
           class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition"
           @click="emit('abort')"
         >
-          Abbrechen
+          Ja
         </button>
         <button
           class="bg-blue-500 h-10 w-full rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
           @click="emit('submit')"
         >
-          Weiter
+          Nein
         </button>
       </div>
     </div>
