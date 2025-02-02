@@ -2,28 +2,28 @@
   <div class="w-full border border-gray-300 rounded-lg">
     <!-- Table Header -->
     <div
-      class="bg-gray-100 text-gray-800 font-semibold flex justify-center items-center w-full"
+      class="bg-gray-100 text-gray-800 font-semibold flex items-center w-full"
     >
-      <div class="w-8 px-4 py-2 flex items-center">
+      <div class="w-8 px-4 flex-grow py-2 flex items-center">
         <input type="checkbox" :checked="allSelected" @change="toggleAll" />
       </div>
       <div
-        class="flex justify-center items-center px-4 py-2 text-xs w-20 text-center"
+        class="flex flex-grow justify-center items-center px-4 py-2 text-xs !min-w-24 text-center"
       >
         Material
       </div>
       <div
-        class="flex justify-center items-center px-4 py-2 text-xs w-20 text-center"
+        class="flex flex-grow justify-center items-center px-4 py-2 text-xs min-w-20 text-center"
       >
         Zugewiesen von
       </div>
       <div
-        class="flex justify-center items-center px-4 py-2 text-xs w-20 text-center"
+        class="flex flex-grow justify-center items-center px-4 py-2 text-xs min-w-20 text-center"
       >
         Zugewiesen an
       </div>
       <div
-        class="flex justify-center items-center px-4 py-2 text-xs w-24 text-center"
+        class="flex flex-grow justify-center items-center px-4 py-2 text-xs min-w-24 text-center"
       >
         Erzeugt am
       </div>
@@ -33,9 +33,11 @@
     <div
       v-for="(item, index) in items"
       :key="item.id"
-      class="flex items-center hover:bg-gray-50 h-12"
+      class="flex items-center hover:bg-gray-50 h-12 w-full"
     >
-      <div class="w-8 h-full border-t border-gray-200 flex items-center px-4">
+      <div
+        class="w-8 flex-grow h-full border-t border-gray-200 flex items-center px-4"
+      >
         <input
           type="checkbox"
           v-model="selected[index]"
@@ -43,22 +45,22 @@
         />
       </div>
       <div
-        class="w-24 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
+        class="min-w-24 flex-grow py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-xs text-gray-700">{{ item.materialName }}</span>
       </div>
       <div
-        class="w-20 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
+        class="min-w-20 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-xs text-gray-700">{{ item.assignedFrom }}</span>
       </div>
       <div
-        class="w-20 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
+        class="min-w-20 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-xs text-gray-700">{{ item.assignedToName }}</span>
       </div>
       <div
-        class="w-24 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
+        class="min-w-24 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-xs text-gray-700 text-center w-full">{{
           dateFormatter(item.createdAt)

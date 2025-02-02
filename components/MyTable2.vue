@@ -4,21 +4,21 @@
     <div
       class="bg-gray-100 text-gray-800 font-semibold flex justify-center items-center w-full"
     >
-      <div class="w-8 px-4 py-2 flex items-center">
+      <div class="w-8 flex-grow px-4 py-2 flex items-center">
         <input type="checkbox" :checked="allSelected" @change="toggleAll" />
       </div>
       <div
-        class="flex justify-center items-center px-4 py-2 text-sm w-28 text-center"
+        class="flex flex-grow justify-center items-center px-4 py-2 text-sm w-28 text-center"
       >
         #
       </div>
       <div
-        class="flex justify-center items-center px-4 py-2 text-sm w-28 text-center"
+        class="flex flex-grow justify-center items-center px-4 py-2 text-sm w-28 text-center"
       >
         Material
       </div>
       <div
-        class="flex justify-center items-center px-4 py-2 text-sm w-32 text-center"
+        class="flex flex-grow justify-center items-center px-4 py-2 text-sm w-32 text-center"
       >
         Erzeugt am
       </div>
@@ -30,7 +30,9 @@
       :key="item.id"
       class="flex items-center hover:bg-gray-50 h-12"
     >
-      <div class="w-8 h-full border-t border-gray-200 flex items-center px-4">
+      <div
+        class="w-8 flex-grow h-full border-t border-gray-200 flex items-center px-4"
+      >
         <input
           type="checkbox"
           v-model="selected[index]"
@@ -38,17 +40,17 @@
         />
       </div>
       <div
-        class="w-28 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
+        class="w-28 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-gray-700 text-xs">{{ item.id }}</span>
       </div>
       <div
-        class="w-28 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
+        class="w-28 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-gray-700 text-xs">{{ item.name }}</span>
       </div>
       <div
-        class="w-32 px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
+        class="w-32 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-gray-700 text-xs text-center">{{
           dateFormatter(item.createdAt)
