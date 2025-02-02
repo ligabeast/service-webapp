@@ -26,7 +26,7 @@
     />
     <DoppelauftragModal
       v-show="showDoppelauftragModal"
-      @close="
+      @abort="
         showDoppelauftragModal = false;
         showStundensatzModal = false;
         showDeckenModal = false;
