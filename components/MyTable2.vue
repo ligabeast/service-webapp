@@ -23,10 +23,10 @@
     <div
       v-for="(item, index) in items"
       :key="item.id"
-      class="flex items-center hover:bg-gray-50 h-12"
+      class="flex hover:bg-gray-50 min-h-12 relative"
     >
       <div
-        class="w-8 flex-grow h-full border-t border-gray-200 flex items-center px-4"
+        class="w-8 flex-grow h-full border-t border-gray-200 flex items-center px-4 py-2"
       >
         <input
           type="checkbox"
@@ -59,12 +59,12 @@
         </button>
       </div>
       <div
-        class="w-28 flex-grow px-4 py-2 border-t border-gray-200 h-full flex flex-col items-center justify-center space-y-2"
+        class="w-28 flex-grow px-4 py-2 border-t border-gray-200 h-full flex flex-col md:flex-row md:space-y-0 md:space-x-2 items-center justify-center space-y-2 min-h-12"
         v-else
       >
         <input
           v-model="item.name"
-          class="w-40 text-xs px-2 focus:outline-none border border-gray-300 rounded h-full"
+          class="w-40 text-xs px-2 focus:outline-none border border-gray-300 rounded h-8"
         />
         <button
           class="rounded border text-white text-sm font-semibold border-gray-400 transition p-1 w-24 h-full flex items-center justify-center"
