@@ -35,7 +35,8 @@ SELECT
                 JSON_OBJECT(
                     'position_id', pto.position_id, 
                     'quantity', pto.quantity, 
-                    'position_name', p.name
+                    'position_name', p.name,
+                    'description', pto.description
                 )
             )
      FROM Position_To_Orders pto

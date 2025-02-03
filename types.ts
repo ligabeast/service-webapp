@@ -17,6 +17,7 @@ export interface Material {
   name: string;
   quantity: number;
   type: string;
+  description?: string;
   alias: string;
   dynamic: boolean;
 }

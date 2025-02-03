@@ -15,9 +15,7 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    const [rows] = await connection.execute(
-      "select id, name, hide, alias, dynamic, type from sys.Positions;"
-    );
+    const [rows] = await connection.execute("select * from sys.Positions;");
 
     return {
       status: "success",

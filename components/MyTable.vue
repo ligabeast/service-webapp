@@ -15,11 +15,6 @@
       <div
         class="flex flex-grow justify-center items-center px-4 py-2 text-xs min-w-20 text-center"
       >
-        Zugewiesen von
-      </div>
-      <div
-        class="flex flex-grow justify-center items-center px-4 py-2 text-xs min-w-20 text-center"
-      >
         Zugewiesen an
       </div>
       <div
@@ -48,11 +43,6 @@
         class="min-w-24 flex-grow py-2 border-t border-gray-200 h-full flex items-center justify-center"
       >
         <span class="text-xs text-gray-700">{{ item.materialName }}</span>
-      </div>
-      <div
-        class="min-w-20 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"
-      >
-        <span class="text-xs text-gray-700">{{ item.assignedFrom }}</span>
       </div>
       <div
         class="min-w-20 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center"

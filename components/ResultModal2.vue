@@ -30,8 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-
 const emit = defineEmits(["next"]);
 
 // Props
@@ -50,6 +48,11 @@ function handleCopyKasys() {
   let text = props.insertedPositions
     .map((position) => {
       if (position.dynamic == true) {
+        if (position.id == 21) {
+          return (
+            position.quantity + " " + position.name + " " + position.description
+          );
+        }
         return position.quantity + " " + position.name;
       } else {
         return position.name;

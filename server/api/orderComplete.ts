@@ -127,6 +127,7 @@ export default defineEventHandler(async (event) => {
     console.log("[DEBUG] Adresse und kls_id geladen:", adress, kls_id);
 
     if (
+      orderType === "connect" &&
       JSON.parse(positions as string).find(
         (p: any) => p.position_id == 19 || p.position_id === 20
       )
@@ -172,8 +173,13 @@ export default defineEventHandler(async (event) => {
     for (const position of JSON.parse(positions as string)) {
       console.log("[DEBUG] Position:", position);
       await connection.execute(
-        `INSERT INTO sys.Position_To_Orders (quantity, order_id, position_id) VALUES (?, ?, ?);`,
-        [position.quantity, newOrderId, position.position_id]
+        `INSERT INTO sys.Position_To_Orders (quantity, order_id, position_id, description) VALUES (?, ?, ?, ?);`,
+        [
+          position.quantity,
+          newOrderId,
+          position.position_id,
+          position.description,
+        ]
       );
     }
 

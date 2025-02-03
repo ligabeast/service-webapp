@@ -233,6 +233,7 @@
           <div v-for="position in positions" v-if="!editPositions">
             <span>•</span>
             {{ position.quantity ?? "" }} {{ position.position_name }}
+            {{ position.description ? "(" + position.description + ")" : "" }}
           </div>
           <div v-else class="flex flex-col space-y-6 w-full">
             <div class="flex flex-col space-y-2 w-full">
@@ -246,10 +247,13 @@
                   pattern="[0-9]*"
                   v-model="position.quantity"
                   v-if="position.quantity != null"
-                  class="w-8 h-8 border border-gray-500 rounded-md p-1"
+                  class="w-12 h-8 border border-gray-500 rounded-md p-1"
                 />
                 <span class="break-words truncate flex-1">{{
-                  position.position_name
+                  position.position_name +
+                  (position.description
+                    ? " (" + position.description + ")"
+                    : "")
                 }}</span>
                 <button
                   class="!w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition flex items-center justify-center"
@@ -724,6 +728,9 @@ const positions = computed(() => order.value?.positions);
 const orderStarted = ref<any | null>(null);
 
 function handleDeletePosition(position) {
+  possibleMaterials.value = possibleMaterials.value.concat(
+    allPositions.value.data.filter((e) => e.id === position.position_id)
+  );
   order.value.positions = positions.value.filter((p) => p !== position);
 }
 
@@ -754,6 +761,7 @@ function handlePushMaterial(material: Material) {
     position_name: material.name,
     quantity: material.quantity ?? null,
     position_id: material.id,
+    description: material.description ?? null,
   });
   showNewPositionModal.value = false;
   possibleMaterials.value = possibleMaterials.value.filter(
@@ -918,17 +926,25 @@ function handleCopyWhatsapp() {
     text += order.value.commentCopy;
   }
 
-  copyToClipboard(text);
+  // https://api.whatsapp.com/send?text=?
+  // open new tab with whatsapp
+
+  const encodedText = encodeURIComponent(text);
+
+  window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
 }
 
 // Kopierlogik für Kasys
 function handleCopyKasys() {
   let text = order.value.positions
-    .map((position: any) =>
-      position.quantity
+    .map((position: any) => {
+      if (position.position_id == 21) {
+        return `${position.quantity} ${position.position_name} ${position.description}`;
+      }
+      return position.quantity
         ? `${position.quantity} ${position.position_name}`
-        : position.position_name
-    )
+        : position.position_name;
+    })
     .join("; ");
   if (order.value.commentCopy) {
     text += `\n${order.value.commentCopy}`;

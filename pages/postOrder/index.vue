@@ -175,7 +175,13 @@
               </g>
             </svg>
           </button>
-          <label for="material" class="w-full">{{ material.alias }}</label>
+          <label for="material" class="w-full"
+            >{{
+              material.description
+                ? material.alias + " (" + material.description + ")"
+                : material.alias
+            }}
+          </label>
           <input
             type="number"
             id="menge"
@@ -287,7 +293,9 @@
           >Hast du nach AKP gebaut?</label
         >
         <div class="flex space-x-2 items-center">
-          <label for="akpyes" class="select-none">Ja</label>
+          <label for="akpyes" class="select-none"
+            >Ja / AKP nicht vorhanden</label
+          >
           <input name="akp" id="akpyes" type="radio" value="Ja" v-model="akp" />
         </div>
         <div class="flex space-x-2 items-center">
@@ -645,6 +653,7 @@ async function handleSave5() {
       insertedPositions.value.map((e) => ({
         position_id: e.id,
         quantity: e.quantity,
+        description: e.description,
       }))
     )
   );

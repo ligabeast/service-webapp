@@ -32,7 +32,7 @@
           <label for="material" class="w-1/4">Position </label>
           <select
             id="material"
-            class="border border-black text-lg text-bold w-3/4 text-black"
+            class="border border-black text-lg text-bold w-3/4 text-black text-center"
             v-model="selectedMaterial"
           >
             <option
@@ -44,6 +44,7 @@
             </option>
           </select>
         </div>
+
         <div
           v-if="selectedMaterial && selectedMaterial.dynamic"
           class="flex items-center"
@@ -52,11 +53,25 @@
           <input
             type="number"
             id="menge"
-            class="border border-black w-20"
+            class="border border-black w-20 text-center"
             inputmode="numeric"
             pattern="[0-9]*"
             v-model="quantity"
           />
+        </div>
+        <div v-if="selectedMaterial && selectedMaterial.id == 21">
+          <div class="flex items-center">
+            <label for="material" class="w-1/4 text-xs">Beschreibung</label>
+            <select
+              id="material"
+              class="border border-black text-lg text-bold w-3/4 text-black text-center"
+              v-model="description"
+            >
+              <option value="TA SP">TA->SP</option>
+              <option value="SP AP">SP->AP</option>
+              <option value="TA AP">TA->AP</option>
+            </select>
+          </div>
         </div>
         <button
           class="bg-green-500 rounded-md h-10 w-full text-white font-bold hover:bg-green-600 hover:scale-105 transition mt-2"
@@ -70,6 +85,8 @@
 </template>
 
 <script setup lang="ts">
+import { addNotification } from "~/notification";
+
 const props = defineProps<{
   materials: { id: number; name: string; alias: string }[];
 }>();
@@ -85,10 +102,36 @@ const selectedMaterial = ref<{
   alias: string;
 } | null>(null);
 const quantity = ref<number | null>(null);
+const description = ref<string | null>(null);
+
+watch(selectedMaterial, (value) => {
+  description.value = null;
+  quantity.value = null;
+});
 
 function handleSubmit() {
+  if (
+    selectedMaterial.value &&
+    selectedMaterial.value.id == 21 &&
+    !description.value
+  ) {
+    addNotification("Bitte Beschreibung auswählen", "error", 3000);
+    return;
+  }
+  if (
+    selectedMaterial.value &&
+    selectedMaterial.value.dynamic &&
+    !quantity.value
+  ) {
+    addNotification("Bitte Menge eingeben", "error", 3000);
+    return;
+  }
   if (selectedMaterial.value) {
-    emit("add", { ...selectedMaterial.value, quantity: quantity.value });
+    emit("add", {
+      ...selectedMaterial.value,
+      quantity: quantity.value,
+      description: description.value,
+    });
     selectedMaterial.value = null;
     quantity.value = null;
   }

@@ -67,10 +67,15 @@ export default defineEventHandler(async (event) => {
         await connection.execute(deleteSql, [orderid]);
 
         // Hinzufügen
-        const insertSql = `INSERT INTO sys.Position_To_Orders (quantity, order_id, position_id) VALUES (?, ?, ?)`;
+        const insertSql = `INSERT INTO sys.Position_To_Orders (quantity, order_id, position_id, description) VALUES (?, ?, ?, ?)`;
         for (const position of value) {
-          const { quantity, position_id } = position;
-          await connection.execute(insertSql, [quantity, orderid, position_id]);
+          const { quantity, position_id, description } = position;
+          await connection.execute(insertSql, [
+            quantity,
+            orderid,
+            position_id,
+            description,
+          ]);
         }
 
         await connection.commit();

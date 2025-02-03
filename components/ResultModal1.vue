@@ -168,7 +168,11 @@ function getWhatsappFormatt() {
 // Kopieren für WhatsApp
 function handleCopyWhatsapp() {
   const text = getWhatsappFormatt();
-  copyToClipboard(text);
+
+  const encodedText = encodeURIComponent(text);
+
+  // WhatsApp-Link öffnen
+  window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
 }
 
 // Universelle Kopierfunktion
