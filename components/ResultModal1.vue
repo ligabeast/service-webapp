@@ -171,6 +171,8 @@ function handleCopyWhatsapp() {
 
   const encodedText = encodeURIComponent(text);
 
+  copyToClipboard(text);
+
   // WhatsApp-Link öffnen
   window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
 }

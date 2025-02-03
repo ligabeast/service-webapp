@@ -930,6 +930,7 @@ function handleCopyWhatsapp() {
   // open new tab with whatsapp
 
   const encodedText = encodeURIComponent(text);
+  copyToClipboard(text);
 
   window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
 }
