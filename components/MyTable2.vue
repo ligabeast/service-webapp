@@ -59,7 +59,7 @@
         </button>
       </div>
       <div
-        class="w-28 flex-grow px-4 py-2 border-t border-gray-200 h-full flex items-center justify-center space-x-2"
+        class="w-28 flex-grow px-4 py-2 border-t border-gray-200 h-full flex flex-col items-center justify-center space-y-2"
         v-else
       >
         <input
