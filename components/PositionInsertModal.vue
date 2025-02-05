@@ -67,9 +67,9 @@
               class="border border-black text-lg text-bold w-3/4 text-black text-center"
               v-model="description"
             >
-              <option value="TA SP">TA->SP</option>
-              <option value="SP AP">SP->AP</option>
-              <option value="TA AP">TA->AP</option>
+              <option value="TA zu SP">TA->SP</option>
+              <option value="SP zu AP">SP->AP</option>
+              <option value="TA zu AP">TA->AP</option>
             </select>
           </div>
         </div>
