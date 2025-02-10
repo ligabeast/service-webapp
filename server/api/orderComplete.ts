@@ -105,6 +105,20 @@ export default defineEventHandler(async (event) => {
       };
     }
 
+    // only complete if order is not already completed
+    const [rowstmp] = await connection.execute(
+      "SELECT * FROM sys.Orders o WHERE o.ordernumber = ? AND o.status = 'completed' AND o.user_id = ?;",
+      [ordernumber, userId]
+    );
+
+    if (Array.isArray(rowstmp) && rowstmp.length > 0) {
+      console.error("[ERROR] Bestellung bereits abgeschlossen.");
+      return {
+        status: "error",
+        message: "Order already completed",
+      };
+    }
+
     console.log("orderid", orderid);
     console.log("orderid typ", typeof orderid);
     console.log("[DEBUG] Verberge ursprüngliche Bestellung...");

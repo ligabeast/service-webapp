@@ -363,16 +363,73 @@
           Copy Kasys
         </button>
       </div>
-      <NuxtLink
-        :to="`/home?currentPage=${currentPage}`"
-        class="flex w-full items-center justify-center"
-      >
-        <button
-          class="bg-blue-500 h-14 w-1/3 rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
-        >
-          Zurück zum Hauptmenü
-        </button>
-      </NuxtLink>
+      <div class="flex w-full justify-between items-center px-4 pt-5">
+        <NuxtLink :to="`/orderDetails/${prevOrder}?currentPage=${currentPage}`">
+          <button
+            class="h-14 w-14 flex justify-center items-center px-2 rounded-md transition text-white"
+            :class="{
+              'bg-blue-500 hover:bg-blue-600 hover:scale-105': prevOrder,
+              'bg-gray-400 cursor-not-allowed': !prevOrder,
+            }"
+            :disabled="!prevOrder"
+          >
+            <svg
+              class="w-6 h-6 text-white"
+              version="1.1"
+              id="XMLID_54_"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 24 24"
+              xml:space="preserve"
+              fill="currentColor"
+            >
+              <g id="previous">
+                <g>
+                  <polygon
+                    points="17.2,23.7 5.4,12 17.2,0.3 18.5,1.7 8.4,12 18.5,22.3 		"
+                  />
+                </g>
+              </g>
+            </svg>
+          </button>
+        </NuxtLink>
+        <NuxtLink :to="`/home?currentPage=${currentPage}`">
+          <button
+            class="bg-blue-500 h-14 min-w-40 max-w-96 px-2 rounded-md hover:bg-blue-600 hover:scale-105 transition text-white"
+          >
+            Zurück zum Hauptmenü
+          </button>
+        </NuxtLink>
+        <NuxtLink :to="`/orderDetails/${nextOrder}?currentPage=${currentPage}`">
+          <button
+            class="h-14 w-14 flex justify-center items-center px-2 rounded-md transition text-white"
+            :class="{
+              'bg-blue-500 hover:bg-blue-600 hover:scale-105': nextOrder,
+              'bg-gray-400 cursor-not-allowed': !nextOrder,
+            }"
+            :disabled="!nextOrder"
+          >
+            <svg
+              class="w-6 h-6 text-white rotate-180"
+              version="1.1"
+              id="XMLID_54_"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 24 24"
+              xml:space="preserve"
+              fill="currentColor"
+            >
+              <g id="previous">
+                <g>
+                  <polygon
+                    points="17.2,23.7 5.4,12 17.2,0.3 18.5,1.7 8.4,12 18.5,22.3 		"
+                  />
+                </g>
+              </g>
+            </svg>
+          </button>
+        </NuxtLink>
+      </div>
 
       <!-- Modal für Bilder -->
       <div
@@ -710,6 +767,8 @@ async function handleChangePositions() {
 const route = useRoute();
 const orderid = route.params.orderid;
 const currentPage = route.query.currentPage || 1;
+const nextOrder = ref(null);
+const prevOrder = ref(null);
 
 const gallery = ref(null);
 
@@ -778,12 +837,16 @@ async function fetchOrder() {
     },
   });
   order.value = data.data[0];
-  possibleMaterials.value = allPositions.value.data
-    .filter((e) => e.type == order.value.orderType || e.type == "both")
-    .filter(
-      (e) => !order.value.positions.map((p) => p.position_id).includes(e.id)
-    )
-    .map((e) => e as Material);
+  nextOrder.value = order.value.nextOrder;
+  prevOrder.value = order.value.prevOrder;
+  if (order.value.positions) {
+    possibleMaterials.value = allPositions.value.data
+      .filter((e) => e.type == order.value.orderType || e.type == "both")
+      .filter(
+        (e) => !order.value.positions.map((p) => p.position_id).includes(e.id)
+      )
+      .map((e) => e as Material);
+  }
 
   copyPositions.value = JSON.parse(JSON.stringify(order.value.positions));
   selectedNe3Status.value = ne3Status.value;

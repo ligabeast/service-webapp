@@ -56,7 +56,25 @@ SELECT
             )
      FROM sys.OrderPictures op
      WHERE op.order_id = o.id
-    ) AS pictures
+    ) AS pictures,
+
+    -- Nächste Bestellung (zeitlich später)
+    (SELECT o_next.id 
+     FROM sys.Orders o_next
+     WHERE o_next.user_id = o.user_id
+       AND o_next.status = 'completed'
+       AND o_next.dateCreated > o.dateCreated
+     ORDER BY o_next.dateCreated ASC
+     LIMIT 1) AS nextOrder,
+
+    -- Vorherige Bestellung (zeitlich früher)
+    (SELECT o_prev.id 
+     FROM sys.Orders o_prev
+     WHERE o_prev.user_id = o.user_id
+       AND o_prev.status = 'completed'
+       AND o_prev.dateCreated < o.dateCreated
+     ORDER BY o_prev.dateCreated DESC
+     LIMIT 1) AS prevOrder
 
 FROM 
     sys.Orders o

@@ -25,7 +25,14 @@
         class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
         @click="handleCopyWhatsapp"
       >
-        Copy Whatsapp
+        Whatsapp Api
+      </button>
+
+      <button
+        class="bg-gray-400 h-10 w-full rounded-md hover:bg-gray-500 hover:scale-105 transition text-white"
+        @click="handleCopyWhatsapp2"
+      >
+        Zwischenspeicher
       </button>
 
       <button
@@ -175,6 +182,14 @@ function handleCopyWhatsapp() {
 
   // WhatsApp-Link öffnen
   window.open(`https://api.whatsapp.com/send?text=${encodedText}`);
+}
+
+function handleCopyWhatsapp2() {
+  const text = getWhatsappFormatt();
+
+  const encodedText = encodeURIComponent(text);
+
+  copyToClipboard(text);
 }
 
 // Universelle Kopierfunktion

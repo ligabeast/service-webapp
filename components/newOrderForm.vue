@@ -64,6 +64,9 @@ function handleSave() {
     return;
   }
 
+  //remove starting linebreaks
+  adress.value = adress.value.replace(/^\s+/, "");
+
   $fetch("/api/orderCreate", {
     method: "POST",
     headers: {
