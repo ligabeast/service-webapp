@@ -901,7 +901,7 @@ const whatsappResult = computed(() => {
         position.position_name === "Connect mit Herstellen Ne4"
     ).length > 0
   ) {
-    result.push("Erledigt und inventarisiert");
+    result.push("Ne4 erledigt und inventarisiert");
     if (
       order.value.ne3error == "Ja" &&
       order.value.ne3errorRemoved === "Nein"

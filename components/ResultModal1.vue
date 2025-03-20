@@ -72,7 +72,7 @@ const whatsappResult = computed(() => {
         position.name === "Connect mit Herstellen Ne4"
     ).length > 0
   ) {
-    result.push("Erledigt und inventarisiert");
+    result.push("Ne4 erledigt und inventarisiert");
     if (
       props.ne3error.ne3error == "Ja" &&
       props.ne3error.ne3errorRemoved === "Nein"
