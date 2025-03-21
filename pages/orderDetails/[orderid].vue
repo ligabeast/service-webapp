@@ -901,14 +901,15 @@ const whatsappResult = computed(() => {
         position.position_name === "Connect mit Herstellen Ne4"
     ).length > 0
   ) {
-    result.push("Ne4 erledigt und inventarisiert");
     if (
       order.value.ne3error == "Ja" &&
       order.value.ne3errorRemoved === "Nein"
     ) {
-      result.push("mit Ne3-Fehler");
+      result.push("Ne4 erledigt und inventarisiert mit Ne3-Fehler");
     } else if (order.value.ne3errorRemoved === "Ja") {
-      result.push("mit Ne3-Fehler beseitigt");
+      result.push("Ne4 erledigt und inventarisiert mit Ne3-Fehler beseitigt");
+    } else {
+      result.push("Erledigt und inventarisiert");
     }
   } else if (
     order.value.positions.filter(

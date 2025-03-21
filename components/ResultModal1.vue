@@ -72,14 +72,15 @@ const whatsappResult = computed(() => {
         position.name === "Connect mit Herstellen Ne4"
     ).length > 0
   ) {
-    result.push("Ne4 erledigt und inventarisiert");
     if (
       props.ne3error.ne3error == "Ja" &&
       props.ne3error.ne3errorRemoved === "Nein"
     ) {
-      result.push("mit Ne3-Fehler");
+      result.push("Ne4 erledigt und inventarisiert mit Ne3-Fehler");
     } else if (props.ne3error.ne3errorRemoved === "Ja") {
-      result.push("mit Ne3-Fehler beseitigt");
+      result.push("Ne4 erledigt und inventarisiert mit Ne3-Fehler beseitigt");
+    } else {
+      result.push("Erledigt und inventarisiert");
     }
   } else if (
     props.insertedPositions.filter(
