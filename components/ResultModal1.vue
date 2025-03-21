@@ -78,7 +78,7 @@ const whatsappResult = computed(() => {
     ) {
       result.push("Ne4 erledigt und inventarisiert mit Ne3-Fehler");
     } else if (props.ne3error.ne3errorRemoved === "Ja") {
-      result.push("Ne4 erledigt und inventarisiert mit Ne3-Fehler beseitigt");
+      result.push("Erledigt und inventarisiert mit Ne3-Fehler beseitigt");
     } else {
       result.push("Erledigt und inventarisiert");
     }
