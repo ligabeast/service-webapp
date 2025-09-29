@@ -17,13 +17,25 @@ export default defineEventHandler(async (event) => {
     connection = await mysql.createConnection(dbConfig);
 
     const [rows] = await connection.execute(
-      "select id, adress, ordernumber, kls_id, user_id, status, dateCreated from sys.Orders where user_id = ? and status = 'started' and hide = false order by dateCreated desc;",
+      `
+      SELECT 
+        id,
+        adress,
+        ordernumber,
+        kls_id,
+        user_id,
+        'started' AS status,
+        created_at AS dateCreated
+      FROM sys.OrdersStarted
+      WHERE user_id = ? AND target_id IS NULL
+      ORDER BY created_at DESC;
+      `,
       [userId]
     );
 
     return {
       status: "success",
-      message: "Orders retrieved successfully",
+      message: "Active started orders retrieved successfully",
       data: rows,
     };
   } catch (error: any) {

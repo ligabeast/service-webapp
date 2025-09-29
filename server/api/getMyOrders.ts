@@ -20,89 +20,109 @@ export default defineEventHandler(async (event) => {
   const sort = query.sort || "date-desc";
   const startDate = query.startDate || "";
   const endDate = query.endDate || "";
-  const orderType = query.orderType || "all"; // Standardwert: "all"
+  const orderType = query.orderType || "all";
   const klsId = query.klsId || "";
   const adress = query.adress || "";
 
   let sql = `
-    SELECT id, adress, ordernumber, kls_id, user_id, status, dateCreated, orderType, notCompletedReason
-    FROM sys.Orders
-    WHERE user_id = ? AND hide = false
+    SELECT 
+      os.id AS id,
+      os.adress AS adress,
+      os.ordernumber AS ordernumber,
+      os.kls_id AS kls_id,
+      COALESCE(o.dateCreated, os.created_at) AS dateCreated,
+      COALESCE(o.status, 'started') AS status,
+      o.notCompletedReason,
+      o.orderType
+    FROM sys.OrdersStarted os
+    LEFT JOIN sys.Orders o ON os.target_id = o.id
+    WHERE os.user_id = ?
   `;
 
   const params: any[] = [userId];
 
-  // Optionaler Datumsfilter
+  // Filter
   if (startDate) {
-    sql += " AND dateCreated >= ?";
+    sql += " AND os.created_at >= ?";
     params.push(startDate);
   }
 
   if (endDate) {
-    sql += " AND dateCreated <= ?";
+    sql += " AND os.created_at <= ?";
     params.push(endDate);
   }
 
   if (klsId) {
-    sql += " AND kls_id = ?";
+    sql += " AND os.kls_id = ?";
     params.push(klsId);
   }
 
   if (adress) {
-    sql += " AND adress LIKE ?";
+    sql += " AND os.adress LIKE ?";
     params.push(`%${adress}%`);
   }
 
-  // Auftragstyp-Filter
   if (orderType !== "all") {
-    sql += " AND orderType = ?";
+    sql += " AND o.orderType = ?";
     params.push(orderType);
   }
 
   // Sortierung
-  if (sort === "date-asc") {
-    sql += " ORDER BY dateCreated ASC";
-  } else {
-    sql += " ORDER BY dateCreated DESC";
-  }
+  sql +=
+    sort === "date-asc"
+      ? " ORDER BY COALESCE(o.dateCreated, os.created_at) ASC"
+      : " ORDER BY COALESCE(o.dateCreated, os.created_at) DESC";
 
-  // Pagination (direkt in die SQL-Abfrage einfügen)
+  // Pagination
   sql += ` LIMIT ${perPage} OFFSET ${offset}`;
 
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    // SQL-Abfrage für die paginierten Ergebnisse
+    // Daten abrufen
     const [rows] = await connection.execute(sql, params);
 
-    // Gesamte Anzahl der Einträge für Pagination berechnen
-    const [totalResult] = await connection.execute(
-      `
+    // Count
+    let countSql = `
       SELECT COUNT(*) as total
-      FROM sys.Orders
-      WHERE user_id = ? AND hide = false
-      ${startDate ? "AND dateCreated >= ?" : ""}
-      ${endDate ? "AND dateCreated <= ?" : ""}
-      ${orderType !== "all" ? "AND orderType = ?" : ""}
-      ${klsId ? "AND kls_id = ?" : ""}
-      ${adress ? "AND adress LIKE ?" : ""}
-    `,
-      [
-        userId,
-        ...(startDate ? [startDate] : []),
-        ...(endDate ? [endDate] : []),
-        ...(orderType !== "all" ? [orderType] : []),
-        ...(klsId ? [klsId] : []),
-        ...(adress ? ["%" + adress + "%"] : []),
-      ]
-    );
+      FROM sys.OrdersStarted os
+      LEFT JOIN sys.Orders o ON os.target_id = o.id
+      WHERE os.user_id = ?
+    `;
+    const countParams: any[] = [userId];
 
+    if (startDate) {
+      countSql += " AND os.created_at >= ?";
+      countParams.push(startDate);
+    }
+
+    if (endDate) {
+      countSql += " AND os.created_at <= ?";
+      countParams.push(endDate);
+    }
+
+    if (klsId) {
+      countSql += " AND os.kls_id = ?";
+      countParams.push(klsId);
+    }
+
+    if (adress) {
+      countSql += " AND os.adress LIKE ?";
+      countParams.push(`%${adress}%`);
+    }
+
+    if (orderType !== "all") {
+      countSql += " AND o.orderType = ?";
+      countParams.push(orderType);
+    }
+
+    const [totalResult] = await connection.execute(countSql, countParams);
     const totalCount = totalResult[0]?.total || 0;
-    const totalPages = Math.ceil(totalCount / perPage); // Berechnung der Seitenanzahl
+    const totalPages = Math.ceil(totalCount / perPage);
 
     return {
       status: "success",
-      message: "Orders retrieved successfully",
+      message: "All started orders (linked and unlinked)",
       data: rows,
       pagination: {
         currentPage,

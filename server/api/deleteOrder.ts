@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     // Datenbankverbindung herstellen
     connection = await mysql.createConnection(dbConfig);
 
-    let sql = "DELETE FROM sys.Orders WHERE id = ?;";
+    let sql = "DELETE FROM sys.OrdersStarted WHERE id = ?;";
     const params: any[] = [orderid];
 
     const [rows] = await connection.execute(sql, params);

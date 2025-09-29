@@ -1,6 +1,5 @@
 import { defineEventHandler, readBody } from "h3";
 import mysql, { ResultSetHeader } from "mysql2/promise";
-import { Result } from "postcss";
 
 const dbConfig = {
   host: process.env.DB_HOST,
@@ -17,41 +16,49 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    // Use readBody to handle POST requests where data is sent in the body
     const body = await readBody(event);
-    const { adress, ordernumber, kls_id } = body;
+    const { adress, ordernumber, kls_id, latitude, longitude } = body;
 
-    // Check if the order exists and is in 'started' status
+    // 1. Check if the ordernumber already exists in OrdersStarted
     const [rows] = await connection.execute(
-      "SELECT * FROM sys.Orders o WHERE o.ordernumber = ? AND o.status = 'started' AND o.user_id = ?;",
+      `SELECT * FROM sys.OrdersStarted 
+       WHERE ordernumber = ? AND user_id = ?;`,
       [ordernumber, userId]
     );
 
     if (Array.isArray(rows) && rows.length > 0) {
       return {
         status: "error",
-        message: "Ordernumber already exists",
+        message: "Auftrag mit dieser Nummer ist bereits gestartet",
       };
     }
 
-    // Insert Order
+    // 2. Insert into OrdersStarted
     const [result] = await connection.execute<ResultSetHeader>(
-      "insert into sys.Orders (adress,ordernumber,kls_id,user_id,status,dateCreated) values (?,?,?,?,?,NOW());",
-      [adress, ordernumber, kls_id, userId, "started"]
+      `INSERT INTO sys.OrdersStarted 
+        (adress, ordernumber, kls_id, user_id, created_at, latitude, longitude) 
+       VALUES (?, ?, ?, ?, NOW(), ?, ?);`,
+      [adress, ordernumber, kls_id, userId, latitude, longitude]
     );
+
+    if (latitude !== null && longitude != null) {
+      console.log(
+        `Order ${ordernumber} started with coordinates: (${latitude}, ${longitude})`
+      );
+    }
+
     return {
       status: "success",
-      message: "Order completed successfully",
+      message: "Auftrag wurde erfolgreich gestartet",
       data: { orderid: result.insertId },
     };
   } catch (error: any) {
     return {
       status: "error",
-      message: "Database operation failed",
+      message: "Fehler beim Speichern des Auftrags",
       error: error.message,
     };
   } finally {
-    // Always close the connection
     if (connection) {
       await connection.end();
     }
