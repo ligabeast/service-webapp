@@ -244,7 +244,7 @@
         class="flex flex-col space-y-4"
         v-if="
           selectedOrderType == 'connect' &&
-          insertedPositions.find((e) => e.name === 'Connect mit Herstellen Ne4')
+          insertedPositions.find((e) => e.id === 14)
         "
       >
         <label class="text-lg font-semibold" for="reason"
@@ -286,7 +286,7 @@
         class="flex flex-col space-y-4"
         v-if="
           selectedOrderType == 'connect' &&
-          insertedPositions.find((e) => e.name === 'Connect mit Herstellen Ne4')
+          insertedPositions.find((e) => e.id === 14)
         "
       >
         <label class="text-lg font-semibold" for="reason"
@@ -494,10 +494,7 @@ function handlePushMaterial(material: Material) {
   possibleMaterials.value = possibleMaterials.value.filter(
     (m) => m.id !== material.id
   );
-  if (
-    material.name === "nicht erledigt - Connect Auftrag" ||
-    material.name === "nicht erledigt - GWV Auftrag"
-  ) {
+  if (material.id === 15 || material.id === 17) {
     notCompleted.value = true;
     notCompletedFroze.value = true;
   } else {
@@ -518,10 +515,7 @@ function handleDeleteMaterial(material: Material) {
     quantity: material.quantity,
     type: material.type,
   });
-  if (
-    material.name === "nicht erledigt - Connect Auftrag" ||
-    material.name === "nicht erledigt - GWV Auftrag"
-  ) {
+  if (material.id === 15 || material.id === 17) {
     notCompletedFroze.value = false;
     notCompleted.value = false;
   }
@@ -561,9 +555,7 @@ async function handleSave() {
   }
 
   // check ob Kabel eingetragen ist
-  const kabel = insertedPositions.value.find(
-    (e) => e.name === "Meter Gf-Kabel einziehen/einblasen u. verlegen"
-  );
+  const kabel = insertedPositions.value.find((e) => e.id === 21);
 
   if (!kabel) {
     showCabelModal.value = true;
@@ -574,9 +566,7 @@ async function handleSave() {
 
 function handleSave2() {
   // check ob Durchbruch eingetragen ist
-  const durchbruch = insertedPositions.value.find(
-    (e) => e.name === "Stück Decken-/Wanddurchbruch herstellen <=40mm"
-  );
+  const durchbruch = insertedPositions.value.find((e) => e.id === 27);
 
   if (!durchbruch) {
     showDeckenModal.value = true;
@@ -587,9 +577,7 @@ function handleSave2() {
 
 function handleSave3() {
   // check ob Stundensatz eingetragen ist
-  const stundensatz = insertedPositions.value.find(
-    (e) => e.name === "x FTTH - Stundensatz FTTH je 15 Minuten"
-  );
+  const stundensatz = insertedPositions.value.find((e) => e.id === 24);
 
   if (
     ne3error &&

@@ -896,9 +896,7 @@ const whatsappResult = computed(() => {
   const result = [];
   if (
     order.value.positions.filter(
-      (position) =>
-        position.position_name === "Gf-TA Connect Only" ||
-        position.position_name === "Connect mit Herstellen Ne4"
+      (position) => position.position_id === 13 || position.position_id === 14
     ).length > 0
   ) {
     if (
@@ -912,16 +910,13 @@ const whatsappResult = computed(() => {
       result.push("Erledigt und inventarisiert");
     }
   } else if (
-    order.value.positions.filter(
-      (position) =>
-        position.position_name === "nicht erledigt - Connect Auftrag"
-    ).length > 0
+    order.value.positions.filter((position) => position.position_id === 15)
+      .length > 0
   ) {
     result.push("Connect Nicht Erledigt");
   } else if (
-    order.value.positions.filter(
-      (position) => position.position_name === "GWV Basic"
-    ).length > 0
+    order.value.positions.filter((position) => position.position_id === 16)
+      .length > 0
   ) {
     result.push("GWV Erledigt");
     if (
@@ -933,15 +928,13 @@ const whatsappResult = computed(() => {
       result.push("mit Ne3-Fehler beseitigt");
     }
   } else if (
-    order.value.positions.filter(
-      (position) => position.position_name === "nicht erledigt - GWV Auftrag"
-    ).length > 0
+    order.value.positions.filter((position) => position.position_id === 17)
+      .length > 0
   ) {
     result.push("GWV Nicht Erledigt");
   } else if (
-    order.value.positions.filter(
-      (position) => position.position_name === "Doppelauftrag erledigt"
-    ).length > 0
+    order.value.positions.filter((position) => position.position_id === 25)
+      .length > 0
   ) {
     result.push("Doppelauftrag erledigt");
     if (
@@ -964,13 +957,10 @@ function handleCopyWhatsapp() {
 
   if (
     !(
-      order.value.positions.filter(
-        (position) =>
-          position.position_name === "nicht erledigt - Connect Auftrag"
-      ).length > 0 ||
-      order.value.positions.filter(
-        (position) => position.position_name === "nicht erledigt - GWV Auftrag"
-      ).length > 0
+      order.value.positions.filter((position) => position.position_id === 15)
+        .length > 0 ||
+      order.value.positions.filter((position) => position.position_id === 17)
+        .length > 0
     )
   ) {
     if (order.value.notCompletedReason) {

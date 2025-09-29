@@ -67,9 +67,7 @@ const whatsappResult = computed(() => {
   const result = [];
   if (
     props.insertedPositions.filter(
-      (position) =>
-        position.name === "Gf-TA Connect Only" ||
-        position.name === "Connect mit Herstellen Ne4"
+      (position) => position.id === 13 || position.id === 14
     ).length > 0
   ) {
     if (
@@ -83,14 +81,11 @@ const whatsappResult = computed(() => {
       result.push("Erledigt und inventarisiert");
     }
   } else if (
-    props.insertedPositions.filter(
-      (position) => position.name === "nicht erledigt - Connect Auftrag"
-    ).length > 0
+    props.insertedPositions.filter((position) => position.id === 15).length > 0
   ) {
     result.push("Connect Nicht Erledigt");
   } else if (
-    props.insertedPositions.filter((position) => position.name === "GWV Basic")
-      .length > 0
+    props.insertedPositions.filter((position) => position.id === 16).length > 0
   ) {
     result.push("GWV Erledigt");
     if (
@@ -102,15 +97,11 @@ const whatsappResult = computed(() => {
       result.push("mit Ne3-Fehler beseitigt");
     }
   } else if (
-    props.insertedPositions.filter(
-      (position) => position.name === "nicht erledigt - GWV Auftrag"
-    ).length > 0
+    props.insertedPositions.filter((position) => position.id === 17).length > 0
   ) {
     result.push("GWV Nicht Erledigt");
   } else if (
-    props.insertedPositions.filter(
-      (position) => position.name === "Doppelauftrag erledigt"
-    ).length > 0
+    props.insertedPositions.filter((position) => position.id === 25).length > 0
   ) {
     result.push("Doppelauftrag erledigt");
     if (
@@ -145,12 +136,10 @@ function getWhatsappFormatt() {
   // Auftrag konnte nicht abgeschlossen werden
   if (
     !(
-      props.insertedPositions.filter(
-        (position) => position.name === "nicht erledigt - Connect Auftrag"
-      ).length > 0 ||
-      props.insertedPositions.filter(
-        (position) => position.name === "nicht erledigt - GWV Auftrag"
-      ).length > 0
+      props.insertedPositions.filter((position) => position.id === 15).length >
+        0 ||
+      props.insertedPositions.filter((position) => position.id === 17).length >
+        0
     )
   ) {
     if (props.notCompletedReason) {
