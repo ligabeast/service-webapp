@@ -137,6 +137,7 @@ const { data, error } = await useFetch<OrderResponse>("/api/getMyOrders", {
   },
   query: { ...filters.value, currentPage: currentPage.value },
 });
+console.log("Aufträge geladen:", data.value);
 const orders = ref(data.value?.data);
 const totalPages = ref(data.value?.pagination?.totalPages);
 

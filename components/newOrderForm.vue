@@ -46,87 +46,68 @@ const loading = ref(false);
 
 function handleSave() {
   loading.value = true;
+
   if (adress.value === "" || kls_id.value === "" || ordernumber.value === "") {
-    console.log("Bitte füllen Sie alle Felder aus");
     addNotification("Bitte füllen Sie alle Felder aus", "error", 3000);
     loading.value = false;
     return;
   }
+
   if (!/^\d{7,8}$/.test(kls_id.value)) {
-    console.log("Ungültige KLS-ID");
     addNotification("Ungültige KLS-ID", "error", 3000);
     loading.value = false;
     return;
-  } else if (!/^\d{12}$/.test(ordernumber.value)) {
-    console.log("Ungültige Auftragsnummer");
+  }
+
+  if (!/^\d{12}$/.test(ordernumber.value)) {
     addNotification("Ungültige Auftragsnummer", "error", 3000);
     loading.value = false;
     return;
   }
 
-  //remove starting linebreaks
   adress.value = adress.value.replace(/^\s+/, "");
 
-  $fetch("/api/orderCreate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${useCookie("jwt").value}`,
-    },
-    body: JSON.stringify({
-      ordernumber: ordernumber.value,
-      kls_id: kls_id.value,
-      adress: adress.value,
-    }),
-  })
-    .then((res) => {
-      loading.value = false;
-      addNotification(res.message, res.status, 3000);
-      if (res.status === "success") {
-        console.log("Order created successfully");
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
 
-        // Reset the form fields
-        ordernumber.value = "";
-        kls_id.value = "";
-        adress.value = "";
-        navigateTo("/ongoingOrders");
-      } else {
-        console.log("Failed to create order", res);
+      try {
+        const res = await $fetch("/api/orderCreate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${useCookie("jwt").value}`,
+          },
+          body: JSON.stringify({
+            ordernumber: ordernumber.value,
+            kls_id: kls_id.value,
+            adress: adress.value,
+            latitude: lat,
+            longitude: lon,
+          }),
+        });
+
+        loading.value = false;
+        addNotification(res.message, res.status, 3000);
+
+        if (res.status === "success") {
+          ordernumber.value = "";
+          kls_id.value = "";
+          adress.value = "";
+          navigateTo("/ongoingOrders");
+        }
+      } catch (error) {
+        loading.value = false;
+        console.error("Fehler beim Speichern des Auftrags:", error);
       }
-    })
-    .catch((error) => {
+    },
+    (err) => {
       loading.value = false;
-      console.log("Error occurred while creating order:", error);
-    });
-}
-
-async function handleCopy() {
-  try {
-    // Prüfen, ob Clipboard-API verfügbar ist
-    if (!navigator.clipboard || !navigator.permissions) {
-      throw new Error(
-        "Clipboard-API wird in diesem Browser nicht unterstützt."
-      );
+      console.error("Fehler beim Erfassen der Position:", err);
+      addNotification("GPS konnte nicht erfasst werden", "warning", 3000);
     }
-
-    const permission = await navigator.permissions.query({
-      name: "clipboard-read" as PermissionName,
-    });
-    console.log("Permission state:", permission.state);
-    if (permission.state === "denied") {
-      throw new Error("Clipboard-Zugriff wurde verweigert.");
-    }
-
-    // Inhalt aus der Zwischenablage lesen
-    await populateFromClipboard();
-  } catch (error) {
-    console.error("Fehler beim Zugriff auf die Zwischenablage:", error);
-    addNotification(
-      "Fehler beim Zugriff auf die Zwischenablage",
-      "error",
-      3000
-    );
-  }
+  );
 }
 
 async function populateFromClipboard() {

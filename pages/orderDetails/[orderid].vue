@@ -83,6 +83,13 @@
         ></div>
       </div>
       <div class="flex p-4 justify-between space-x-2">
+        <div class="w-1/2 font-medium">Fahrstrecke</div>
+        <div class="w-[1px] border border-black"></div>
+        <div class="w-1/2 text-left font-semibold">
+          {{ distanceKm !== null ? distanceKm : 0 + " km" }}
+        </div>
+      </div>
+      <div class="flex p-4 justify-between space-x-2">
         <div class="w-1/2 font-medium">Ne3 Fehler</div>
         <div class="w-[1px] border border-black"></div>
         <div class="w-1/2 flex justify-between items-start relative px-1">
@@ -533,6 +540,13 @@
       ></div>
     </div>
     <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Fahrstrecke</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+    <div class="flex p-4 justify-between space-x-2">
       <div class="w-1/2 font-medium">Ne3 Fehler</div>
       <div class="w-[1px] border border-black"></div>
       <div
@@ -644,6 +658,8 @@ const selectedNe3Status = ref(null);
 const inputCommentIntern = ref(null);
 const inputCommentCopy = ref(null);
 const copyPositions = ref(null);
+
+const distanceKm = ref<number | null>(null);
 
 async function handleChangeNe3Status() {
   if (selectedNe3Status.value === ne3Status.value) {
@@ -836,9 +852,9 @@ async function fetchOrder() {
       Authorization: `Bearer ${useCookie("jwt").value}`,
     },
   });
-  order.value = data.data[0];
-  nextOrder.value = order.value.nextOrder;
-  prevOrder.value = order.value.prevOrder;
+  order.value = data.data;
+  nextOrder.value = order.value?.nextOrder;
+  prevOrder.value = order.value?.prevOrder;
   if (order.value.positions) {
     possibleMaterials.value = allPositions.value.data
       .filter((e) => e.type == order.value.orderType || e.type == "both")
@@ -853,9 +869,9 @@ async function fetchOrder() {
   inputCommentIntern.value = order.value.commentInternal;
   inputCommentCopy.value = order.value.commentCopy;
   console.log(order.value);
-  pictures.value = data.data[0]?.pictures ?? [];
+  pictures.value = data.data?.pictures ?? [];
   console.log(pictures.value);
-  orderStarted.value = data.data[0]?.orderCreated;
+  orderStarted.value = data.data?.orderCreated;
   loading.value = false;
 }
 
