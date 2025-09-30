@@ -86,7 +86,7 @@
         <div class="w-1/2 font-medium">Fahrstrecke</div>
         <div class="w-[1px] border border-black"></div>
         <div class="w-1/2 text-left font-semibold">
-          {{ distanceKm !== null ? distanceKm : 0 + " km" }}
+          {{ (distanceKm ? distanceKm : 0) + " km" }}
         </div>
       </div>
       <div class="flex p-4 justify-between space-x-2">
@@ -873,6 +873,7 @@ async function fetchOrder() {
   console.log(pictures.value);
   orderStarted.value = data.data?.orderCreated;
   loading.value = false;
+  distanceKm.value = order.value.distanceKm;
 }
 
 fetchOrder();

@@ -96,7 +96,7 @@ WHERE
     // ...
     if (order?.latitude && order?.longitude && order?.adress) {
       try {
-        const apiKey = process.env.GOOGLE_MAPS_KEY;
+        const apiKey = process.env.GOOGLE_API_KEY;
 
         // 🔍 Debuglog für alle wichtigen Parameter
         console.log("[DISTANCE DEBUG] latitude:", order.latitude);
