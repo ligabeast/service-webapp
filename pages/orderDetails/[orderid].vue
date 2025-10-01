@@ -354,7 +354,7 @@
           {{ validPictures.length }} Bilder hochgeladen
         </div>
 
-        <div v-else class="w-1/2 flex">
+        <div v-else class="w-1/2 flex justify-between">
           <span>Keine Bilder vorhanden</span>
           <div>
             <!-- Verstecktes Datei-Input -->
