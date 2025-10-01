@@ -116,9 +116,7 @@ export default defineEventHandler(async (event) => {
       );
 
       metadata.id = result.insertId;
-      metadata.path = `${process.env.IMAGE_URLPREFIX || ""}/uploads/${
-        metadata.path
-      }`;
+      metadata.path = `/uploads/${metadata.path}`;
     }
 
     return {
