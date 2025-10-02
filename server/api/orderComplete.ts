@@ -96,26 +96,6 @@ export default defineEventHandler(async (event) => {
     );
     const { adress, kls_id } = (infoRows as any[])[0];
 
-    // --- Kommentarlogik ---
-    if (
-      orderType === "connect" &&
-      JSON.parse(positions as string).some(
-        (p: any) => p.position_id == 19 || p.position_id === 20
-      )
-    ) {
-      if (weInObject === "1" || weInObject === "2-3") {
-        commentCopy +=
-          akp === "Ja"
-            ? " Leitungsweg unvollständig, fehlendes gebaut."
-            : " Alternativen Leitungsweg genutzt.";
-      } else if (weInObject === "4+") {
-        commentCopy +=
-          akp === "Ja"
-            ? " GWV unvollständig, fehlendes gebaut."
-            : " GWV Alternativen Leitungsweg genutzt.";
-      }
-    }
-
     // --- Neue Bestellung (completed) speichern ---
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO sys.Orders 

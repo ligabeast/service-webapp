@@ -92,7 +92,14 @@ const props = defineProps<{
 }>();
 
 const transProps = computed(() => {
-  return props.materials.filter((e) => e.hide != 1);
+  const tmpMaterials = props.materials.filter((e) => e.hide != 1);
+  if (tmpMaterials[0].id === 13 && tmpMaterials[1].id === 14) {
+    const tmp = tmpMaterials[0];
+    tmpMaterials[0] = tmpMaterials[1];
+    tmpMaterials[1] = tmp;
+  }
+
+  return tmpMaterials;
 });
 const emit = defineEmits(["close", "add"]);
 const selectedMaterial = ref<{
