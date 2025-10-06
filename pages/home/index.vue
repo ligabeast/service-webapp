@@ -86,6 +86,12 @@
           </button>
         </div>
       </div>
+      <button
+        class="bg-red-500 hover:bg-red-700 px-2 py-3 rounded text-sm text-white font-bold transition"
+        @click="handleLogout()"
+      >
+        Logout
+      </button>
     </div>
   </div>
 </template>
@@ -182,5 +188,10 @@ async function handleFiltersChanged(newFilters: any) {
   currentPage.value = 1;
   filters.value = newFilters;
   fetchData();
+}
+
+function handleLogout() {
+  useCookie("jwt").value = null;
+  window.location.href = "/login"; // Redirect to login page
 }
 </script>
