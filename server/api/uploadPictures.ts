@@ -39,6 +39,12 @@ export default defineEventHandler(async (event) => {
       return { status: "error", message: "orderid is required" };
     }
 
+    let label = Array.isArray(fields.label) ? fields.label[0] : fields.label;
+
+    if (!label) {
+      return { status: "error", message: "label is required" };
+    }
+
     // Bestellung laden (inkl. KLS-ID)
     const [orderRows] = await connection.execute(
       "SELECT o.id, o.kls_id FROM sys.Orders o WHERE o.id = ?;",
@@ -98,20 +104,22 @@ export default defineEventHandler(async (event) => {
           saved_name: uniqueFilename,
           mime_type: picture.mimetype,
           path: relativeFilePath,
+          label: label,
         });
       }
     }
 
     for (const metadata of pictureMetadata) {
       const [result] = await connection.execute<ResultSetHeader>(
-        `INSERT INTO sys.OrderPictures (order_id, original_name, saved_name, mime_type, path) 
-     VALUES (?, ?, ?, ?, ?);`,
+        `INSERT INTO sys.OrderPictures (order_id, original_name, saved_name, mime_type, path, label) 
+     VALUES (?, ?, ?, ?, ?, ?);`,
         [
           metadata.order_id,
           metadata.original_name,
           metadata.saved_name,
           metadata.mime_type,
           metadata.path,
+          label,
         ]
       );
 

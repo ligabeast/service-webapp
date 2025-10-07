@@ -129,12 +129,19 @@
         >
       </div>
       <OrderTypeSelector @changed="selectedOrderType = $event" />
-      <p class="font-semibold text-lg">Hochgeladene Bilder</p>
+      <p class="font-semibold text-lg">Vorher Bilder</p>
       <input
         type="file"
         accept="image/png, image/jpeg, image/jpg"
         multiple
-        @change="onFileChange"
+        @change="onFileChange2"
+      />
+      <p class="font-semibold text-lg">Nachher Bilder</p>
+      <input
+        type="file"
+        accept="image/png, image/jpeg, image/jpg"
+        multiple
+        @change="onFileChange1"
       />
       <p class="font-semibold text-lg">Eingetragene Positionen:</p>
       <template v-for="material in insertedPositions" :key="material.id">
@@ -406,7 +413,8 @@ const route = useRoute();
 
 const router = useRouter();
 
-const files = ref<null | FileList>(null);
+const afterFiles = ref<null | FileList>(null);
+const beforeFiles = ref<null | FileList>(null);
 
 const ordernumberRef = route.query.ordernumber as string | undefined;
 const kls_idRef = route.query.kls_id as string | undefined;
@@ -460,11 +468,19 @@ if (!allPositions.value) {
   console.error(error.value);
 }
 
-const onFileChange = (event: Event) => {
+const onFileChange1 = (event: Event) => {
   const target = event.target as HTMLInputElement;
 
   if (target && target.files) {
-    files.value = target.files;
+    afterFiles.value = target.files;
+  }
+};
+
+const onFileChange2 = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+
+  if (target && target.files) {
+    beforeFiles.value = target.files;
   }
 };
 
@@ -606,15 +622,22 @@ async function handleSave5() {
   const formData = new FormData();
 
   // Dateien anhängen
-  if (files.value && files.value.length > 0) {
-    for (let i = 0; i < files.value.length; i++) {
-      const file = files.value[i];
+  if (afterFiles.value) {
+    for (let i = 0; i < afterFiles.value.length; i++) {
+      const file = afterFiles.value[i];
       console.log(`Hinzufügen von Datei: ${file.name}, Größe: ${file.size}`);
       const compressedFile = await compressImage(file, 0.7);
-      formData.append("pictures", compressedFile);
+      formData.append("afterFiles", compressedFile);
     }
-  } else {
-    console.error("Keine Dateien in files.value gefunden.");
+  }
+
+  if (beforeFiles.value) {
+    for (let i = 0; i < beforeFiles.value.length; i++) {
+      const file = beforeFiles.value[i];
+      console.log(`Hinzufügen von Datei: ${file.name}, Größe: ${file.size}`);
+      const compressedFile = await compressImage(file, 0.7);
+      formData.append("beforeFiles", compressedFile);
+    }
   }
 
   // Weitere Felder anhängen

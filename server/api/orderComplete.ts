@@ -62,9 +62,12 @@ export default defineEventHandler(async (event) => {
     akp = Array.isArray(akp) ? akp[0] : akp;
     weInObject = Array.isArray(weInObject) ? weInObject[0] : weInObject;
     ne3error = JSON.parse(Array.isArray(ne3error) ? ne3error[0] : ne3error);
-    const pictureFiles = Array.isArray(files.pictures)
-      ? files.pictures
-      : [files.pictures];
+    const beforeFiles = Array.isArray(files.beforeFiles)
+      ? files.beforeFiles
+      : [files.beforeFiles];
+    const afterFiles = Array.isArray(files.afterFiles)
+      ? files.afterFiles
+      : [files.afterFiles];
 
     if (orderType === "gwv") {
       ne3error.ne3error = "Nein";
@@ -145,7 +148,7 @@ export default defineEventHandler(async (event) => {
 
     const pictureMetadata = [];
 
-    for (const picture of pictureFiles) {
+    for (const picture of beforeFiles) {
       if (picture && picture.mimetype) {
         if (!["image/jpeg", "image/png"].includes(picture.mimetype)) {
           return {
@@ -166,20 +169,47 @@ export default defineEventHandler(async (event) => {
           saved_name: uniqueFilename,
           mime_type: picture.mimetype,
           path: relativeFilePath,
+          label: "vorher",
+        });
+      }
+    }
+    for (const picture of afterFiles) {
+      if (picture && picture.mimetype) {
+        if (!["image/jpeg", "image/png"].includes(picture.mimetype)) {
+          return {
+            status: "error",
+            message: `Invalid file type: ${picture.mimetype}`,
+          };
+        }
+
+        const uniqueFilename = `${uuidv4()}_${picture.originalFilename}`;
+        const absoluteFilePath = path.join(uploadDir, uniqueFilename);
+        const relativeFilePath = path.join(kls_id, uniqueFilename);
+
+        await fs.rename(picture.filepath, absoluteFilePath);
+
+        pictureMetadata.push({
+          order_id: newOrderId,
+          original_name: picture.originalFilename,
+          saved_name: uniqueFilename,
+          mime_type: picture.mimetype,
+          path: relativeFilePath,
+          label: "nachher",
         });
       }
     }
 
     for (const metadata of pictureMetadata) {
       await connection.execute(
-        `INSERT INTO sys.OrderPictures (order_id, original_name, saved_name, mime_type, path) 
-         VALUES (?, ?, ?, ?, ?);`,
+        `INSERT INTO sys.OrderPictures (order_id, original_name, saved_name, mime_type, path, label) 
+         VALUES (?, ?, ?, ?, ?, ?);`,
         [
           metadata.order_id,
           metadata.original_name,
           metadata.saved_name,
           metadata.mime_type,
           metadata.path,
+          metadata.label,
         ]
       );
     }

@@ -54,7 +54,8 @@ SELECT
           'original_name', op.original_name,
           'saved_name', op.saved_name,
           'mime_type', op.mime_type,
-          'path', CONCAT('/uploads/', op.path)
+          'path', CONCAT('/uploads/', op.path),
+          'label', op.label
         )
       )
      FROM sys.OrderPictures op

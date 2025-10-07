@@ -342,22 +342,21 @@
         </div>
       </div>
 
-      <!-- Bilder ansehen -->
       <div class="flex p-4 justify-between space-x-2">
-        <div class="w-1/2 font-medium">Bilder</div>
+        <div class="w-1/2 font-medium">Vorher Bilder</div>
         <div class="w-[1px] border border-black"></div>
         <div
-          v-if="validPictures.length && validPictures.length > 0"
+          v-if="validBeforePictures.length && validBeforePictures.length > 0"
           class="w-1/2 cursor-pointer flex flex-col justify-center space-y-2"
         >
           <span
             class="text-blue-600 font-semibold hover:text-blue-700 underline transition"
-            @click="openPictureModal"
-            >{{ validPictures.length }} Bilder hochgeladen</span
+            @click="openPictureModal('vorher')"
+            >{{ validBeforePictures.length }} Bilder hochgeladen</span
           >
           <div class="flex justify-end">
             <button
-              @click="handleBulkDownload"
+              @click="handleBulkDownload('vorher')"
               class="w-fit bg-blue-500 rounded py-1 px-2 text-white text-sm font-medium hover:bg-blue-600 transition"
             >
               <svg
@@ -384,17 +383,92 @@
           <div>
             <!-- Verstecktes Datei-Input -->
             <input
-              ref="fileInput"
+              ref="fileInputBefore"
               type="file"
               accept="image/png, image/jpeg, image/jpg"
               multiple
               class="hidden"
-              @change="onFileChange"
+              @change="onFileChange($event, 'vorher')"
             />
 
             <!-- Icon-Button (z. B. mit Heroicons oder FontAwesome) -->
             <button
-              @click="triggerFileInput"
+              @click="triggerFileInputBefore"
+              class="p-1 rounded border hover:bg-gray-200 transition border-gray-400"
+            >
+              <!-- Beispiel-Icon: Heroicon "Plus" -->
+              <svg
+                class="w-5 h-5 text-black"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.5535 2.49392C12.4114 2.33852 12.2106 2.25 12 2.25C11.7894 2.25 11.5886 2.33852 11.4465 2.49392L7.44648 6.86892C7.16698 7.17462 7.18822 7.64902 7.49392 7.92852C7.79963 8.20802 8.27402 8.18678 8.55352 7.88108L11.25 4.9318V16C11.25 16.4142 11.5858 16.75 12 16.75C12.4142 16.75 12.75 16.4142 12.75 16V4.9318L15.4465 7.88108C15.726 8.18678 16.2004 8.20802 16.5061 7.92852C16.8118 7.64902 16.833 7.17462 16.5535 6.86892L12.5535 2.49392Z"
+                  fill="#1C274C"
+                />
+                <path
+                  d="M3.75 15C3.75 14.5858 3.41422 14.25 3 14.25C2.58579 14.25 2.25 14.5858 2.25 15V15.0549C2.24998 16.4225 2.24996 17.5248 2.36652 18.3918C2.48754 19.2919 2.74643 20.0497 3.34835 20.6516C3.95027 21.2536 4.70814 21.5125 5.60825 21.6335C6.47522 21.75 7.57754 21.75 8.94513 21.75H15.0549C16.4225 21.75 17.5248 21.75 18.3918 21.6335C19.2919 21.5125 20.0497 21.2536 20.6517 20.6516C21.2536 20.0497 21.5125 19.2919 21.6335 18.3918C21.75 17.5248 21.75 16.4225 21.75 15.0549V15C21.75 14.5858 21.4142 14.25 21 14.25C20.5858 14.25 20.25 14.5858 20.25 15C20.25 16.4354 20.2484 17.4365 20.1469 18.1919C20.0482 18.9257 19.8678 19.3142 19.591 19.591C19.3142 19.8678 18.9257 20.0482 18.1919 20.1469C17.4365 20.2484 16.4354 20.25 15 20.25H9C7.56459 20.25 6.56347 20.2484 5.80812 20.1469C5.07435 20.0482 4.68577 19.8678 4.40901 19.591C4.13225 19.3142 3.9518 18.9257 3.85315 18.1919C3.75159 17.4365 3.75 16.4354 3.75 15Z"
+                  fill="#1C274C"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex p-4 justify-between space-x-2">
+        <div class="w-1/2 font-medium">Nachher Bilder</div>
+        <div class="w-[1px] border border-black"></div>
+        <div
+          v-if="validAfterPictures.length && validAfterPictures.length > 0"
+          class="w-1/2 cursor-pointer flex flex-col justify-center space-y-2"
+        >
+          <span
+            class="text-blue-600 font-semibold hover:text-blue-700 underline transition"
+            @click="openPictureModal('nachher')"
+            >{{ validAfterPictures.length }} Bilder hochgeladen</span
+          >
+          <div class="flex justify-end">
+            <button
+              @click="handleBulkDownload('nachher')"
+              class="w-fit bg-blue-500 rounded py-1 px-2 text-white text-sm font-medium hover:bg-blue-600 transition"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.5535 16.5061C12.4114 16.6615 12.2106 16.75 12 16.75C11.7894 16.75 11.5886 16.6615 11.4465 16.5061L7.44648 12.1311C7.16698 11.8254 7.18822 11.351 7.49392 11.0715C7.79963 10.792 8.27402 10.8132 8.55352 11.1189L11.25 14.0682V3C11.25 2.58579 11.5858 2.25 12 2.25C12.4142 2.25 12.75 2.58579 12.75 3V14.0682L15.4465 11.1189C15.726 10.8132 16.2004 10.792 16.5061 11.0715C16.8118 11.351 16.833 11.8254 16.5535 12.1311L12.5535 16.5061Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M3.75 15C3.75 14.5858 3.41422 14.25 3 14.25C2.58579 14.25 2.25 14.5858 2.25 15V15.0549C2.24998 16.4225 2.24996 17.5248 2.36652 18.3918C2.48754 19.2919 2.74643 20.0497 3.34835 20.6516C3.95027 21.2536 4.70814 21.5125 5.60825 21.6335C6.47522 21.75 7.57754 21.75 8.94513 21.75H15.0549C16.4225 21.75 17.5248 21.75 18.3918 21.6335C19.2919 21.5125 20.0497 21.2536 20.6517 20.6516C21.2536 20.0497 21.5125 19.2919 21.6335 18.3918C21.75 17.5248 21.75 16.4225 21.75 15.0549V15C21.75 14.5858 21.4142 14.25 21 14.25C20.5858 14.25 20.25 14.5858 20.25 15C20.25 16.4354 20.2484 17.4365 20.1469 18.1919C20.0482 18.9257 19.8678 19.3142 19.591 19.591C19.3142 19.8678 18.9257 20.0482 18.1919 20.1469C17.4365 20.2484 16.4354 20.25 15 20.25H9C7.56459 20.25 6.56347 20.2484 5.80812 20.1469C5.07435 20.0482 4.68577 19.8678 4.40901 19.591C4.13225 19.3142 3.9518 18.9257 3.85315 18.1919C3.75159 17.4365 3.75 16.4354 3.75 15Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div v-else class="w-1/2 flex justify-between">
+          <span>Keine Bilder vorhanden</span>
+          <div>
+            <!-- Verstecktes Datei-Input -->
+            <input
+              ref="fileInputAfter"
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              multiple
+              class="hidden"
+              @change="onFileChange($event, 'nachher')"
+            />
+
+            <!-- Icon-Button (z. B. mit Heroicons oder FontAwesome) -->
+            <button
+              @click="triggerFileInputAfter"
               class="p-1 rounded border hover:bg-gray-200 transition border-gray-400"
             >
               <!-- Beispiel-Icon: Heroicon "Plus" -->
@@ -520,7 +594,7 @@
             class="swiper-container"
           >
             <swiper-slide
-              v-for="(picture, index) in pictures"
+              v-for="(picture, index) in modalPictures"
               :key="picture.id"
             >
               <div class="flex items-center justify-center">
@@ -640,7 +714,15 @@
 
     <!-- Bilder ansehen -->
     <div class="flex p-4 justify-between space-x-2">
-      <div class="w-1/2 font-medium">Bilder</div>
+      <div class="w-1/2 font-medium">Vorher Bilder</div>
+      <div class="w-[1px] border border-black"></div>
+      <div
+        class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
+      ></div>
+    </div>
+
+    <div class="flex p-4 justify-between space-x-2">
+      <div class="w-1/2 font-medium">Nachher Bilder</div>
       <div class="w-[1px] border border-black"></div>
       <div
         class="h-90 whitespace-pre-line w-1/2 w-30 rounded bg-gray-500 animate-pulse"
@@ -879,6 +961,14 @@ const validPictures = computed(() =>
   )
 );
 
+const validBeforePictures = computed(() =>
+  validPictures.value.filter((picture: any) => picture.label === "vorher")
+);
+
+const validAfterPictures = computed(() =>
+  validPictures.value.filter((picture: any) => picture.label === "nachher")
+);
+
 const ne3Status = computed(() => {
   if (!order.value) return "";
   if (order.value.ne3error === "Ja" && order.value.ne3errorRemoved === "Ja") {
@@ -942,41 +1032,74 @@ async function fetchOrder() {
 
 fetchOrder();
 
-const fileInput = ref<HTMLInputElement | null>(null);
+const fileInputBefore = ref<HTMLInputElement | null>(null);
+const fileInputAfter = ref<HTMLInputElement | null>(null);
 
-function triggerFileInput() {
-  fileInput.value?.click();
+function triggerFileInputBefore() {
+  fileInputBefore.value?.click();
 }
 
-async function handleBulkDownload() {
-  for (const picture of validPictures.value) {
-    if (!picture.path) continue;
+function triggerFileInputAfter() {
+  fileInputAfter.value?.click();
+}
 
-    try {
-      const response = await fetch(`${IMAGE_URLPREFIX}${picture.path}`, {
-        headers: {
-          Authorization: `Bearer ${useCookie("jwt").value}`, // Falls auth nötig
-        },
-      });
+async function handleBulkDownload(label: string) {
+  if (label === "vorher") {
+    for (const picture of validBeforePictures.value) {
+      if (!picture.path) continue;
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      try {
+        const response = await fetch(`${IMAGE_URLPREFIX}${picture.path}`, {
+          headers: {
+            Authorization: `Bearer ${useCookie("jwt").value}`, // Falls auth nötig
+          },
+        });
 
-      link.href = url;
-      link.download = picture.original_name || "bild.jpg";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
 
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error(`Fehler beim Herunterladen von ${picture.path}:`, err);
+        link.href = url;
+        link.download = picture.original_name || "bild.jpg";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(`Fehler beim Herunterladen von ${picture.path}:`, err);
+      }
+    }
+  } else if (label === "nachher") {
+    for (const picture of validAfterPictures.value) {
+      if (!picture.path) continue;
+
+      try {
+        const response = await fetch(`${IMAGE_URLPREFIX}${picture.path}`, {
+          headers: {
+            Authorization: `Bearer ${useCookie("jwt").value}`, // Falls auth nötig
+          },
+        });
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = picture.original_name || "bild.jpg";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(`Fehler beim Herunterladen von ${picture.path}:`, err);
+      }
     }
   }
 }
 
-async function onFileChange(event: Event) {
+async function onFileChange(event: Event, label: string) {
   const target = event.target as HTMLInputElement;
   const files = target.files;
   if (!files || files.length === 0) return;
@@ -984,6 +1107,7 @@ async function onFileChange(event: Event) {
   const formData = new FormData();
   formData.append("orderid", order.value.target_id.toString());
   Array.from(files).forEach((file) => formData.append("pictures", file));
+  formData.append("label", label);
 
   try {
     const { data, error } = await useFetch("/api/uploadPictures", {
@@ -999,27 +1123,32 @@ async function onFileChange(event: Event) {
     } else if (data.value?.status === "success") {
       uploadStatus = "Upload erfolgreich!";
       console.log(data.value);
-      pictures.value = data.value.data;
+      pictures.value = pictures.value.concat(data.value.data);
     } else {
       uploadStatus = `Fehler: ${data.value?.message}`;
     }
     addNotification(uploadStatus, data.value?.status || "error", 2000);
   } catch (err) {
-    uploadStatus.value = "Fehler beim Upload.";
     console.error(err);
   } finally {
-    if (fileInput.value) fileInput.value.value = "";
+    if (fileInputAfter.value) fileInputAfter.value.value = "";
+    if (fileInputBefore.value) fileInputBefore.value.value = "";
   }
 }
 
 const currentPictureIndex = ref(0);
 const showPictureModal = ref(false);
+const modalPictures = ref<any[]>([]);
 
 // Bilder-Steuerung
-function openPictureModal() {
+function openPictureModal(label: string) {
+  if (label === "vorher") {
+    modalPictures.value = validBeforePictures.value;
+  } else if (label === "nachher") {
+    modalPictures.value = validAfterPictures.value;
+  }
   showPictureModal.value = true;
 }
-
 function closePictureModal() {
   showPictureModal.value = false;
 }
