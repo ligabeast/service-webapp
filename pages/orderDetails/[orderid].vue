@@ -86,7 +86,8 @@
         <div class="w-1/2 font-medium">Fahrstrecke</div>
         <div class="w-[1px] border border-black"></div>
         <div class="w-1/2 text-left font-semibold">
-          {{ (distanceKm ? distanceKm : 0) + " km" }}
+          {{ (distanceKm ? distanceKm : 0) + " km" }} -
+          {{ (durationMin ? durationMin : 0) + " min" }}
         </div>
       </div>
       <div class="flex p-4 justify-between space-x-2">
@@ -806,6 +807,7 @@ const inputCommentCopy = ref(null);
 const copyPositions = ref(null);
 
 const distanceKm = ref<number | null>(null);
+const durationMin = ref<number | null>(null);
 
 async function handleChangeNe3Status() {
   if (selectedNe3Status.value === ne3Status.value) {
@@ -1028,6 +1030,7 @@ async function fetchOrder() {
   orderStarted.value = data.data?.orderCreated;
   loading.value = false;
   distanceKm.value = order.value.distanceKm;
+  durationMin.value = order.value.durationMin;
 }
 
 fetchOrder();

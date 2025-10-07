@@ -92,75 +92,100 @@ WHERE
       [orderid, userId]
     );
 
-    const order = rows[0];
+    const order: any = rows[0];
 
-    // ...
+    // ✅ ROUTES API (statt alte Directions API)
     if (order?.latitude && order?.longitude && order?.adress) {
       try {
         const apiKey = process.env.GOOGLE_API_KEY;
+        if (!apiKey) throw new Error("Google Maps API Key fehlt");
 
-        // 🔍 Debuglog für alle wichtigen Parameter
-        console.log("[DISTANCE DEBUG] latitude:", order.latitude);
-        console.log("[DISTANCE DEBUG] longitude:", order.longitude);
-        console.log("[DISTANCE DEBUG] adress:", order.adress);
-        console.log("[DISTANCE DEBUG] GOOGLE_MAPS_KEY vorhanden:", !!apiKey);
+        console.log("[ROUTES DEBUG] latitude:", order.latitude);
+        console.log("[ROUTES DEBUG] longitude:", order.longitude);
+        console.log("[ROUTES DEBUG] adress:", order.adress);
 
-        if (!apiKey) {
-          throw new Error("Google Maps API Key fehlt");
-        }
+        const url = `https://routes.googleapis.com/directions/v2:computeRoutes?key=${apiKey}`;
 
-        const origin = `${order.latitude},${order.longitude}`;
-        const destination = encodeURIComponent(order.adress);
-        const directionsUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=driving&key=${apiKey}`;
+        const requestBody = {
+          origin: {
+            location: {
+              latLng: {
+                latitude: order.latitude,
+                longitude: order.longitude,
+              },
+            },
+          },
+          destination: {
+            address: order.adress,
+          },
+          travelMode: "DRIVE",
+          routingPreference: "TRAFFIC_AWARE",
+          computeAlternativeRoutes: false,
+          languageCode: "de-DE",
+          units: "METRIC",
+        };
 
-        console.log("[DISTANCE DEBUG] URL:", directionsUrl);
+        console.log("[ROUTES DEBUG] URL:", url);
+        console.log("[ROUTES DEBUG] Request:", JSON.stringify(requestBody));
 
-        const res = await fetch(directionsUrl);
-        const directions = await res.json();
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Goog-FieldMask":
+              "routes.distanceMeters,routes.duration,routes.legs.distanceMeters,routes.legs.duration",
+          },
+          body: JSON.stringify(requestBody),
+        });
 
-        console.log(
-          "[DISTANCE DEBUG] API Response:",
-          JSON.stringify(directions, null, 2)
-        );
+        const data = await res.json();
+        console.log("[ROUTES DEBUG] Response:", JSON.stringify(data, null, 2));
 
         const distanceValue =
-          directions?.routes?.[0]?.legs?.[0]?.distance?.value;
+          data?.routes?.[0]?.legs?.[0]?.distanceMeters ??
+          data?.routes?.[0]?.distanceMeters;
 
-        if (distanceValue !== undefined) {
-          const meters = distanceValue;
-          order.distanceKm = +(meters / 1000).toFixed(1);
-          console.log("[DISTANCE DEBUG] distanceKm:", order.distanceKm);
+        // "duration": "2389s"
+        const durationMin = Math.round(
+          parseInt(
+            data?.routes?.[0]?.legs?.[0]?.duration ??
+              data?.routes?.[0]?.duration
+          ) / 60
+        );
+
+        if (distanceValue) {
+          order.distanceKm = +(distanceValue / 1000).toFixed(1);
+          order.durationMin = durationMin;
+          console.log("[ROUTES DEBUG] distanceKm:", order.distanceKm);
+          console.log("[ROUTES DEBUG] durationMin:", order.durationMin);
         } else {
           console.warn(
-            "[DISTANCE WARNING] Kein Distance-Wert im API Response gefunden"
+            "[ROUTES WARNING] Kein Distance-Wert im Routes API Response gefunden"
           );
           order.distanceKm = null;
         }
       } catch (err) {
-        console.error("[DISTANCE ERROR]", err);
+        console.error("[ROUTES ERROR]", err);
         order.distanceKm = null;
       }
     } else {
-      console.warn(
-        "[DISTANCE WARNING] Latitude, Longitude oder Adresse fehlen"
-      );
+      console.warn("[ROUTES WARNING] Latitude, Longitude oder Adresse fehlen");
       order.distanceKm = null;
     }
 
     return {
       status: "success",
-      message: "Order started + result retrieved successfully",
+      message: "Order data retrieved successfully",
       data: order,
     };
   } catch (error: any) {
+    console.error("[GET ORDER ERROR]", error);
     return {
       status: "error",
       message: "Failed to retrieve order",
       error: error.message,
     };
   } finally {
-    if (connection) {
-      await connection.end();
-    }
+    if (connection) await connection.end();
   }
 });
