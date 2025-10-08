@@ -97,6 +97,18 @@ const whatsappResult = computed(() => {
       result.push("mit Ne3-Fehler beseitigt");
     }
   } else if (
+    props.insertedPositions.filter((position) => position.id === 28).length > 0
+  ) {
+    result.push("Mini GWV Erledigt");
+    if (
+      props.ne3error.ne3error == "Ja" &&
+      props.ne3error.ne3errorRemoved === "Nein"
+    ) {
+      result.push("mit Ne3-Fehler");
+    } else if (props.ne3error.ne3errorRemoved === "Ja") {
+      result.push("mit Ne3-Fehler beseitigt");
+    }
+  } else if (
     props.insertedPositions.filter((position) => position.id === 17).length > 0
   ) {
     result.push("GWV Nicht Erledigt");

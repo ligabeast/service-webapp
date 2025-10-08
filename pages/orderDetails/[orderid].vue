@@ -1211,6 +1211,19 @@ const whatsappResult = computed(() => {
       result.push("mit Ne3-Fehler beseitigt");
     }
   } else if (
+    order.value.positions.filter((position) => position.position_id === 28)
+      .length > 0
+  ) {
+    result.push("Mini GWV Erledigt");
+    if (
+      order.value.ne3error == "Ja" &&
+      order.value.ne3errorRemoved === "Nein"
+    ) {
+      result.push("mit Ne3-Fehler");
+    } else if (order.value.ne3errorRemoved === "Ja") {
+      result.push("mit Ne3-Fehler beseitigt");
+    }
+  } else if (
     order.value.positions.filter((position) => position.position_id === 17)
       .length > 0
   ) {
