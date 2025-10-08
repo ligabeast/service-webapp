@@ -112,7 +112,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if (orderType !== "all") {
-      countSql += " AND o.orderType = ?";
+      countSql += " AND os.orderType = ?";
       countParams.push(orderType);
     }
 
