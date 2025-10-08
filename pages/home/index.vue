@@ -45,13 +45,15 @@
         </button>
       </div>
       <transition name="top-to-bottom" mode="out-in">
-        <OrderFilter
-          :pagination="true"
-          :extraFilters="true"
-          :filters="filters"
-          :show="showFilter"
-          @applyFilters="handleFiltersChanged"
-        />
+        <div v-if="showFilter">
+          <OrderFilter
+            :pagination="true"
+            :extraFilters="true"
+            :filters="filters"
+            :show="showFilter"
+            @applyFilters="handleFiltersChanged"
+          />
+        </div>
       </transition>
       <span v-if="orders && orders.length == 0"> Keine Aufträge verfügbar</span>
       <template v-else v-for="order in orders">

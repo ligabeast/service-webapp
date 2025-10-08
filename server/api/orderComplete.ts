@@ -102,14 +102,13 @@ export default defineEventHandler(async (event) => {
     // --- Neue Bestellung (completed) speichern ---
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO sys.Orders 
-        (ne3error, ne3errorRemoved, ordernumber, user_id, status, orderType, adress, kls_id, dateCreated, commentCopy, commentInternal, notCompletedReason, akp, we) 
+        (ne3error, ne3errorRemoved, ordernumber, user_id, status, adress, kls_id, dateCreated, commentCopy, commentInternal, notCompletedReason, akp, we) 
        VALUES (?, ?, ?, ?, 'completed', ?, ?, ?, NOW(), ?, ?, ?, ?, ?);`,
       [
         ne3error.ne3error,
         ne3error.ne3errorRemoved,
         ordernumber,
         userId,
-        orderType,
         adress,
         kls_id,
         commentCopy,

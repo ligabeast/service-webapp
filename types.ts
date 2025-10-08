@@ -26,6 +26,7 @@ export interface Order {
   id: number;
   kls_id: number;
   adress: string;
+  orderType: string;
   ordernumber: string;
   user_id: number;
   status: string;

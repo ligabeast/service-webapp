@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
       COALESCE(o.dateCreated, os.created_at) AS dateCreated,
       COALESCE(o.status, 'started') AS status,
       o.notCompletedReason,
-      o.orderType
+      os.orderType as orderType
     FROM sys.OrdersStarted os
     LEFT JOIN sys.Orders o ON os.target_id = o.id
     WHERE os.user_id = ?

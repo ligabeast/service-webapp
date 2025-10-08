@@ -1,7 +1,6 @@
 <template>
   <div
     class="rounded-md border border-gray-300 p-4 space-y-4 shadow-md bg-gray-200"
-    v-if="props.show"
   >
     <h2 class="text-lg font-semibold text-gray-700">Filter</h2>
 

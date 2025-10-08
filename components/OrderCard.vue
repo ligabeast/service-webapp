@@ -10,6 +10,7 @@
               kls_id: order.kls_id,
               adress: order.adress,
               orderid: order.id,
+              orderType: order.orderType,
               currentPage: props.currentPage, // Falls benötigt
             }
           : {
@@ -39,7 +40,12 @@
           }}
         </span>
       </div>
-      <span>{{ timeFormatter.format(new Date(order.dateCreated)) }}</span>
+      <div class="flex flex-col items-center justify-between">
+        <span>{{ timeFormatter.format(new Date(order.dateCreated)) }}</span>
+        <span class="text-sm text-blue-500 font-bold">{{
+          order.orderType
+        }}</span>
+      </div>
     </button>
   </NuxtLink>
 </template>

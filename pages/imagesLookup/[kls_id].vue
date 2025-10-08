@@ -39,7 +39,9 @@
     <div class="flex items-center justify-center">
       <NuxtLink
         :to="
-          orderid
+          backToNewOrder
+            ? `/newOrder?kls_id=${klsId}`
+            : orderid
             ? `/orderDetails/${orderid}?currentPage=${currentPage}`
             : ordernumber
             ? `/postOrder?ordernumber=${ordernumber}&kls_id=${klsId}&adress=${adress}&orderid=${orderid}`
@@ -66,6 +68,7 @@ const route = useRoute();
 const klsId = route.params.kls_id;
 const ordernumber = route.query.ordernumber;
 const adress = route.query.adress;
+const backToNewOrder = route.query.backToNewOrder || false;
 
 onMounted(() => {
   console.log("KLS ID:", klsId); // Überprüfen, ob der Wert geladen wird

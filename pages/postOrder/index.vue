@@ -128,7 +128,6 @@
           >{{ kls_id }}</NuxtLink
         >
       </div>
-      <OrderTypeSelector @changed="selectedOrderType = $event" />
       <p class="font-semibold text-lg">Vorher Bilder</p>
       <input
         type="file"
@@ -405,8 +404,6 @@
 import type { MaterialResponse, Material } from "~/types";
 import { addNotification } from "~/notification.ts";
 
-const selectedOrderType = ref<string>("connect");
-
 const showDeleteModal = ref(false);
 
 const route = useRoute();
@@ -420,12 +417,42 @@ const ordernumberRef = route.query.ordernumber as string | undefined;
 const kls_idRef = route.query.kls_id as string | undefined;
 const adressRef = route.query.adress as string | undefined;
 const orderid = route.query.orderid as string;
+const orderTypeRef = route.query.orderType as string | undefined;
+
+const { data: allPositions, error } = await useFetch<MaterialResponse>(
+  "/api/getAllPositions",
+  {
+    headers: {
+      Authorization: `Bearer ${useCookie("jwt").value}`,
+    },
+  }
+);
+
+if (!allPositions.value) {
+  console.error(error.value);
+}
+
+const possibleMaterials = ref<Material[]>(
+  allPositions.value?.status === "success" && allPositions.value.data
+    ? allPositions.value.data
+        .filter((e) => e.type === "connect" || e.type === "both") // Filter based on type
+        .map((e) => e as Material) // Map the filtered items to Material
+    : []
+);
 
 // Definiere die Refs für deine Daten
 const insertedPositions = ref<Material[]>([]);
 const adress = ref<string>(adressRef ?? ""); // Fallback auf leeren String, falls adress undefined ist
 const kls_id = ref<string>(kls_idRef ?? "");
 const ordernumber = ref<string>(ordernumberRef ?? "");
+const selectedOrderType = ref<string>(orderTypeRef ?? "connect");
+
+if (allPositions.value?.data) {
+  possibleMaterials.value = (allPositions.value?.data as any).filter(
+    (m) => m.type == selectedOrderType.value || m.type == "both"
+  );
+  insertedPositions.value = [];
+}
 
 const commentCopy = ref<string>("");
 const commentInternal = ref<string>("");
@@ -455,19 +482,6 @@ watch(selectedOrderType, (value) => {
   }
 });
 
-const { data: allPositions, error } = await useFetch<MaterialResponse>(
-  "/api/getAllPositions",
-  {
-    headers: {
-      Authorization: `Bearer ${useCookie("jwt").value}`,
-    },
-  }
-);
-
-if (!allPositions.value) {
-  console.error(error.value);
-}
-
 const onFileChange1 = (event: Event) => {
   const target = event.target as HTMLInputElement;
 
@@ -483,14 +497,6 @@ const onFileChange2 = (event: Event) => {
     beforeFiles.value = target.files;
   }
 };
-
-const possibleMaterials = ref<Material[]>(
-  allPositions.value?.status === "success" && allPositions.value.data
-    ? allPositions.value.data
-        .filter((e) => e.type === "connect" || e.type === "both") // Filter based on type
-        .map((e) => e as Material) // Map the filtered items to Material
-    : []
-);
 
 const showMaterialModal = ref(false);
 const showResultModal1 = ref(false);
@@ -647,7 +653,6 @@ async function handleSave5() {
   formData.append("notCompletedReason", notCompletedReason.value);
   formData.append("ordernumber", ordernumber.value);
   formData.append("orderid", orderid);
-  formData.append("orderType", selectedOrderType.value);
   formData.append("commentCopy", commentCopy.value);
   formData.append(
     "ne3error",

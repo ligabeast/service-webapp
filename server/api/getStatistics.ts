@@ -55,8 +55,9 @@ export default defineEventHandler(async (event) => {
     // Ordertype distribution
     let sql2 = `
       SELECT orderType, COUNT(*) AS count
-      FROM sys.Orders
-      WHERE user_id = ? AND status = "completed"
+      FROM sys.OrdersStarted
+      join sys.Orders on sys.OrdersStarted.target_id = sys.Orders.id
+      WHERE sys.OrdersStarted.user_id = ? and sys.Orders.status = "completed"
     `;
     const params2: any[] = [userId];
 

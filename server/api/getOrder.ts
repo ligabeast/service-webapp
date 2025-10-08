@@ -24,7 +24,7 @@ SELECT
     os.*,
     COALESCE(o2.status, 'started') AS status,
     o2.notCompletedReason,
-    o2.orderType,
+    os.orderType,
     o2.dateCreated AS dateCreated,
     o2.ne3error,
     o2.ne3errorRemoved,
