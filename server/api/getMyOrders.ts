@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (endDate) {
-    sql += " AND os.created_at <= ?";
+    sql += " AND os.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
     params.push(endDate);
   }
 
@@ -98,7 +98,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if (endDate) {
-      countSql += " AND os.created_at <= ?";
+      countSql += " AND os.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
       countParams.push(endDate);
     }
 
