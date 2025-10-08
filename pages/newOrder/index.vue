@@ -331,12 +331,14 @@
               </button>
             </NuxtLink>
 
-            <button
-              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition disabled:bg-gray-300"
-              @click="nextStep"
-            >
-              Home
-            </button>
+            <NuxtLink :to="`/home`">
+              <button
+                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition disabled:bg-gray-300"
+                @click="nextStep"
+              >
+                Home
+              </button>
+            </NuxtLink>
           </div>
         </div>
       </div>
