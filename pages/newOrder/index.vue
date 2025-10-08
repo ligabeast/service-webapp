@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col w-full h-full items-center p-6 space-y-6">
+  <div
+    class="flex flex-col w-full h-fit items-center p-6 space-y-6"
+    ref="klsResultRef"
+  >
     <Loader v-show="loading" />
     <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
       <div
@@ -38,12 +41,12 @@
       class="relative w-full max-w-3xl overflow-hidden h-fit border border-gray-300 rounded-lg bg-white shadow-md"
     >
       <div
-        class="flex transition-transform duration-500 ease-in-out w-full h-full"
+        class="flex transition-transform duration-500 ease-in-out w-full h-fit"
         :style="{ transform: `translateX(-${(currentStep - 1) * 100}%)` }"
       >
         <!-- Fenster 1 -->
         <div
-          class="w-full flex-shrink-0 justify-between p-6 flex flex-col h-full"
+          class="w-full flex-shrink-0 justify-between p-6 flex flex-col h-fit"
         >
           <div class="flex flex-col space-y-4">
             <h2 class="text-xl font-bold">Schritt 1 — KLS prüfen</h2>
@@ -354,6 +357,7 @@ const currentStep = ref(1);
 const totalSteps = 4;
 const route = useRoute();
 const klsId = route.query.kls_id as string;
+const klsResultRef = ref<HTMLElement | null>(null);
 
 const form = ref({
   klsId: "",
@@ -534,10 +538,25 @@ async function fetchKLS() {
   klsFound.value = result.data.value.data || null;
 }
 // --- Dummy-Checks / Platzhalter ---
-function checkKls() {
+async function checkKls() {
   if (/^\d{7,8}$/.test(form.value.klsId)) {
     klsChecked.value = true;
-    fetchKLS();
+    await fetchKLS();
+
+    // ⬇️ Nach dem nächsten DOM-Update scrollen
+    nextTick(() => {
+      if (klsResultRef.value) {
+        klsResultRef.value.scrollIntoView({
+          behavior: "smooth",
+          block: "end", // oder "start", je nach gewünschter Position
+        });
+      } else {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    });
   } else {
     addNotification("Ungültige KLS-ID", "error");
     klsChecked.value = false;
