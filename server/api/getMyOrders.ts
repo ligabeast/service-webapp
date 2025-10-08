@@ -77,6 +77,7 @@ export default defineEventHandler(async (event) => {
   sql += ` LIMIT ${perPage} OFFSET ${offset}`;
 
   try {
+    console.log("sql", sql, params);
     connection = await mysql.createConnection(dbConfig);
 
     // Daten abrufen
