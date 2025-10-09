@@ -55,6 +55,8 @@
             <input
               v-model="form.klsId"
               type="number"
+              inputmode="numeric"
+              pattern="[0-9]*"
               class="border rounded-md p-2"
               placeholder="KLS-ID eingeben"
             />
@@ -147,6 +149,8 @@
             <input
               v-model="form.ordernumber"
               type="number"
+              inputmode="numeric"
+              pattern="[0-9]*"
               class="border rounded-md p-2"
             />
 
@@ -203,6 +207,8 @@
                 <input
                   v-model="form.units"
                   type="number"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
                   class="border border-black rounded-sm h-10 p-2"
                 />
               </div>
