@@ -118,7 +118,7 @@
             }"
           >
             <NuxtLink
-              v-if="klsChecked && klsFound"
+              v-if="klsChecked"
               :to="`/imagesLookup/${form.klsId}?backToNewOrder=true`"
             >
               <button
@@ -417,6 +417,10 @@ const computeShowGWV = computed(() => {
 
 // --- Navigation ---
 function nextStep() {
+  if (currentStep.value === 1 && klsFound.value.kls != form.value.klsId) {
+    addNotification("Bitte KLS-ID zuerst prüfen klicken", "error", 3000);
+    return;
+  }
   if (currentStep.value === 2) {
     if (!/^\d{12}$/.test(form.value.ordernumber)) {
       addNotification("Ungültige Auftragsnummer", "error", 3000);

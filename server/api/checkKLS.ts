@@ -121,6 +121,7 @@ export default defineEventHandler(async (event) => {
       status: "success",
       data: {
         address,
+        kls,
         ordersFound,
         lastService: lastService
           ? new Date(lastService).toISOString().split("T")[0]
