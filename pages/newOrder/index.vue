@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col w-full h-fit items-center p-6 space-y-6"
+    class="flex flex-col w-full min-h-full flex-grow items-center p-6 space-y-6"
     ref="klsResultRef"
   >
     <Loader v-show="loading" />
@@ -38,15 +38,15 @@
     </h1>
 
     <div
-      class="relative w-full max-w-3xl overflow-hidden h-fit border border-gray-300 rounded-lg bg-white shadow-md"
+      class="relative w-full max-w-3xl max-h-full overflow-hidden border border-gray-300 rounded-lg bg-white shadow-md"
     >
       <div
-        class="flex transition-transform duration-500 ease-in-out w-full h-fit"
+        class="flex transition-transform duration-500 ease-in-out w-full h-full"
         :style="{ transform: `translateX(-${(currentStep - 1) * 100}%)` }"
       >
         <!-- Fenster 1 -->
         <div
-          class="w-full flex-shrink-0 justify-between p-6 flex flex-col h-fit"
+          class="w-full flex-shrink-0 justify-between p-6 flex flex-col h-full"
         >
           <div class="flex flex-col space-y-4">
             <h2 class="text-xl font-bold">Schritt 1 — KLS prüfen</h2>
@@ -136,7 +136,7 @@
 
         <!-- Fenster 2 -->
         <div
-          class="w-full flex-shrink-0 p-6 flex flex-col justify-between h-full"
+          class="w-full flex-shrink-0 p-6 flex flex-col justify-between min-h-full"
         >
           <div class="flex flex-col space-y-4">
             <h2 class="text-xl font-bold">Schritt 2 — Auftragsdaten</h2>
@@ -176,7 +176,7 @@
 
         <!-- Fenster 3 -->
         <div
-          class="w-full flex-shrink-0 p-6 flex flex-col justify-between h-full"
+          class="w-full flex-shrink-0 p-6 flex flex-col justify-between min-h-full"
         >
           <div class="flex flex-col space-y-4 py-">
             <h2 class="text-xl font-bold">Schritt 3 — Dateneingabe</h2>
@@ -320,7 +320,7 @@
           </div>
         </div>
         <div
-          class="w-full flex-shrink-0 p-6 flex flex-col justify-between h-full"
+          class="w-full flex-shrink-0 p-6 flex flex-col justify-between min-h-full"
         >
           <h1 class="text-lg font-semibold">
             Auftrag wurde erfolgreich angelegt!
@@ -360,7 +360,7 @@ const klsId = route.query.kls_id as string;
 const klsResultRef = ref<HTMLElement | null>(null);
 
 const form = ref({
-  klsId: "",
+  klsId: "2",
   ordernumber: "",
   orderType: "",
   address: "",
@@ -443,10 +443,7 @@ function orderCreate() {
     addNotification("Wohneinheiten müssen angegeben werden", "error", 3000);
     return;
   }
-  if (
-    (klsFound === null && !form.value.address) ||
-    (klsFound && !klsFound.address && !form.value.address)
-  ) {
+  if (klsFound && klsFound.address === null && !form.value.address) {
     addNotification("Adresse muss angegeben werden", "error", 3000);
     return;
   }

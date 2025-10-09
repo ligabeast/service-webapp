@@ -26,17 +26,22 @@ export default defineEventHandler(async (event) => {
     const [orders] = await connection.execute<any[]>(
       `
       SELECT 
-        o.id AS order_id,
-        o.ordernumber,
+        os.id AS order_id,
+        os.ordernumber,
         os.orderType,
-        o.adress,
-        o.dateCreated,
-        pto.position_id
+        os.adress,
+        os.created_at,
+        COALESCE(o.dateCreated, os.created_at) AS dateCreated,
+        COALESCE(o.status, 'started') AS status,
+        GROUP_CONCAT(DISTINCT pto.position_id ORDER BY pto.position_id SEPARATOR ', ') AS positions
       FROM sys.OrdersStarted os
-      LEFT JOIN sys.Orders o ON os.target_id = o.id
-      LEFT JOIN sys.Position_To_Orders pto ON pto.order_id = o.id
-      WHERE o.kls_id = ?
-      ORDER BY o.dateCreated DESC;
+      LEFT JOIN sys.Orders o 
+        ON o.id = os.target_id
+      LEFT JOIN sys.Position_To_Orders pto 
+        ON pto.order_id = o.id
+      WHERE os.kls_id = ?
+      GROUP BY os.id
+      ORDER BY os.created_at DESC;
       `,
       [kls]
     );
@@ -88,7 +93,17 @@ export default defineEventHandler(async (event) => {
       .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0];
 
     // 🔹 Nur die Positionen als Array (ohne Duplikate)
-    const positions = Array.from(new Set(orders.map((r) => r.position_id)));
+    // 🔹 Alle Positions aus allen Orders zusammenführen (einmalig & als Array)
+    const positions = Array.from(
+      new Set(
+        orders.flatMap((r) =>
+          (r.positions || "")
+            .split(",")
+            .map((p: string) => p.trim())
+            .filter((p) => p !== "")
+        )
+      )
+    ).map((p) => Number(p));
 
     // 🔹 Prüfe, ob KLS-Eintrag existiert
     const [klsRows] = await connection.execute<any[]>(
