@@ -254,48 +254,6 @@
         "
       >
         <label class="text-lg font-semibold" for="reason"
-          >Wie viele Wohneinheiten(WE), hat das Objekt?</label
-        >
-        <div class="flex space-x-2 items-center">
-          <label for="we1" class="select-none">1</label>
-          <input
-            name="we"
-            id="we1"
-            type="radio"
-            value="1"
-            v-model="weInObject"
-          />
-        </div>
-        <div class="flex space-x-2 items-center">
-          <label for="we2-3" class="select-none">2-3</label>
-          <input
-            name="we"
-            id="we2-3"
-            type="radio"
-            value="2-3"
-            v-model="weInObject"
-          />
-        </div>
-        <div class="flex space-x-2 items-center">
-          <label for="we4+" class="select-none">4+</label>
-          <input
-            name="we"
-            id="we4+"
-            type="radio"
-            value="4+"
-            v-model="weInObject"
-          />
-        </div>
-      </div>
-
-      <div
-        class="flex flex-col space-y-4"
-        v-if="
-          selectedOrderType == 'connect' &&
-          insertedPositions.find((e) => e.id === 14)
-        "
-      >
-        <label class="text-lg font-semibold" for="reason"
           >Hast du nach AKP gebaut?</label
         >
         <div class="flex space-x-2 items-center">
