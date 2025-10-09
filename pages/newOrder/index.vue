@@ -106,7 +106,7 @@
               </div>
               <div class="flex flex-col">
                 <strong>Letzter Auftrag:</strong>
-                {{ klsFound.lastService }}
+                {{ dateTimeFormatter.format(new Date(klsFound.lastService)) }}
               </div>
             </div>
           </div>
@@ -413,6 +413,13 @@ const computeShowGWV = computed(() => {
     }
   }
   return false;
+});
+
+// Format in German date time
+const dateTimeFormatter = new Intl.DateTimeFormat("de-DE", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
 });
 
 // --- Navigation ---
