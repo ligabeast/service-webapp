@@ -115,9 +115,11 @@
               'justify-end': !klsFound,
             }"
           >
-            <NuxtLink :to="`/imagesLookup/${form.klsId}?backToNewOrder=true`">
+            <NuxtLink
+              v-if="klsChecked && klsFound"
+              :to="`/imagesLookup/${form.klsId}?backToNewOrder=true`"
+            >
               <button
-                v-if="klsChecked && klsFound"
                 class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition disabled:bg-gray-300"
               >
                 KLS-History
@@ -326,7 +328,10 @@
             Auftrag wurde erfolgreich angelegt!
           </h1>
           <div class="flex justify-between mt-8">
-            <NuxtLink :to="`/imagesLookup/${form.klsId}`">
+            <NuxtLink
+              v-if="klsChecked && klsFound"
+              :to="`/imagesLookup/${form.klsId}`"
+            >
               <button
                 class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition disabled:bg-gray-300"
               >
@@ -360,7 +365,7 @@ const klsId = route.query.kls_id as string;
 const klsResultRef = ref<HTMLElement | null>(null);
 
 const form = ref({
-  klsId: "2",
+  klsId: "",
   ordernumber: "",
   orderType: "",
   address: "",
