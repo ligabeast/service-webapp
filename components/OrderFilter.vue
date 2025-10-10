@@ -113,6 +113,18 @@
       />
     </div>
 
+    <div v-if="props.favoritesFilter">
+      <!-- checkbox -->
+      <label class="inline-flex items-center mt-3">
+        <input
+          type="checkbox"
+          v-model="filters.favoritesOnly"
+          class="form-checkbox h-5 w-5 text-blue-600"
+        />
+        <span class="ml-2 text-gray-700">Nur Favoriten anzeigen</span>
+      </label>
+    </div>
+
     <!-- Buttons -->
     <div class="flex space-x-4">
       <button
@@ -139,6 +151,7 @@ const props = defineProps<{
   show: boolean;
   pagination: boolean;
   extraFilters: boolean;
+  favoritesFilter: boolean;
   filters: {
     perPage?: number;
     startDate: string | null;
@@ -147,6 +160,7 @@ const props = defineProps<{
     sort?: string;
     orderType: string;
     adress?: string;
+    favoritesOnly?: boolean;
     klsId?: string;
   };
 }>();
@@ -174,6 +188,7 @@ const resetFilters = () => {
   filters.value.orderType = "all";
   filters.value.klsId = "";
   filters.value.adress = "";
+  filters.value.favoritesOnly = false;
   updateDateRange();
 };
 const updateDateRange = () => {

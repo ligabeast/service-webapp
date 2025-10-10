@@ -23,74 +23,83 @@ export default defineEventHandler(async (event) => {
   const orderType = query.orderType || "all";
   const klsId = query.klsId || "";
   const adress = query.adress || "";
-
-  let sql = `
-    SELECT 
-      os.id AS id,
-      os.adress AS adress,
-      os.ordernumber AS ordernumber,
-      os.kls_id AS kls_id,
-      COALESCE(o.dateCreated, os.created_at) AS dateCreated,
-      COALESCE(o.status, 'started') AS status,
-      o.notCompletedReason,
-      os.orderType as orderType
-    FROM sys.OrdersStarted os
-    LEFT JOIN sys.Orders o ON os.target_id = o.id
-    WHERE os.user_id = ?
-  `;
-
-  const params: any[] = [userId];
-
-  // Filter
-  if (startDate) {
-    sql += " AND os.created_at >= ?";
-    params.push(startDate);
-  }
-
-  if (endDate) {
-    sql += " AND os.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
-    params.push(endDate);
-  }
-
-  if (klsId) {
-    sql += " AND os.kls_id = ?";
-    params.push(klsId);
-  }
-
-  if (adress) {
-    sql += " AND os.adress LIKE ?";
-    params.push(`%${adress}%`);
-  }
-
-  if (orderType !== "all") {
-    sql += " AND o.orderType = ?";
-    params.push(orderType);
-  }
-
-  // Sortierung
-  sql +=
-    sort === "date-asc"
-      ? " ORDER BY COALESCE(o.dateCreated, os.created_at) ASC"
-      : " ORDER BY COALESCE(o.dateCreated, os.created_at) DESC";
-
-  // Pagination
-  sql += ` LIMIT ${perPage} OFFSET ${offset}`;
+  const favoritesOnly = query.favoritesOnly === "true";
 
   try {
-    console.log("sql", sql, params);
     connection = await mysql.createConnection(dbConfig);
 
-    // Daten abrufen
-    const [rows] = await connection.execute(sql, params);
-
-    // Count
-    let countSql = `
-      SELECT COUNT(*) as total
+    // 🔹 Haupt-SQL-Abfrage
+    let sql = `
+      SELECT 
+        os.id AS id,
+        os.adress AS adress,
+        os.ordernumber AS ordernumber,
+        os.kls_id AS kls_id,
+        COALESCE(o.dateCreated, os.created_at) AS dateCreated,
+        COALESCE(o.status, 'started') AS status,
+        o.notCompletedReason,
+        os.orderType AS orderType,
+        CASE WHEN ow.id IS NOT NULL THEN 1 ELSE 0 END AS isFavorite
       FROM sys.OrdersStarted os
       LEFT JOIN sys.Orders o ON os.target_id = o.id
+      LEFT JOIN sys.OrderWatchlist ow 
+        ON ow.order_id = os.id AND ow.user_id = ?
       WHERE os.user_id = ?
     `;
-    const countParams: any[] = [userId];
+
+    const params: any[] = [userId, userId];
+
+    // 🔹 Filter
+    if (startDate) {
+      sql += " AND os.created_at >= ?";
+      params.push(startDate);
+    }
+
+    if (endDate) {
+      sql += " AND os.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
+      params.push(endDate);
+    }
+
+    if (klsId) {
+      sql += " AND os.kls_id = ?";
+      params.push(klsId);
+    }
+
+    if (adress) {
+      sql += " AND os.adress LIKE ?";
+      params.push(`%${adress}%`);
+    }
+
+    if (orderType !== "all") {
+      sql += " AND os.orderType = ?";
+      params.push(orderType);
+    }
+
+    if (favoritesOnly) {
+      sql += " AND ow.id IS NOT NULL";
+    }
+
+    // 🔹 Sortierung
+    sql +=
+      sort === "date-asc"
+        ? " ORDER BY COALESCE(o.dateCreated, os.created_at) ASC"
+        : " ORDER BY COALESCE(o.dateCreated, os.created_at) DESC";
+
+    // 🔹 Pagination
+    sql += ` LIMIT ${perPage} OFFSET ${offset}`;
+
+    const [rows] = await connection.execute(sql, params);
+
+    // 🔹 Count für Pagination
+    let countSql = `
+      SELECT COUNT(*) AS total
+      FROM sys.OrdersStarted os
+      LEFT JOIN sys.Orders o ON os.target_id = o.id
+      LEFT JOIN sys.OrderWatchlist ow 
+        ON ow.order_id = os.id AND ow.user_id = ?
+      WHERE os.user_id = ?
+    `;
+    const countParams: any[] = [userId, userId];
 
     if (startDate) {
       countSql += " AND os.created_at >= ?";
@@ -117,13 +126,19 @@ export default defineEventHandler(async (event) => {
       countParams.push(orderType);
     }
 
-    const [totalResult] = await connection.execute(countSql, countParams);
-    const totalCount = totalResult[0]?.total || 0;
+    if (favoritesOnly) {
+      countSql += " AND ow.id IS NOT NULL";
+    }
+
+    const [countResult] = await connection.execute(countSql, countParams);
+    const totalCount = countResult[0]?.total || 0;
     const totalPages = Math.ceil(totalCount / perPage);
 
     return {
       status: "success",
-      message: "All started orders (linked and unlinked)",
+      message: favoritesOnly
+        ? "Favorite started orders retrieved"
+        : "All started orders (linked and unlinked)",
       data: rows,
       pagination: {
         currentPage,
@@ -140,8 +155,6 @@ export default defineEventHandler(async (event) => {
       error: error.message,
     };
   } finally {
-    if (connection) {
-      await connection.end();
-    }
+    if (connection) await connection.end();
   }
 });

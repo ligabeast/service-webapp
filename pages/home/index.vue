@@ -49,6 +49,7 @@
           <OrderFilter
             :pagination="true"
             :extraFilters="true"
+            :favoritesFilter="true"
             :filters="filters"
             :show="showFilter"
             @applyFilters="handleFiltersChanged"
