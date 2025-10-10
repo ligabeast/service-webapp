@@ -13,11 +13,50 @@
       <div class="flex p-4 justify-between space-x-2">
         <div class="w-1/2 font-medium">Anschrift</div>
         <div class="w-[1px] border border-black"></div>
-        <div
-          v-if="order?.adress"
-          v-html="order?.adress"
-          class="h-90 whitespace-pre-line w-1/2"
-        ></div>
+        <div class="flex flex-col w-1/2 space-y-2">
+          <div
+            v-if="order?.adress && !editAdress"
+            v-html="order?.adress"
+            class="h-90 whitespace-pre-line w-full"
+          ></div>
+          <div class="flex justify-end" v-if="!editAdress">
+            <button
+              class="rounded border border-gray-400 hover:bg-gray-200 transition p-1 h-8 w-8"
+              v-if="!editAdress"
+              @click="
+                editAdress = true;
+                inputAdress = order?.adress;
+              "
+            >
+              <svg
+                class="w-5 h-5 text-black"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
+          <div v-else class="flex flex-col space-y-2 items-end w-full">
+            <textarea
+              class="border border-gray-500 bg-white rounded-md p-1 w-full h-40 overflow-x-auto"
+              v-model="inputAdress"
+            >
+            </textarea>
+            <button
+              class="w-28 h-6 flex justify-center items-center text-xs px-2 font-bold text-white rounded-md transition min-h-10 bg-blue-500 hover:bg-blue-600"
+              @click="handleChangeAdress"
+            >
+              {{ inputAdress === order?.adress ? "Abbrechen" : "Speichern" }}
+            </button>
+          </div>
+        </div>
       </div>
       <div class="flex p-4 justify-between space-x-2">
         <div class="w-1/2 font-medium">KLS-ID</div>
@@ -787,6 +826,7 @@ const IMAGE_URLPREFIX = config.public.IMAGE_URLPREFIX || "localhost";
 const editNe3Error = ref(false);
 const editCommentIntern = ref(false);
 const editCommentCopy = ref(false);
+const editAdress = ref(false);
 const editPositions = ref(false);
 const editPictures = ref(false);
 const showNewPositionModal = ref(false);
@@ -927,13 +967,37 @@ async function handleChangePositions() {
   }
 }
 
+async function handleChangeAdress() {
+  if (inputAdress.value === order.value.address) {
+    editAdress.value = false;
+    return;
+  } else {
+    editAdress.value = false;
+    const res = await $fetch(`/api/changeAdress`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${useCookie("jwt").value}`,
+      },
+      body: JSON.stringify({
+        orderId: orderid,
+        newAddress: inputAdress.value,
+      }),
+    });
+    addNotification(res.message, res.status, 2000);
+    if (res.status == "success") {
+      order.value.adress = res.data.newAddress;
+    }
+    inputAdress.value = "";
+  }
+}
+
 // Route und Daten laden
 const route = useRoute();
 const orderid = route.params.orderid;
 const currentPage = route.query.currentPage || 1;
 const nextOrder = ref(null);
 const prevOrder = ref(null);
-
+const inputAdress = ref("");
 const gallery = ref(null);
 
 const timeFormatter = new Intl.DateTimeFormat("de-DE", {
