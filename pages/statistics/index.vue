@@ -46,14 +46,18 @@
     </div>
 
     <!-- Transition für das Reinsliden -->
-    <transition name="top-to-bottom" mode="out-in">
-      <OrderFilter
-        :show="showFilters"
-        :pagination="false"
-        :filters="filters"
-        @applyFilters="handleApplyFilters"
-      />
-    </transition>
+    <ClientOnly>
+      <transition name="top-to-bottom" mode="out-in">
+        <div v-if="showFilters">
+          <OrderFilter
+            :show="showFilters"
+            :pagination="false"
+            :filters="filters"
+            @applyFilters="handleApplyFilters"
+          />
+        </div>
+      </transition>
+    </ClientOnly>
 
     <!-- Anzahl an Aufträgen pro Tag -->
     <div class="flex-grow bg-gray-100 rounded-md shadow-md p-4">
