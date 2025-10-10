@@ -41,7 +41,10 @@
         </span>
       </div>
       <div class="flex flex-col items-center justify-between">
-        <div class="flex justify-center items-center space-x-2">
+        <div
+          class="flex justify-center items-center space-x-2"
+          @click.prevent.stop
+        >
           <span class="text-sm text-blue-500 font-bold">{{
             order.orderType
           }}</span>
@@ -51,7 +54,7 @@
               'hover:bg-gray-300 border-gray-400 ': !observeOrder,
               'bg-white border-yellow-500 ': observeOrder,
             }"
-            @click.prevent.stop="handleObserveOrder(order.id)"
+            @click="handleObserveOrder(order.id)"
           >
             <svg
               class="w-full h-full"
@@ -97,7 +100,11 @@ function handleModifyOrder() {
   console.log("Modify order", props.order);
 }
 
-const observeOrder = ref(props.order.isFavorite);
+const observeOrder = ref(false);
+
+onMounted(() => {
+  observeOrder.value = !!props.order.isFavorite;
+});
 
 async function handleObserveOrder(orderId: number) {
   const res = await $fetch(`/api/observeOrder`, {

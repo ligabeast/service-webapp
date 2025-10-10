@@ -44,22 +44,31 @@
           </svg>
         </button>
       </div>
-      <transition name="top-to-bottom" mode="out-in">
-        <div v-if="showFilter">
-          <OrderFilter
-            :pagination="true"
-            :extraFilters="true"
-            :favoritesFilter="true"
-            :filters="filters"
-            :show="showFilter"
-            @applyFilters="handleFiltersChanged"
+      <ClientOnly>
+        <transition name="top-to-bottom" mode="out-in">
+          <div v-if="showFilter">
+            <OrderFilter
+              :pagination="true"
+              :extraFilters="true"
+              :favoritesFilter="true"
+              :filters="filters"
+              :show="showFilter"
+              @applyFilters="handleFiltersChanged"
+            />
+          </div>
+        </transition>
+
+        <template v-if="orders && orders.length">
+          <OrderCard
+            v-for="order in orders"
+            :key="order.id"
+            :currentPage="currentPage"
+            :order="order"
           />
-        </div>
-      </transition>
-      <span v-if="orders && orders.length == 0"> Keine Aufträge verfügbar</span>
-      <template v-else v-for="order in orders">
-        <OrderCard :currentPage="currentPage" :order="order" />
-      </template>
+        </template>
+
+        <span v-else>Keine Aufträge verfügbar</span>
+      </ClientOnly>
 
       <!-- Pagination -->
       <div
