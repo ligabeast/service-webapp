@@ -108,7 +108,7 @@ export default defineEventHandler(async (event) => {
     // 🔹 Prüfe, ob KLS-Eintrag existiert
     const [klsRows] = await connection.execute<any[]>(
       `
-      SELECT id, residential_units, comments
+      SELECT id, residential_units, adress
       FROM sys.kls
       where kls_id = ?;
       `,
@@ -117,16 +117,20 @@ export default defineEventHandler(async (event) => {
 
     const klsData = klsRows[0] || null;
 
+    const tmpAddress = klsData ? klsData.adress : address;
+
     return {
       status: "success",
       data: {
-        address,
+        address: tmpAddress,
         kls,
         ordersFound,
         lastService: lastService
           ? new Date(lastService).toISOString().split("T")[0]
           : null,
-        klsData,
+        klsData: klsData
+          ? { id: klsData.id, residential_units: klsData.residential_units }
+          : null,
         positions,
       },
     };
