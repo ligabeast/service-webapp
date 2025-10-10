@@ -545,8 +545,10 @@ async function handleSave() {
 }
 
 function handleSave2() {
-  // check ob Durchbruch eingetragen ist
-  const durchbruch = insertedPositions.value.find((e) => e.id === 27);
+  // check ob Durchbruch eingetragen ist id 27 oder 23
+  const durchbruch = insertedPositions.value.find(
+    (e) => e.id === 27 || e.id === 23
+  );
 
   if (!durchbruch) {
     showDeckenModal.value = true;
