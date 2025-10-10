@@ -983,8 +983,8 @@ async function handleChangeAdress() {
         newAddress: inputAdress.value,
       }),
     });
-    addNotification(res.message, res.status, 2000);
     if (res.status == "success") {
+      addNotification(res.message, res.status, 2000);
       order.value.adress = res.data.newAddress;
     }
     inputAdress.value = "";
