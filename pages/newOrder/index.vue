@@ -519,7 +519,10 @@ function orderCreate() {
                 : null,
             units: form.value.units,
             kls_id: form.value.klsId,
-            adress: klsFound.address ? klsFound.address : form.value.address,
+            adress:
+              klsFound && klsFound.value.address != null
+                ? klsFound.value.address
+                : form.value.address,
             latitude: lat,
             longitude: lon,
           }),
