@@ -264,6 +264,8 @@
                 <label class="text-base">GWV-Auftragsnummer</label>
                 <input
                   type="number"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
                   class="border rounded-md p-2"
                   v-model="form.gwvOrderNumber"
                   placeholder="GWV-Auftragsnummer eingeben"
@@ -305,6 +307,8 @@
                 <label class="text-base">Connect-Auftragsnummer</label>
                 <input
                   type="number"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
                   class="border rounded-md p-2"
                   v-model="form.connectOrderNumber"
                   placeholder="Connect-Auftragsnummer eingeben"
