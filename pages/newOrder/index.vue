@@ -424,7 +424,12 @@ const dateTimeFormatter = new Intl.DateTimeFormat("de-DE", {
 
 // --- Navigation ---
 function nextStep() {
-  if (currentStep.value === 1 && klsFound.value.kls != form.value.klsId) {
+  if (
+    currentStep.value === 1 &&
+    klsFound.value.kls != undefined &&
+    klsFound.value.kls != form.value.klsId
+  ) {
+    console.log(klsFound.value.kls, form.value.klsId);
     addNotification("Bitte KLS-ID zuerst prüfen klicken", "error", 3000);
     return;
   }
